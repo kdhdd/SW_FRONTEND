@@ -13,9 +13,11 @@
     "boxicons": "^2.1.4",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
+    "react-router": "^7.6.0",
     "react-router-dom": "^7.5.3",
     "remixicon": "^4.6.0",
-    "scrollreveal": "^4.0.9"
+    "scrollreveal": "^4.0.9",
+    "styled-components": "^6.1.18"
   },
   "devDependencies": {
     "@eslint/js": "^9.21.0",

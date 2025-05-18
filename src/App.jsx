@@ -1,6 +1,6 @@
 import './App.css';
 import Header from './components/Header';
-import Home from './components/Home';
+import Home from './layouts/Home';
 import Ride from './components/Ride';
 import Services from './components/Services';
 import About from './components/About';
@@ -14,12 +14,7 @@ function App() {
   return (
     <>
       <Header />
-      <Home />
-      <Ride />
-      <Services />
-      <About />
-      <Reviews />
-      <Newsletter />
+        <Home />
       <Footer />
     </>
   );
