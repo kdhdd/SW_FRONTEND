@@ -1,7 +1,9 @@
 import styled from "styled-components";
 import handcuffIcon from "../assets/handcuffs-solid.svg";
+import { useNavigate } from "react-router-dom";
 
 function Header() {
+    const navigate = useNavigate();
   return (
     <HeaderWrapper>
       <Logo>
@@ -19,8 +21,8 @@ function Header() {
       </NavBar>
 
       <HeaderBtn>
-        <a href="#" className="sign-up">Sign Up</a>
-        <a href="#" className="sign-in">Sign In</a>
+          <a onClick={() => navigate("/register")} className="sign-up">Sign Up</a>
+          <a onClick={() => navigate("/login")} className="sign-in">Sign In</a>
       </HeaderBtn>
     </HeaderWrapper>
   );

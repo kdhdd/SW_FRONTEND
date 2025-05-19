@@ -5,11 +5,16 @@ import App from "./App.jsx";
 import "./App.css";
 import RootLayout from "./layouts/RootLayout.jsx";
 
+import Login from './pages/Login';
+import Register from './pages/Register.jsx';
+
 ReactDOM.createRoot(document.getElementById("root")).render(
   <BrowserRouter>
     <Routes>
       <Route element={<RootLayout />}>
         <Route index element={<App />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
       </Route>
     </Routes>
   </BrowserRouter>
