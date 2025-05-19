@@ -3,14 +3,16 @@ import Header from "../components/Header";
 import styled from "styled-components";
 
 function RootLayout() {
-  return (
-    <Layout>
-      <Header />
-      <Content>
-        <Outlet />
-      </Content>
-    </Layout>
-  );
+    return (
+        <div style={{ paddingTop: "80px" }}> {/* 헤더 높이만큼 여백 */}
+            <Layout>
+                <Header />
+                <Content>
+                    <Outlet />
+                </Content>
+            </Layout>
+        </div>
+    );
 }
 
 const Layout = styled.div`

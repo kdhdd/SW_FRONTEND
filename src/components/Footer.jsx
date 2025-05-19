@@ -2,7 +2,7 @@ function Footer() {
   return (
     <div className="copyright">
       <p>
-        &#169; <span>ULTRA CODE</span> All rights reserved
+        &#169; <span>알잘딱깔센</span> All rights reserved
       </p>
       <div className="social">
         <a href="#">
