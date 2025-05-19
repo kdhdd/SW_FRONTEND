@@ -6,15 +6,15 @@ function Header() {
     const navigate = useNavigate();
   return (
     <HeaderWrapper>
-      <Logo>
-        <img src={handcuffIcon} alt="handcuffs logo" />
-      </Logo>
+        <Logo to="/">
+            <img src={handcuffIcon} alt="handcuffs logo" />
+        </Logo>
 
       <MenuIcon />
 
       <NavBar>
-        <li><a href="#home">Home</a></li>
-        <li><a href="#ride">Episodes</a></li>
+        <li><a href="/">Home</a></li>
+        <li><a href="/episodes">Episodes</a></li>
         <li><a href="#services">Services</a></li>
         <li><a href="#about">About</a></li>
         <li><a href="#reviews">Reviews</a></li>
@@ -51,7 +51,7 @@ const HeaderWrapper = styled.header`
   }
 `;
 
-const Logo = styled.a.attrs({ className: "logo", href: "#" })`
+const Logo = styled.a.attrs({ className: "logo", href: "/" })`
   img {
     width: 40px;
 
@@ -140,11 +140,15 @@ const NavBar = styled.ul.attrs({ className: "navbar" })`
 `;
 
 const HeaderBtn = styled.div.attrs({ className: "header-btn" })`
-  a {
-    padding: 10px 20px;
-    color: var(--text-color);
-    font-weight: 500;
-  }
+    a {
+        padding: 10px 20px;
+        color: var(--text-color);
+        font-weight: 500;
+        cursor: pointer;
+        display: inline-block;
+        user-select: none;
+        text-decoration: none;
+    }
 
   .sign-in {
     background: #474fa0;
