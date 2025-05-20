@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import handcuffIcon from "../assets/handcuffs-solid.svg";
+import Icon from "../assets/newspaper-regular.svg";
 import { useNavigate } from "react-router-dom";
 
 function Header() {
@@ -7,7 +7,7 @@ function Header() {
   return (
     <HeaderWrapper>
         <Logo to="/">
-            <img src={handcuffIcon} alt="handcuffs logo" />
+            <img src={Icon} alt="handcuffs logo" />
         </Logo>
 
       <MenuIcon />

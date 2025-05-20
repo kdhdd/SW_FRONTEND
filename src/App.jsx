@@ -1,6 +1,6 @@
 import './App.css';
 import Header from './components/Header';
-import Home from './layouts/Home';
+import Home from './pages/Home';
 import Ride from './components/Ride';
 import Services from './components/Services';
 import About from './components/About';
