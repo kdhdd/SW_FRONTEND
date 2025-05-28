@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-function Register() {
+function Register_Backup() {
     const [step, setStep] = useState(1);
     const [email, setEmail] = useState("");
     const [code, setCode] = useState("");
@@ -149,4 +149,4 @@ function Register() {
     );
 }
 
-export default Register;
+export default Register_Backup;
