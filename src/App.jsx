@@ -9,6 +9,7 @@ import Newsletter from './components/Newsletter';
 import Footer from './components/Footer';
 import 'remixicon/fonts/remixicon.css';
 import 'boxicons/css/boxicons.min.css';
+import '@fortawesome/fontawesome-free/css/all.min.css';
 
 function App() {
   return (
