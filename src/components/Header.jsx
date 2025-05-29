@@ -1,22 +1,23 @@
 import styled from "styled-components";
 import Icon from "../assets/newspaper-regular.svg";
-import {useNavigate} from "react-router-dom";
-import {useAuth} from "../contexts/AuthContext";
+import { useNavigate, Link } from "react-router-dom";
+import { useAuth } from "../contexts/AuthContext";
 
 function Header() {
-    const {authUser, logout} = useAuth();
+    const { authUser, logout } = useAuth();
     const navigate = useNavigate();
+
     return (
         <HeaderWrapper>
             <Logo to="/">
-                <img src={Icon} alt="handcuffs logo"/>
+                <img src={Icon} alt="handcuffs logo" />
             </Logo>
 
-            <MenuIcon/>
+            <MenuIcon />
 
             <NavBar>
-                <li><a href="/">Home</a></li>
-                <li><a href="/episodes">Episodes</a></li>
+                <li><LinkStyled to="/">Home</LinkStyled></li>
+                <li><LinkStyled to="/articles">최신뉴스</LinkStyled></li>
                 <li><a href="#services">Services</a></li>
                 <li><a href="#about">About</a></li>
                 <li><a href="#reviews">Reviews</a></li>
@@ -24,8 +25,8 @@ function Header() {
 
             <HeaderBtn>
                 {authUser ? (
-                    <div style={{display: "flex", alignItems: "center", gap: "1rem"}}>
-                        <div style={{textAlign: "right", color: "#333", fontSize: "0.9rem", lineHeight: "1.2"}}>
+                    <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
+                        <div style={{ textAlign: "right", color: "#333", fontSize: "0.9rem", lineHeight: "1.2" }}>
                             <div>{authUser.username}</div>
                             <div>{authUser.nickname}님 ({authUser.role})</div>
                         </div>
@@ -38,7 +39,6 @@ function Header() {
                     </>
                 )}
             </HeaderBtn>
-
         </HeaderWrapper>
     );
 }
@@ -66,7 +66,7 @@ const HeaderWrapper = styled.header`
     }
 `;
 
-const Logo = styled.a.attrs({className: "logo", href: "/"})`
+const Logo = styled(Link)`
     img {
         width: 40px;
 
@@ -90,7 +90,7 @@ const MenuIcon = styled.i.attrs({
     }
 `;
 
-const NavBar = styled.ul.attrs({className: "navbar"})`
+const NavBar = styled.ul.attrs({ className: "navbar" })`
     display: flex;
 
     li {
@@ -102,6 +102,7 @@ const NavBar = styled.ul.attrs({className: "navbar"})`
         padding: 10px 20px;
         color: var(--text-color);
         font-weight: 500;
+        text-decoration: none;
 
         &::after {
             content: "";
@@ -154,7 +155,32 @@ const NavBar = styled.ul.attrs({className: "navbar"})`
     }
 `;
 
-const HeaderBtn = styled.div.attrs({className: "header-btn"})`
+// Link 스타일링한 버전 (SPA용)
+const LinkStyled = styled(Link)`
+    font-size: 1rem;
+    padding: 10px 20px;
+    color: var(--text-color);
+    font-weight: 500;
+    text-decoration: none;
+    position: relative;
+
+    &::after {
+        content: "";
+        width: 0;
+        height: 3px;
+        background: var(--gradient);
+        position: absolute;
+        bottom: -4px;
+        left: 0;
+        transition: 0.5s;
+    }
+
+    &:hover::after {
+        width: 100%;
+    }
+`;
+
+const HeaderBtn = styled.div.attrs({ className: "header-btn" })`
     a {
         padding: 10px 20px;
         color: var(--text-color);
@@ -205,6 +231,5 @@ const LogoutButton = styled.button`
         background: var(--main-color);
     }
 `;
-
 
 export default Header;
