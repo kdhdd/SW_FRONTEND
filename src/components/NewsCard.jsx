@@ -1,8 +1,8 @@
-import React, { useState } from "react";
+import React, {useState} from "react";
 import styled from "styled-components";
-import { FaHeart, FaCommentDots, FaBookmark } from "react-icons/fa";
+import {FaHeart, FaCommentDots, FaBookmark} from "react-icons/fa";
 
-export default function NewsCard({ news }) {
+export default function NewsCard({news}) {
     const [menuOpen, setMenuOpen] = useState(false);
 
     const parsedDate = new Date(news.pubDate);
@@ -14,7 +14,8 @@ export default function NewsCard({ news }) {
                 {isValidDate ? (
                     <>
                         <span className="day">{parsedDate.getDate()}</span>
-                        <span className="month">{parsedDate.toLocaleString("default", { month: "short" }).toUpperCase()}</span>
+                        <span
+                            className="month">{parsedDate.toLocaleString("default", {month: "short"}).toUpperCase()}</span>
                         <span className="year">{parsedDate.getFullYear()}</span>
                     </>
                 ) : (
@@ -25,16 +26,23 @@ export default function NewsCard({ news }) {
             <SlidePanel>
                 {menuOpen && (
                     <IconBar>
-                        <FaBookmark />
-                        <FaHeart />
-                        <FaCommentDots />
+                        <FaBookmark/>
+                        <span>{news.likes}</span>
+                        <FaHeart/>
+                        <span>{news.commentCount}</span>
+                        <FaCommentDots/>
                     </IconBar>
                 )}
                 <ContentWrapper>
-                    <MenuButton onClick={(e) => { e.stopPropagation(); setMenuOpen(!menuOpen); }} />
+                    <MenuButton onClick={(e) => {
+                        e.stopPropagation();
+                        setMenuOpen(!menuOpen);
+                    }}>
+                        <span/>
+                    </MenuButton>
                     <Author>{news.author || "기자 없음"}</Author>
-                    <Title dangerouslySetInnerHTML={{ __html: news.title }} />
-                    <Text>{news.thumbnailContent?.replace(/<[^>]+>/g, "").slice(0, 100)}...</Text>
+                    <Title dangerouslySetInnerHTML={{__html: news.title}}/>
+                    <Text>{news.description?.replace(/<[^>]+>/g, "").slice(0, 100)}...</Text>
                 </ContentWrapper>
             </SlidePanel>
         </CardWrapper>
@@ -72,13 +80,14 @@ const DateBadge = styled.div`
         font-weight: 700;
         font-size: 22px;
     }
+
     .month,
     .year {
         font-size: 11px;
     }
 `;
 
-const SlidePanel = styled.div.attrs({ className: "slide-panel" })`
+const SlidePanel = styled.div.attrs({className: "slide-panel"})`
     position: absolute;
     bottom: 0;
     width: 100%;
