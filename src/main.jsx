@@ -10,6 +10,8 @@ import SignupSelectPage from "./pages/SignupSelectPage.jsx";
 import SignupPage from "./pages/SignupPage.jsx";
 
 import {AuthProvider} from "./contexts/AuthContext";
+import ArticlesPage from "./pages/ArticlesPage.jsx";
+import ArticleDetailPage from "./pages/ArticleDetailPage.jsx";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
     <AuthProvider>
@@ -22,6 +24,9 @@ ReactDOM.createRoot(document.getElementById("root")).render(
 
                     <Route path="/auth/signup/police" element={<SignupPage type="police"/>}/>
                     <Route path="/auth/signup/general" element={<SignupPage type="general"/>}/>
+
+                    <Route path="/articles" element={<ArticlesPage />} />
+                    <Route path="/articles/:id" element={<ArticleDetailPage />} />
                 </Route>
             </Routes>
         </BrowserRouter>
