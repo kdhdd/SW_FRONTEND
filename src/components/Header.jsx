@@ -1,32 +1,32 @@
 import styled from "styled-components";
 import Icon from "../assets/newspaper-regular.svg";
-import { useNavigate, Link } from "react-router-dom";
-import { useAuth } from "../contexts/AuthContext";
+import {useNavigate, Link} from "react-router-dom";
+import {useAuth} from "../contexts/AuthContext";
 
 function Header() {
-    const { authUser, logout } = useAuth();
+    const {authUser, logout} = useAuth();
     const navigate = useNavigate();
 
     return (
         <HeaderWrapper>
             <Logo to="/">
-                <img src={Icon} alt="handcuffs logo" />
+                <img src={Icon} alt="handcuffs logo"/>
             </Logo>
 
-            <MenuIcon />
+            <MenuIcon/>
 
             <NavBar>
                 <li><LinkStyled to="/">Home</LinkStyled></li>
-                <li><LinkStyled to="/articles">최신뉴스</LinkStyled></li>
-                <li><a href="#services">Services</a></li>
+                <li><LinkStyled to="/articles/page/1">최신 뉴스</LinkStyled></li>
+                <li><LinkStyled to="/bookmarks">관심 뉴스</LinkStyled></li>
                 <li><a href="#about">About</a></li>
                 <li><a href="#reviews">Reviews</a></li>
             </NavBar>
 
             <HeaderBtn>
                 {authUser ? (
-                    <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
-                        <div style={{ textAlign: "right", color: "#333", fontSize: "0.9rem", lineHeight: "1.2" }}>
+                    <div style={{display: "flex", alignItems: "center", gap: "1rem"}}>
+                        <div style={{textAlign: "right", color: "#333", fontSize: "0.9rem", lineHeight: "1.2"}}>
                             <div>{authUser.username}</div>
                             <div>{authUser.nickname}님 ({authUser.role})</div>
                         </div>
@@ -90,7 +90,7 @@ const MenuIcon = styled.i.attrs({
     }
 `;
 
-const NavBar = styled.ul.attrs({ className: "navbar" })`
+const NavBar = styled.ul.attrs({className: "navbar"})`
     display: flex;
 
     li {
@@ -180,7 +180,7 @@ const LinkStyled = styled(Link)`
     }
 `;
 
-const HeaderBtn = styled.div.attrs({ className: "header-btn" })`
+const HeaderBtn = styled.div.attrs({className: "header-btn"})`
     a {
         padding: 10px 20px;
         color: var(--text-color);
