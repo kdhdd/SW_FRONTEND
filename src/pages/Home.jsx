@@ -1,7 +1,8 @@
 import {useEffect, useState} from "react";
 import ScrollReveal from "scrollreveal";
 import styled from "styled-components";
-import homeVideo from "/src/assets/home.mp4";
+// import homeVideo from "/src/assets/home.mp4";
+import homeImg from "/src/assets/home.png";
 
 function Home() {
   const [keyword, setKeyword] = useState("");
@@ -19,10 +20,11 @@ function Home() {
 
   return (
       <HomeSection id="home">
-        <BgVideo autoPlay muted loop playsInline>
+        {/* <BgVideo autoPlay muted loop playsInline>
           <source src={homeVideo} type="video/mp4" />
           <img src="/src/assets/main.png" alt="" />
-        </BgVideo>
+        </BgVideo> */}
+        <BgImage />
 
         <IntroText>
           <h1>실시간 기사와 인기 순위,</h1>
@@ -30,10 +32,10 @@ function Home() {
           <h2>오늘의 뉴스</h2>
         </IntroText>
 
-        <Text>
+        {/* <Text>
           <h1><span>눈앞에서 펼쳐지는 현장</span></h1>
           <p>지금 이 순간, 현장에 접속하다</p>
-        </Text>
+        </Text> */}
 
         <SearchBar>
           <div className="search-input-group">
@@ -98,6 +100,19 @@ const BgVideo = styled.video`
   z-index: -1;        /* 나머지 콘텐츠 뒤로 */
 `;
 
+const BgImage = styled.div`
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url('${homeImg}');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  z-index: -1;
+`;
+
+
 const Text = styled.div.attrs({ className: "text" })`
   h1 {
     font-size: 2.5rem;
@@ -149,7 +164,7 @@ const IntroText = styled.div`
 
 const PopularArticles = styled.div`
   position: absolute;
-  bottom: 2rem;
+  bottom: 6rem;
   left: 50%;
   transform: translateX(-50%);
   width: 90%;
@@ -211,7 +226,7 @@ const PopularArticles = styled.div`
 
 const SearchBar = styled.div`
   position: absolute;
-  bottom: 19rem;
+  bottom: 25rem;
   left: 50%;
   transform: translateX(-50%);
   width: 60%;

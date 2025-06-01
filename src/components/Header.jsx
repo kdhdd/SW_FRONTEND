@@ -52,7 +52,8 @@ const HeaderWrapper = styled.header`
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background: #eeeff1;
+    background: transparent;
+    box-shadow: none;
     padding: 15px 100px;
 
     @media (max-width: 991px) {
