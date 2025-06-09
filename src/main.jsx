@@ -13,6 +13,8 @@ import {AuthProvider} from "./contexts/AuthContext";
 import ArticlesPage from "./pages/ArticlesPage.jsx";
 import ArticleDetailPage from "./pages/ArticleDetailPage.jsx";
 
+import SearchResultPage from "./pages/SearchResultPage";
+
 ReactDOM.createRoot(document.getElementById("root")).render(
     <AuthProvider>
         <BrowserRouter>
@@ -27,6 +29,8 @@ ReactDOM.createRoot(document.getElementById("root")).render(
 
                     <Route path="/articles/page/:page" element={<ArticlesPage/>}/>
                     <Route path="/articles/:id" element={<ArticleDetailPage/>}/>
+
+                    <Route path="/search-result" element={<SearchResultPage/>}/>
                 </Route>
             </Routes>
         </BrowserRouter>

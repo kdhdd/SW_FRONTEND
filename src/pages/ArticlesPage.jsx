@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from "react";
 import styled from "styled-components";
 import {useNavigate, useParams} from "react-router-dom";
-import NewsCard from "../components/NewsCard.jsx";
+import NewsCard from "../components/common/NewsCard.jsx";
 
 function ArticlesPage() {
     const [newsData, setNewsData] = useState([]);
