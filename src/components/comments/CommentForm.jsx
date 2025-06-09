@@ -45,7 +45,6 @@ export default function CommentForm({articleId, onCommentAdded}) {
     );
 }
 
-// 스타일
 const FormContainer = styled.div`
     margin: 24px 0;
 `;

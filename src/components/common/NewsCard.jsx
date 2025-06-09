@@ -9,7 +9,7 @@ export default function NewsCard({news}) {
     const isValidDate = !isNaN(parsedDate.getTime());
 
     return (
-        <CardWrapper background={news.imageUrl}>
+        <CardWrapper $background={news.imageUrl || "/src/assets/noImage.png"}>
             <DateBadge>
                 {isValidDate ? (
                     <>
@@ -26,12 +26,16 @@ export default function NewsCard({news}) {
             <SlidePanel>
                 {menuOpen && (
                     <IconBar>
-                        <FaBookmark/>
-                        <span>{news.likes}</span>
-                        <FaHeart/>
-                        <span>{news.commentCount}</span>
-                        <FaCommentDots/>
+                        <IconGroup>
+                            <FaHeart/>
+                            <span>{news.likes}</span>
+                        </IconGroup>
+                        <IconGroup>
+                            <FaCommentDots/>
+                            <span>{news.commentCount}</span>
+                        </IconGroup>
                     </IconBar>
+
                 )}
                 <ContentWrapper>
                     <MenuButton onClick={(e) => {
@@ -40,7 +44,6 @@ export default function NewsCard({news}) {
                     }}>
                         <span/>
                     </MenuButton>
-                    <Author>{news.author || "기자 없음"}</Author>
                     <Title dangerouslySetInnerHTML={{__html: news.title}}/>
                     <Text>{news.description?.replace(/<[^>]+>/g, "").slice(0, 100)}...</Text>
                 </ContentWrapper>
@@ -51,7 +54,7 @@ export default function NewsCard({news}) {
 
 const CardWrapper = styled.div`
     position: relative;
-    background-image: url(${props => props.background});
+    background-image: url(${props => props.$background || "/src/assets/noImage.png"});
     background-size: cover;
     background-position: center;
     border-radius: 8px;
@@ -108,6 +111,12 @@ const IconBar = styled.div`
         font-size: 1.2rem;
         color: #333;
     }
+`;
+
+const IconGroup = styled.div`
+    display: flex;
+    align-items: center;
+    gap: 4px; /* 아이콘과 숫자 사이 간격을 좁게 */
 `;
 
 const ContentWrapper = styled.div`

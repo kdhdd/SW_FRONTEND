@@ -1,7 +1,9 @@
 import styled from "styled-components";
-import Icon from "../assets/newspaper-regular.svg";
+import Icon from "../../assets/newspaper-regular.svg";
 import {useNavigate, Link} from "react-router-dom";
-import {useAuth} from "../contexts/AuthContext";
+import {useAuth} from "../../contexts/AuthContext.jsx";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {faUser} from "@fortawesome/free-solid-svg-icons";
 
 function Header() {
     const {authUser, logout} = useAuth();
@@ -16,15 +18,22 @@ function Header() {
             <MenuIcon/>
 
             <NavBar>
-                <li><LinkStyled to="/">Home</LinkStyled></li>
-                <li><LinkStyled to="/articles/page/1">최신 뉴스</LinkStyled></li>
-                <li><LinkStyled to="/bookmarks">관심 뉴스</LinkStyled></li>
-                <li><a href="#about">About</a></li>
-                <li><a href="#reviews">Reviews</a></li>
+                <li><LinkStyled to="/">홈</LinkStyled></li>
+                <li><LinkStyled to="/articles/page/1">뉴스 보기</LinkStyled></li>
+                <li><LinkStyled to="/bookmarks">서비스 소개</LinkStyled></li>
             </NavBar>
 
             <HeaderBtn>
-                {authUser ? (
+                {!authUser && (
+                    <DropdownWrapper>
+                        <UserIcon/>
+                        <DropdownContent>
+                            <div onClick={() => navigate("/auth/login")}>로그인</div>
+                            <div onClick={() => navigate("/auth/signup")}>회원가입</div>
+                        </DropdownContent>
+                    </DropdownWrapper>
+                )}
+                {authUser && (
                     <div style={{display: "flex", alignItems: "center", gap: "1rem"}}>
                         <div style={{textAlign: "right", color: "#333", fontSize: "0.9rem", lineHeight: "1.2"}}>
                             <div>{authUser.username}</div>
@@ -32,13 +41,9 @@ function Header() {
                         </div>
                         <LogoutButton onClick={logout}>로그아웃</LogoutButton>
                     </div>
-                ) : (
-                    <>
-                        <a onClick={() => navigate("/auth/signup")} className="sign-up">회원가입</a>
-                        <a onClick={() => navigate("/auth/login")} className="sign-in">로그인</a>
-                    </>
                 )}
             </HeaderBtn>
+
         </HeaderWrapper>
     );
 }
@@ -52,8 +57,7 @@ const HeaderWrapper = styled.header`
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background: transparent;
-    box-shadow: none;
+    background: #eeeff1;
     padding: 15px 100px;
 
     @media (max-width: 991px) {
@@ -93,17 +97,21 @@ const MenuIcon = styled.i.attrs({
 
 const NavBar = styled.ul.attrs({className: "navbar"})`
     display: flex;
+    flex: 1; /* ✅ NavBar가 가운데로 오도록 확장 */
+    justify-content: center; /* ✅ 가운데 정렬 */
+    gap: 11rem; /* ✅ 메뉴 사이 간격 */
 
     li {
         position: relative;
+        list-style: none;
     }
 
     a {
-        font-size: 1rem;
-        padding: 10px 20px;
-        color: var(--text-color);
+        font-size: 1.3rem;
+        padding: 10px 0;
         font-weight: 500;
         text-decoration: none;
+        position: relative;
 
         &::after {
             content: "";
@@ -122,19 +130,16 @@ const NavBar = styled.ul.attrs({className: "navbar"})`
     }
 
     @media (max-width: 795px) {
+        flex: none;
+        flex-direction: column;
         position: absolute;
         top: -500px;
         left: 0;
         right: 0;
-        flex-direction: column;
         background: #ffffff;
         box-shadow: 0 4px 4px rgba(0, 0, 0, 0.1);
-        transition: 0.2s ease;
         text-align: left;
-
-        &.active {
-            top: 100%;
-        }
+        transition: 0.2s ease;
 
         a {
             padding: 1rem;
@@ -155,6 +160,7 @@ const NavBar = styled.ul.attrs({className: "navbar"})`
         }
     }
 `;
+
 
 // Link 스타일링한 버전 (SPA용)
 const LinkStyled = styled(Link)`
@@ -191,31 +197,6 @@ const HeaderBtn = styled.div.attrs({className: "header-btn"})`
         user-select: none;
         text-decoration: none;
     }
-
-    .sign-in {
-        background: black;
-        color: #ffffff;
-        border-radius: 0.5rem;
-        transition: 0.5s;
-
-        &:hover {
-            background: var(--main-color);
-        }
-    }
-
-    @media (max-width: 795px) {
-        .sign-up {
-            display: none;
-        }
-    }
-
-    @media (max-width: 460px) {
-        .sign-in {
-            padding: 7px 10px;
-            font-size: 14px;
-            font-weight: 400;
-        }
-    }
 `;
 
 const LogoutButton = styled.button`
@@ -232,5 +213,50 @@ const LogoutButton = styled.button`
         background: var(--main-color);
     }
 `;
+
+const DropdownWrapper = styled.div`
+    position: relative;
+    display: inline-block;
+
+    &:hover > div {
+        display: block;
+    }
+`;
+
+const UserIcon = styled(FontAwesomeIcon).attrs({
+    icon: faUser,
+})`
+    font-size: 1.6rem;
+    color: black;
+    padding: 8px;
+    border-radius: 50%;
+    cursor: pointer;
+`;
+
+const DropdownContent = styled.div`
+    display: none;
+    position: absolute;
+    top: 100%; /* 아이콘 바로 아래에 붙이기 */
+    right: 0;
+    background-color: white;
+    border: 1px solid #ddd;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border-radius: 0.5rem;
+    padding: 0.5rem 0;
+    z-index: 1000;
+
+    div {
+        padding: 0.5rem 1.2rem;
+        font-size: 0.9rem;
+        color: #333;
+        white-space: nowrap;
+        transition: 0.2s;
+
+        &:hover {
+            background-color: #f2f2f2;
+        }
+    }
+`;
+
 
 export default Header;

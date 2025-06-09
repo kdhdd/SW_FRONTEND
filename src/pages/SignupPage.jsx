@@ -1,5 +1,6 @@
-import React, { useState } from "react";
-import styled, { keyframes } from "styled-components";
+import React, {useState} from "react";
+import styled, {keyframes} from "styled-components";
+import {useNavigate} from "react-router-dom";
 
 const hueRotate = keyframes`
     from {
@@ -46,33 +47,33 @@ const Title = styled.h1`
 `;
 
 const FullInput = styled.input`
-  background: transparent;
-  border: none;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.5);
-  color: white;
-  margin: 1rem 0;
-  padding: 0.5rem;
-  width: calc(100% - 3rem);
-  transition: 250ms background ease-in;
-
-  &::placeholder {
-    color: rgba(255, 255, 255, 0.7);
-  }
-
-  &:focus {
-    outline: none;
-    background: white;
-    color: black;
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.5);
+    color: white;
+    margin: 1rem 0;
+    padding: 0.5rem;
+    width: calc(100% - 3rem);
+    transition: 250ms background ease-in;
 
     &::placeholder {
-      color: rgba(0, 0, 0, 0.7);
+        color: rgba(255, 255, 255, 0.7);
     }
-  }
+
+    &:focus {
+        outline: none;
+        background: white;
+        color: black;
+
+        &::placeholder {
+            color: rgba(0, 0, 0, 0.7);
+        }
+    }
 `;
 
 const CodeInput = styled(FullInput)`
-  width: 150px;
-  margin: 0.5rem 0;
+    width: 150px;
+    margin: 0.5rem 0;
 `;
 
 const Row = styled.div`
@@ -84,27 +85,27 @@ const Row = styled.div`
 `;
 
 const Button = styled.button`
-  border: 1px solid white;
-  background: transparent;
-  color: white;
-  padding: 0.5rem 1rem;
-  cursor: pointer;
-  white-space: nowrap;
-  transition: 250ms background ease-in;
+    border: 1px solid white;
+    background: transparent;
+    color: white;
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: 250ms background ease-in;
 
-  &:hover,
-  &:focus {
-    background: white;
-    color: black;
-  }
+    &:hover,
+    &:focus {
+        background: white;
+        color: black;
+    }
 
-  &:disabled {
-    opacity: 0.4;
-    cursor: not-allowed;
-  }
+    &:disabled {
+        opacity: 0.4;
+        cursor: not-allowed;
+    }
 `;
 
-export default function SignupPage({ type }) {
+export default function SignupPage({type}) {
     const [codeSent, setCodeSent] = useState(false);
     const [email, setEmail] = useState("");
     const [code, setCode] = useState("");
@@ -112,6 +113,8 @@ export default function SignupPage({ type }) {
     const [password, setPassword] = useState("");
     const [name, setName] = useState("");
     const [nickname, setNickname] = useState("");
+    const navigate = useNavigate(); // ⬅️ 추가
+
     //const [nicknameError, setNicknameError] = useState("");
 
     const sendVerificationCode = async () => {
@@ -123,8 +126,8 @@ export default function SignupPage({ type }) {
 
             const res = await fetch(endpoint, {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ email }),
+                headers: {"Content-Type": "application/json"},
+                body: JSON.stringify({email}),
                 credentials: "include",
             });
 
@@ -141,16 +144,16 @@ export default function SignupPage({ type }) {
     };
 
     const verifyCode = async () => {
-            const endpoint = type === "police"
-                ? "http://localhost:8080/signup/police/emailAuth"
-                : "http://localhost:8080/signup/general/emailAuth";
+        const endpoint = type === "police"
+            ? "http://localhost:8080/signup/police/emailAuth"
+            : "http://localhost:8080/signup/general/emailAuth";
 
-            try {
-                const res = await fetch(endpoint, {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ email, authNum: code }),
-                });
+        try {
+            const res = await fetch(endpoint, {
+                method: "POST",
+                headers: {"Content-Type": "application/json"},
+                body: JSON.stringify({email, authNum: code}),
+            });
 
             if (res.ok) {
                 alert("이메일 인증 성공!");
@@ -171,18 +174,19 @@ export default function SignupPage({ type }) {
             return;
         }
         const url = type === "police"
-                ? "http://localhost:8080/users/police"
-                : "http://localhost:8080/users/general";
+            ? "http://localhost:8080/users/police"
+            : "http://localhost:8080/users/general";
 
         try {
             const res = await fetch(url, {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ username: email, password, name, nickname }),
+                headers: {"Content-Type": "application/json"},
+                body: JSON.stringify({username: email, password, name, nickname}),
             });
 
             if (res.ok) {
                 alert("회원가입 완료!");
+                navigate("/auth/login"); // ✅ 자동 이동
             } else {
                 const data = await res.json();
                 alert(data.message || "회원가입 실패");
@@ -193,10 +197,11 @@ export default function SignupPage({ type }) {
         }
     };
 
+
     return (
         <>
-            <UnderlayPhoto />
-            <UnderlayBlack />
+            <UnderlayPhoto/>
+            <UnderlayBlack/>
             <FormWrapper>
                 <Title>{type === "police" ? "경찰 회원가입" : "일반 회원가입"}</Title>
 

@@ -1,24 +1,19 @@
 import './App.css';
-import Header from './components/Header';
+import Header from './components/common/Header.jsx';
 import Home from './pages/Home';
-import Ride from './components/Ride';
-import Services from './components/Services';
-import About from './components/About';
-import Reviews from './components/Reviews';
-import Newsletter from './components/Newsletter';
-import Footer from './components/Footer';
+import Footer from './components/common/Footer.jsx';
 import 'remixicon/fonts/remixicon.css';
 import 'boxicons/css/boxicons.min.css';
 import '@fortawesome/fontawesome-free/css/all.min.css';
 
 function App() {
-  return (
-    <>
-      <Header />
-        <Home />
-      <Footer />
-    </>
-  );
+    return (
+        <>
+            <Header/>
+            <Home/>
+            <Footer/>
+        </>
+    );
 }
 
 export default App;
