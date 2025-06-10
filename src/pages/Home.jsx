@@ -1,7 +1,7 @@
 import {useEffect, useState} from "react";
 import ScrollReveal from "scrollreveal";
 import styled from "styled-components";
-import homeVideo from "/src/assets/home.mp4";
+import homeVideo from "/src/assets/background01.mp4";
 import PopularNews from "../components/common/PopularNews.jsx";
 import {useNavigate} from "react-router-dom";
 

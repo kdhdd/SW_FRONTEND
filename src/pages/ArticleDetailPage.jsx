@@ -6,6 +6,7 @@ import ArticleTitle from "../components/articles/ArticleTitle";
 import ArticleContent from "../components/articles/ArticleContent";
 import LikeButton from "../components/articles/LikeButton";
 import CommentSection from "../components/comments/CommentSection";
+import Footer from "../components/common/Footer.jsx";
 
 function ArticleDetailPage() {
     const {id} = useParams();
@@ -20,6 +21,8 @@ function ArticleDetailPage() {
     const [likesCount, setLikesCount] = useState(0);
     const [liked, setLiked] = useState(false);
     const [openMenuId, setOpenMenuId] = useState(null);
+    const [sentimentData, setSentimentData] = useState([]);
+
 
     const toggleMenu = (id) => {
         setOpenMenuId((prev) => (prev === id ? null : id));
@@ -82,6 +85,19 @@ function ArticleDetailPage() {
         fetchLikes();
     }, [id]);
 
+    useEffect(() => {
+        const fetchSentimentStats = async () => {
+            try {
+                const res = await fetch(`http://localhost:8080/comments/${id}/sentiment`);
+                const json = await res.json();
+                setSentimentData(json.data); // 배열 형태
+            } catch (err) {
+                console.error("감정 통계 조회 실패:", err);
+            }
+        };
+        fetchSentimentStats();
+    }, [id]);
+
     const handleDeleteComment = async (commentId) => {
         const token = localStorage.getItem("accessToken");
         try {
@@ -140,29 +156,33 @@ function ArticleDetailPage() {
     if (!article) return <NotFound>기사를 불러오는 중입니다...</NotFound>;
 
     return (
-        <Wrapper>
-            <BackButton onClick={() => navigate(-1)}>← 돌아가기</BackButton>
-            <ArticleTitle title={article.title} date={article.pubDate}/>
-            <GlobalStyles/>
-            <ArticleContent content={article.content}/>
-            <LikeButton liked={liked} count={likesCount} onClick={handleLikeClick}/>
-            <CommentSection
-                articleId={id}
-                currentUser={currentUser}
-                comments={comments}
-                editContent={editContent}
-                setEditContent={setEditContent}
-                editingCommentId={editingCommentId}
-                setEditingCommentId={setEditingCommentId}
-                handleUpdateComment={handleUpdateComment}
-                handleDeleteComment={handleDeleteComment}
-                replyFormVisibleId={replyFormVisibleId}
-                setReplyFormVisibleId={setReplyFormVisibleId}
-                fetchComments={fetchComments}
-                openMenuId={openMenuId}
-                toggleMenu={toggleMenu}
-            />
-        </Wrapper>
+        <>
+            <Wrapper>
+                <BackButton onClick={() => navigate(-1)}>← 돌아가기</BackButton>
+                <ArticleTitle title={article.title} date={article.pubDate}/>
+                <GlobalStyles/>
+                <ArticleContent content={article.content}/>
+                <LikeButton liked={liked} count={likesCount} onClick={handleLikeClick}/>
+                <CommentSection
+                    articleId={id}
+                    currentUser={currentUser}
+                    comments={comments}
+                    editContent={editContent}
+                    setEditContent={setEditContent}
+                    editingCommentId={editingCommentId}
+                    setEditingCommentId={setEditingCommentId}
+                    handleUpdateComment={handleUpdateComment}
+                    handleDeleteComment={handleDeleteComment}
+                    replyFormVisibleId={replyFormVisibleId}
+                    setReplyFormVisibleId={setReplyFormVisibleId}
+                    fetchComments={fetchComments}
+                    openMenuId={openMenuId}
+                    toggleMenu={toggleMenu}
+                    sentimentData={sentimentData}
+                />
+            </Wrapper>
+            <Footer/>
+        </>
     );
 }
 
