@@ -121,8 +121,8 @@ export default function SignupPage({type}) {
         try {
             const endpoint =
                 type === "police"
-                    ? "http://localhost:8080/signup/police/email"
-                    : "http://localhost:8080/signup/general/email";
+                    ? "http://localhost:8000/user-service/signup/police/email"
+                    : "http://localhost:8000/user-service/signup/general/email";
 
             const res = await fetch(endpoint, {
                 method: "POST",
@@ -145,8 +145,8 @@ export default function SignupPage({type}) {
 
     const verifyCode = async () => {
         const endpoint = type === "police"
-            ? "http://localhost:8080/signup/police/emailAuth"
-            : "http://localhost:8080/signup/general/emailAuth";
+            ? "http://localhost:8000/user-service/signup/police/emailAuth"
+            : "http://localhost:8000/user-service/signup/general/emailAuth";
 
         try {
             const res = await fetch(endpoint, {
@@ -174,8 +174,8 @@ export default function SignupPage({type}) {
             return;
         }
         const url = type === "police"
-            ? "http://localhost:8080/users/police"
-            : "http://localhost:8080/users/general";
+            ? "http://localhost:8000/user-service/users/police"
+            : "http://localhost:8000/user-service/users/general";
 
         try {
             const res = await fetch(url, {

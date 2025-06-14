@@ -31,7 +31,7 @@ function ArticleDetailPage() {
         const token = localStorage.getItem("accessToken");
         if (!token) return;
 
-        fetch("http://localhost:8080/users/me", {
+        fetch("http://localhost:8000/user-service/users/me", {
             headers: {Authorization: token},
         })
             .then((res) => res.json())
@@ -41,7 +41,7 @@ function ArticleDetailPage() {
 
     const fetchArticle = async () => {
         try {
-            const res = await fetch(`http://localhost:8080/news/${id}`);
+            const res = await fetch(`http://localhost:8000/article-service/news/${id}`);
             const data = await res.json();
             setArticle(data);
         } catch (err) {
@@ -52,7 +52,7 @@ function ArticleDetailPage() {
     const fetchComments = async () => {
         const token = localStorage.getItem("accessToken");
         try {
-            const res = await fetch(`http://localhost:8080/comments/${id}`, {
+            const res = await fetch(`http://localhost:8000/article-service/comments/${id}`, {
                 headers: {Authorization: token},
             });
             const data = await res.json();
@@ -64,7 +64,7 @@ function ArticleDetailPage() {
 
     const fetchSentimentStats = async () => {
         try {
-            const res = await fetch(`http://localhost:8080/comments/${id}/sentiment`);
+            const res = await fetch(`http://localhost:8000/article-service/comments/${id}/sentiment`);
             const json = await res.json();
             setSentimentData(json.data);
         } catch (err) {
@@ -75,7 +75,7 @@ function ArticleDetailPage() {
     const fetchLikes = async () => {
         const token = localStorage.getItem("accessToken");
         try {
-            const res = await fetch(`http://localhost:8080/articles/like/${id}`, {
+            const res = await fetch(`http://localhost:8000/article-service/articles/like/${id}`, {
                 headers: {Authorization: token},
             });
             if (res.ok) {
@@ -98,7 +98,7 @@ function ArticleDetailPage() {
     const handleDeleteComment = async (commentId) => {
         const token = localStorage.getItem("accessToken");
         try {
-            const res = await fetch(`http://localhost:8080/comments/${commentId}`, {
+            const res = await fetch(`http://localhost:8000/article-service/comments/${commentId}`, {
                 method: "DELETE",
                 headers: {Authorization: token},
             });
@@ -115,7 +115,7 @@ function ArticleDetailPage() {
         const token = localStorage.getItem("accessToken");
         if (!editContent.trim()) return;
         try {
-            const res = await fetch(`http://localhost:8080/comments/${commentId}`, {
+            const res = await fetch(`http://localhost:8000/article-service/comments/${commentId}`, {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json",
@@ -138,7 +138,7 @@ function ArticleDetailPage() {
         const token = localStorage.getItem("accessToken");
         if (!token) return alert("로그인이 필요합니다.");
         try {
-            const res = await fetch(`http://localhost:8080/articles/like/${id}`, {
+            const res = await fetch(`http://localhost:8000/article-service/articles/like/${id}`, {
                 method: "POST",
                 headers: {Authorization: token},
             });

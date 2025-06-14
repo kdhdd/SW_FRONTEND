@@ -8,7 +8,7 @@ export default function CommentForm({articleId, onCommentAdded}) {
         if (!content.trim()) return;
         const token = localStorage.getItem("accessToken");
         try {
-            const res = await fetch(`http://localhost:8080/comments/${articleId}`, {
+            const res = await fetch(`http://localhost:8000/article-service/comments/${articleId}`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",

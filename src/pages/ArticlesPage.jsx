@@ -13,31 +13,31 @@ function ArticlesPage() {
     const itemsPerPage = 12;
     const categories = ["마약", "성폭행", "사기", "살인", "방화", "폭행"];
     const [selectedCategory, setSelectedCategory] = useState("마약");
-    const [articleCount, setArticleCount] = useState(0);
+    //const [articleCount, setArticleCount] = useState(0);
 
     // 선택된 키워드에 따라 뉴스 가져오기
     useEffect(() => {
         const fetchNews = async () => {
             try {
-                const url = `http://localhost:8080/news?keyword=${selectedCategory}`;
+                const url = `http://localhost:8000/article-service/news?keyword=${selectedCategory}`;
                 const res = await fetch(url);
-                const data = await res.json();
+                const data = await res.json().data;
                 setNewsData(data);
             } catch (err) {
                 console.error("뉴스 불러오기 실패:", err);
             }
         };
-        const fetchCount = async () => {
-            try {
-                const countRes = await fetch(`http://localhost:8080/news/count?keyword=${selectedCategory}`);
-                const countData = await countRes.json();
-                setArticleCount(countData.count); // ✅ 숫자만 넣기
-            } catch (err) {
-                console.error("카운트 불러오기 실패:", err);
-            }
-        };
+        // const fetchCount = async () => {
+        //     try {
+        //         const countRes = await fetch(`http://localhost:8000/article-service/news/count?keyword=${selectedCategory}`);
+        //         const countData = await countRes.json();
+        //         setArticleCount(countData.count); // ✅ 숫자만 넣기
+        //     } catch (err) {
+        //         console.error("카운트 불러오기 실패:", err);
+        //     }
+        // };
         fetchNews();
-        fetchCount();
+        //fetchCount();
     }, [selectedCategory]);
 
 
@@ -55,7 +55,7 @@ function ArticlesPage() {
         <>
             <PageWrapper>
                 <Header>
-                    <h2>오늘의 뉴스 <span style={{fontSize: '1rem', color: '#888'}}> (총 {articleCount}건)</span></h2>
+                    {/*<h2>오늘의 뉴스 <span style={{fontSize: '1rem', color: '#888'}}> (총 {articleCount}건)</span></h2>*/}
                 </Header>
                 <CategoryBar>
                     {categories.map(cat => (

@@ -10,11 +10,11 @@ function PopularNews() {
     useEffect(() => {
         const fetchRankedArticles = async () => {
             try {
-                const rankRes = await fetch("http://localhost:8080/rank");
-                const rankIds = await rankRes.json();
+                const rankRes = await fetch("http://localhost:8000/article-service/rank");
+                const rankIds = await rankRes.json().data;
 
                 const articlePromises = rankIds.map((id) =>
-                    fetch(`http://localhost:8080/news/${id}`).then((res) => res.json())
+                    fetch(`http://localhost:8000/article-service/news/${id}`).then((res) => res.json())
                 );
 
                 const articles = await Promise.all(articlePromises);
