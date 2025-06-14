@@ -56,7 +56,7 @@ function ArticlesPage() {
         <>
             <PageWrapper>
                 <Header>
-                    {/*<h2>오늘의 뉴스 <span style={{fontSize: '1rem', color: '#888'}}> (총 {articleCount}건)</span></h2>*/}
+                    <h2>오늘의 뉴스 <span style={{fontSize: '1rem', color: '#888'}}> (총 {articleCount}건)</span></h2>
                 </Header>
                 <CategoryBar>
                     {categories.map(cat => (
