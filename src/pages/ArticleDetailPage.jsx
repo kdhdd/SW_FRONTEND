@@ -6,6 +6,7 @@ import ArticleTitle from "../components/articles/ArticleTitle";
 import ArticleContent from "../components/articles/ArticleContent";
 import LikeButton from "../components/articles/LikeButton";
 import CommentSection from "../components/comments/CommentSection";
+import Footer from "../components/common/Footer.jsx";
 
 function ArticleDetailPage() {
     const {id} = useParams();
@@ -20,6 +21,7 @@ function ArticleDetailPage() {
     const [likesCount, setLikesCount] = useState(0);
     const [liked, setLiked] = useState(false);
     const [openMenuId, setOpenMenuId] = useState(null);
+    const [sentimentData, setSentimentData] = useState([]);
 
     const toggleMenu = (id) => {
         setOpenMenuId((prev) => (prev === id ? null : id));
@@ -29,7 +31,7 @@ function ArticleDetailPage() {
         const token = localStorage.getItem("accessToken");
         if (!token) return;
 
-        fetch("http://localhost:8080/users/me", {
+        fetch("http://localhost:8000/user-service/users/me", {
             headers: {Authorization: token},
         })
             .then((res) => res.json())
@@ -39,7 +41,7 @@ function ArticleDetailPage() {
 
     const fetchArticle = async () => {
         try {
-            const res = await fetch(`http://localhost:8080/news/${id}`);
+            const res = await fetch(`http://localhost:8000/article-service/news/${id}`);
             const data = await res.json();
             setArticle(data);
         } catch (err) {
@@ -50,7 +52,7 @@ function ArticleDetailPage() {
     const fetchComments = async () => {
         const token = localStorage.getItem("accessToken");
         try {
-            const res = await fetch(`http://localhost:8080/comments/${id}`, {
+            const res = await fetch(`http://localhost:8000/article-service/comments/${id}`, {
                 headers: {Authorization: token},
             });
             const data = await res.json();
@@ -60,10 +62,20 @@ function ArticleDetailPage() {
         }
     };
 
+    const fetchSentimentStats = async () => {
+        try {
+            const res = await fetch(`http://localhost:8000/article-service/comments/${id}/sentiment`);
+            const json = await res.json();
+            setSentimentData(json.data);
+        } catch (err) {
+            console.error("감정 통계 조회 실패:", err);
+        }
+    };
+
     const fetchLikes = async () => {
         const token = localStorage.getItem("accessToken");
         try {
-            const res = await fetch(`http://localhost:8080/articles/like/${id}`, {
+            const res = await fetch(`http://localhost:8000/article-service/articles/like/${id}`, {
                 headers: {Authorization: token},
             });
             if (res.ok) {
@@ -80,17 +92,20 @@ function ArticleDetailPage() {
         fetchArticle();
         fetchComments();
         fetchLikes();
+        fetchSentimentStats(); // 초기 로딩 시 감정 통계도 함께
     }, [id]);
 
     const handleDeleteComment = async (commentId) => {
         const token = localStorage.getItem("accessToken");
         try {
-            const res = await fetch(`http://localhost:8080/comments/${commentId}`, {
+            const res = await fetch(`http://localhost:8000/article-service/comments/${commentId}`, {
                 method: "DELETE",
                 headers: {Authorization: token},
             });
-            if (res.ok) fetchComments();
-            else alert("댓글 삭제 실패");
+            if (res.ok) {
+                await fetchComments();
+                await fetchSentimentStats();
+            } else alert("댓글 삭제 실패");
         } catch (err) {
             console.error("댓글 삭제 오류:", err);
         }
@@ -100,7 +115,7 @@ function ArticleDetailPage() {
         const token = localStorage.getItem("accessToken");
         if (!editContent.trim()) return;
         try {
-            const res = await fetch(`http://localhost:8080/comments/${commentId}`, {
+            const res = await fetch(`http://localhost:8000/article-service/comments/${commentId}`, {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json",
@@ -111,7 +126,8 @@ function ArticleDetailPage() {
             if (res.ok) {
                 setEditingCommentId(null);
                 setEditContent("");
-                fetchComments();
+                await fetchComments();
+                await fetchSentimentStats();
             } else alert("댓글 수정 실패");
         } catch (err) {
             console.error("댓글 수정 오류:", err);
@@ -122,7 +138,7 @@ function ArticleDetailPage() {
         const token = localStorage.getItem("accessToken");
         if (!token) return alert("로그인이 필요합니다.");
         try {
-            const res = await fetch(`http://localhost:8080/articles/like/${id}`, {
+            const res = await fetch(`http://localhost:8000/article-service/articles/like/${id}`, {
                 method: "POST",
                 headers: {Authorization: token},
             });
@@ -140,29 +156,37 @@ function ArticleDetailPage() {
     if (!article) return <NotFound>기사를 불러오는 중입니다...</NotFound>;
 
     return (
-        <Wrapper>
-            <BackButton onClick={() => navigate(-1)}>← 돌아가기</BackButton>
-            <ArticleTitle title={article.title} date={article.pubDate}/>
-            <GlobalStyles/>
-            <ArticleContent content={article.content}/>
-            <LikeButton liked={liked} count={likesCount} onClick={handleLikeClick}/>
-            <CommentSection
-                articleId={id}
-                currentUser={currentUser}
-                comments={comments}
-                editContent={editContent}
-                setEditContent={setEditContent}
-                editingCommentId={editingCommentId}
-                setEditingCommentId={setEditingCommentId}
-                handleUpdateComment={handleUpdateComment}
-                handleDeleteComment={handleDeleteComment}
-                replyFormVisibleId={replyFormVisibleId}
-                setReplyFormVisibleId={setReplyFormVisibleId}
-                fetchComments={fetchComments}
-                openMenuId={openMenuId}
-                toggleMenu={toggleMenu}
-            />
-        </Wrapper>
+        <>
+            <Wrapper>
+                <BackButton onClick={() => navigate(-1)}>← 돌아가기</BackButton>
+                <ArticleTitle title={article.title} date={article.pubDate}/>
+                <GlobalStyles/>
+                <ArticleContent content={article.content}/>
+                <LikeButton liked={liked} count={likesCount} onClick={handleLikeClick}/>
+                <CommentSection
+                    articleId={id}
+                    currentUser={currentUser}
+                    comments={comments}
+                    editContent={editContent}
+                    setEditContent={setEditContent}
+                    editingCommentId={editingCommentId}
+                    setEditingCommentId={setEditingCommentId}
+                    handleUpdateComment={handleUpdateComment}
+                    handleDeleteComment={handleDeleteComment}
+                    replyFormVisibleId={replyFormVisibleId}
+                    setReplyFormVisibleId={setReplyFormVisibleId}
+                    fetchComments={fetchComments}
+                    openMenuId={openMenuId}
+                    toggleMenu={toggleMenu}
+                    sentimentData={sentimentData}
+                    onCommentAdded={async () => {
+                        await fetchComments();
+                        await fetchSentimentStats(); // 등록과 동시에 차트 새로고침
+                    }}
+                />
+            </Wrapper>
+            <Footer/>
+        </>
     );
 }
 

@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from "react";
 import styled from "styled-components";
 import {useNavigate} from "react-router-dom";
+import NewsCard from "./NewsCard.jsx";
 
 function PopularNews() {
     const [rankedArticles, setRankedArticles] = useState([]);
@@ -9,11 +10,11 @@ function PopularNews() {
     useEffect(() => {
         const fetchRankedArticles = async () => {
             try {
-                const rankRes = await fetch("http://localhost:8080/rank");
-                const rankIds = await rankRes.json();
+                const rankRes = await fetch("http://localhost:8000/article-service/rank");
+                const rankIds = await rankRes.json().data;
 
-                const articlePromises = rankIds.map(id =>
-                    fetch(`http://localhost:8080/news/${id}`).then(res => res.json())
+                const articlePromises = rankIds.map((id) =>
+                    fetch(`http://localhost:8000/article-service/news/${id}`).then((res) => res.json())
                 );
 
                 const articles = await Promise.all(articlePromises);
@@ -26,42 +27,16 @@ function PopularNews() {
         fetchRankedArticles();
     }, []);
 
-    const leftItems = rankedArticles.slice(0, 5);
-    const rightItems = rankedArticles.slice(5, 10);
-
     return (
         <Wrapper>
-            <h2>🔥 실시간 인기 뉴스</h2>
-            <NewsGrid>
-                <Column>
-                    {leftItems.map((article, idx) => (
-                        <ArticleItem key={article.id}>
-                            <span className="rank">{idx + 1}</span>
-                            <span
-                                className="title"
-                                dangerouslySetInnerHTML={{__html: article.title}}
-                                onClick={() => navigate(`/articles/${article.id}`)} // ✅ 이동
-                                style={{cursor: "pointer"}} // ✅ 마우스 커서
-                            />
-                            <span className="count">{article.likes}❤️ {article.commentCount}💬</span>
-                        </ArticleItem>
-                    ))}
-                </Column>
-                <Column>
-                    {rightItems.map((article, idx) => (
-                        <ArticleItem key={article.id}>
-                            <span className="rank">{idx + 6}</span>
-                            <span
-                                className="title"
-                                dangerouslySetInnerHTML={{__html: article.title}}
-                                onClick={() => navigate(`/articles/${article.id}`)} // ✅ 이동
-                                style={{cursor: "pointer"}} // ✅ 마우스 커서
-                            />
-                            <span className="count">{article.likes}❤️ {article.commentCount}💬</span>
-                        </ArticleItem>
-                    ))}
-                </Column>
-            </NewsGrid>
+            <h2>실시간 인기 뉴스</h2>
+            <CardGrid>
+                {rankedArticles.map((article, idx) => (
+                    <div key={article.id} onClick={() => navigate(`/articles/${article.id}`)}>
+                        <NewsCard news={article} rank={idx}/>
+                    </div>
+                ))}
+            </CardGrid>
         </Wrapper>
     );
 }
@@ -69,69 +44,30 @@ function PopularNews() {
 export default PopularNews;
 
 const Wrapper = styled.div`
-    position: absolute;
-    bottom: 2rem;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 90%;
-    max-width: 1100px;
-    background: rgba(0, 0, 0, 0.8);
-    padding: 1.5rem;
-    border-radius: 1rem;
-    color: #fff;
-    z-index: 2;
-    font-family: 'Pretendard', sans-serif;
+    padding: 3rem 2rem;
+    background: white;
+    width: 100%;
+    margin: 0 auto;
+    max-width: 1600px; // 💡 충분히 넓게
+    height: 100vh; // 💡 한 화면 안에 다 보이도록 고정
+    box-sizing: border-box;
 
     h2 {
-        font-size: 1.1rem;
-        margin-bottom: 1rem;
+        font-size: 1.5rem;
+        margin-bottom: 1.5rem;
         font-weight: bold;
-        color: #ffd700;
-        text-align: center;
+        text-align: left;
+        padding: 0 2rem;
     }
 `;
 
-const NewsGrid = styled.div`
+
+const CardGrid = styled.div`
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 0 1rem;
-
-    @media (max-width: 768px) {
-        grid-template-columns: 1fr;
-    }
-`;
-
-const Column = styled.div`
-    display: flex;
-    flex-direction: column;
-    gap: 0.3rem;
-`;
-
-const ArticleItem = styled.div`
-    display: grid;
-    grid-template-columns: auto 1fr auto;
-    align-items: center;
-    font-size: 0.95rem;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    padding-bottom: 0.4rem;
-    gap: 0.6rem;
-
-    .rank {
-        color: #00ffff;
-        font-weight: bold;
-    }
-
-    .title {
-        min-width: 0; /* ✅ 중요: 줄바꿈 방지와 text-overflow 작동 */
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-        cursor: pointer;
-    }
-
-    .count {
-        font-size: 0.85rem;
-        color: #ccc;
-        white-space: nowrap;
-    }
+    grid-template-columns: repeat(5, 1fr); // 5열
+    grid-template-rows: repeat(2, 1fr); // 2행
+    gap: 16px;
+    height: calc(100vh - 120px); // 💡 상단 padding, 제목 고려
+    padding: 0 2rem;
+    box-sizing: border-box;
 `;

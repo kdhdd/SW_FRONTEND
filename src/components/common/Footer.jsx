@@ -4,52 +4,39 @@ import styled from "styled-components";
 function Footer() {
     return (
         <FooterWrapper>
-            <LogoBox>
-                <img src="/src/assets/teamlogo.png" alt="알잘딱깔센 로고" />
-            </LogoBox>
+            <TextSection>
+                <FooterLinks>
+                    <li><a href="#">이용약관</a></li>
+                    <li><a href="#">개인정보처리방침</a></li>
+                    <li><a href="#">이메일무단수집거부</a></li>
+                </FooterLinks>
 
-            <FooterLinks>
-                <li><a href="#">이용약관</a></li>
-                <li><a href="#">개인정보처리방침</a></li>
-                <li><a href="#">이메일무단수집거부</a></li>
-            </FooterLinks>
+                <Address>서울특별시 성북구 서경로 124</Address>
+                <Copy>COPYRIGHT© 2025 ALJALDDAGGALSAEN. ALL RIGHTS RESERVED.</Copy>
 
-            <Address>서울특별시 성북구 서경로 124</Address>
-            <Copy>COPYRIGHT© 2025 ALJALDDAGGALSAEN. ALL RIGHTS RESERVED.</Copy>
+                <LogoBox>
+                    <img src="/src/assets/teamlogo.png" alt="알잘딱깔센 로고"/>
+                </LogoBox>
+            </TextSection>
         </FooterWrapper>
     );
 }
+
 
 export default Footer;
 
 const FooterWrapper = styled.footer`
     width: 100%;
-    background-color: #f9f9f9;  // ✅ 어두운 배경으로 통일
+    align-items: flex-start;
+    background-color: #f9f9f9;
     padding: 2rem 1rem;
     color: #555;
 `;
 
-const FooterContent = styled.div`
-    max-width: 1200px;
-    margin: 0 auto;
-    text-align: left;  // ✅ 왼쪽 정렬
-`;
-
-const LogoBox = styled.div`
-    display: flex;
-    align-items: center;
-    gap: 0.6rem;
-    margin-bottom: 1rem;
-
-    img {
-        height: 60px;
-    }
-
-    h3 {
-        font-size: 1.3rem;
-        font-weight: 700;
-        color: #222;
-    }
+const TextSection = styled.div`
+    position: relative;
+    max-width: 550px;
+    padding-right: 100px;
 `;
 
 const FooterLinks = styled.ul`
@@ -80,11 +67,21 @@ const FooterLinks = styled.ul`
 
 const Address = styled.address`
     font-style: normal;
-    margin-top: 0.5rem;
+    margin-bottom: 0.3rem;
 `;
 
 const Copy = styled.p`
-  margin-top: 0.3rem;
-  font-size: 0.85rem;
-  color: #777;
+    font-size: 0.85rem;
+    color: #777;
+    margin-bottom: 0;
+`;
+
+const LogoBox = styled.div`
+    position: absolute;
+    bottom: 0;
+    right: 0;
+
+    img {
+        height: 60px;
+    }
 `;

@@ -1,11 +1,19 @@
-import {useEffect, useState} from "react";
+import React, {useEffect, useRef, useState} from "react";
 import ScrollReveal from "scrollreveal";
 import styled from "styled-components";
-import homeVideo from "/src/assets/home.mp4";
-import PopularNews from "../components/common/PopularNews.jsx";
 import {useNavigate} from "react-router-dom";
+import FileImage2 from "../assets/aboutBackground.png";
+import {FaChartPie, FaRegNewspaper} from "react-icons/fa";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {faMagnifyingGlass} from "@fortawesome/free-solid-svg-icons";
+import PopularNews from "../components/common/PopularNews.jsx";
 
 function Home() {
+
+    const section1Ref = useRef(null);
+    const section2Ref = useRef(null);
+    const [isScrolling, setIsScrolling] = useState(false);
+
     const [keyword, setKeyword] = useState("");
     const [date, setDate] = useState("");
     const navigate = useNavigate();
@@ -26,176 +34,304 @@ function Home() {
     useEffect(() => {
         ScrollReveal().reveal(".text", {delay: 200, origin: "top"});
         ScrollReveal().reveal(".form-container", {delay: 400, origin: "left"});
+        ScrollReveal().reveal(".reveal-title", {
+            distance: "40px",
+            origin: "top",
+            opacity: 0,
+            duration: 700,
+            interval: 600,
+            easing: "ease-out",
+            reset: false,
+        });
     }, []);
 
+    useEffect(() => {
+        const handleWheel = (e) => {
+            if (isScrolling) return;
+
+            const scrollY = window.scrollY;
+            const section2Top = section2Ref.current.offsetTop;
+
+            const direction = e.deltaY > 0 ? "down" : "up";
+
+            // 👇 아래로 스크롤: section1 → section2
+            if (scrollY < section2Top - 50 && direction === "down") {
+                setIsScrolling(true);
+                section2Ref.current.scrollIntoView({behavior: "smooth"});
+            }
+            // 👇 위로 스크롤: section2에서 위로 올리다 section1을 침범한 경우
+            else if (scrollY < section2Top && direction === "up") {
+                setIsScrolling(true);
+                section1Ref.current.scrollIntoView({behavior: "smooth"});
+            }
+
+            setTimeout(() => setIsScrolling(false), 800);
+        };
+
+        window.addEventListener("wheel", handleWheel, {passive: true});
+        return () => window.removeEventListener("wheel", handleWheel);
+    }, [isScrolling]);
+
     return (
-        <HomeSection id="home">
-            <BgVideo autoPlay muted loop playsInline>
-                <source src={homeVideo} type="video/mp4"/>
-                <img src="/src/assets/main.png" alt=""/>
-            </BgVideo>
+        <Container>
+            <HomeSection ref={section1Ref}>
+                <ContentWrapperFlex>
+                    <LeftText>
+                        <h1 className="reveal-title">사용자 별 댓글 분석 서비스</h1>
+                        <h1 className="reveal-title">오늘의 뉴스</h1>
+                        <h2 className="reveal-title">실시간 기사와 인기 순위,</h2>
+                        <h2 className="reveal-title">경찰과 시민이 나눈 생생한 의견까지 한자리에</h2>
+                    </LeftText>
+                    <ImageBox>
+                        <img src={FileImage2} alt="소개 이미지"/>
+                    </ImageBox>
+                    <InfoBox>
+                        <InfoItem>
+                            <FaChartPie size={40}/>
+                            <InfoText>
+                                범죄 키워드 기반의 데이터 추출과 AI 모델을 이용한 분석으로 <br/>
+                                경찰과 시민의 관점을 분리 통계화합니다.
+                            </InfoText>
+                        </InfoItem>
+                        <InfoItem>
+                            <FaRegNewspaper size={40}/>
+                            <InfoText>
+                                실시간으로 수집되는 주요 기사 데이터를 분류하고 <br/>
+                                댓글을 통해 사회적 반응을 시각적으로 제공합니다.
+                            </InfoText>
+                        </InfoItem>
+                    </InfoBox>
 
-            <IntroText>
-                <h1>실시간 기사와 인기 순위,</h1>
-                <h1>경찰과 시민이 나눈 생생한 의견까지 한자리에</h1>
-                <h2>오늘의 뉴스</h2>
-            </IntroText>
+                    <SearchBar>
+                        <SearchInput
+                            type="text"
+                            placeholder="검색어를 입력하세요"
+                            value={keyword}
+                            onChange={(e) => setKeyword(e.target.value)}
+                            onKeyDown={(e) => {
+                                if (e.key === "Enter") searchNews(keyword, date);
+                            }}
+                        />
+                        <DateInput
+                            type="date"
+                            value={date}
+                            onChange={(e) => setDate(e.target.value)}
+                        />
+                        <SearchButton onClick={() => searchNews(keyword, date)}>
+                            <FontAwesomeIcon icon={faMagnifyingGlass}/>
+                        </SearchButton>
+                    </SearchBar>
 
-            <SearchBar>
-                <div className="search-input-group">
-                    <input
-                        type="text"
-                        placeholder="검색어를 입력하세요"
-                        value={keyword}
-                        onChange={(e) => setKeyword(e.target.value)}
-                        onKeyDown={(e) => {
-                            if (e.key === "Enter") {
-                                searchNews(keyword, date);
-                            }
-                        }}
-                    />
-                    <button onClick={() => searchNews(keyword, date)}>🔍</button>
-                </div>
-                <input
-                    type="date"
-                    value={date}
-                    onChange={(e) => setDate(e.target.value)}
-                />
-            </SearchBar>
 
-            <PopularNews/>
-        </HomeSection>
+                </ContentWrapperFlex>
+            </HomeSection>
+
+            <Arrow>↓</Arrow>
+
+            <NewsSection
+                ref={section2Ref}
+            >
+                <PopularNews/>
+            </NewsSection>
+        </Container>
     );
 }
 
 export default Home;
 
-const HomeSection = styled.section`
-    position: relative;
+const Container = styled.div`
     width: 100%;
-    min-height: 100vh;
-    display: grid;
-    align-items: start;
-    grid-template-columns: 1fr 1fr 0.8fr;
-    gap: 1.5rem;
+    padding-top: 10px;
+`;
 
-    @media (max-width: 1024px) {
-        grid-template-columns: 1fr;
+const HomeSection = styled.section`
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 4rem 2rem;
+    text-align: center;
+
+    h1 {
+        font-size: 3rem;
+        font-weight: bold;
     }
 `;
 
-const BgVideo = styled.video`
-    position: absolute;
-    inset: 0;
+const NewsSection = styled.section`
+    padding: 1.5rem 0 6rem;
+    background: #fff;
     width: 100%;
-    height: 100%;
-    object-fit: cover;
-    z-index: -1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 `;
 
-const IntroText = styled.div`
+const ContentWrapperFlex = styled.div`
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 40px;
+    max-width: 1200px;
+    width: 100%;
+    margin: 0 auto;
+    flex-wrap: wrap;
+
+    @media (max-width: 768px) {
+        flex-direction: column;
+    }
+`;
+
+const ImageBox = styled.div`
     position: absolute;
-    top: 7rem;
-    left: 50%;
-    transform: translateX(-50%);
-    text-align: center;
-    color: white;
-    z-index: 2;
+    margin-top: -100px;
+    right: -70px;
+    width: 100%;
+    max-width: 900px;
+    z-index: 0;
+    filter: blur(0.6px);
+    opacity: 0.7;
 
-    h2 {
-        font-size: 3rem;
-        font-weight: 850;
-        color: #fcb834;
-
-        @media (max-width: 768px) {
-            font-size: 1.5rem;
-        }
+    img {
+        width: 100%;
+        height: auto;
+        object-fit: contain;
     }
 
     @media (max-width: 768px) {
-        top: 6rem;
-        width: 90%;
+        position: static;
+        width: 100%;
+        max-width: none;
+        opacity: 1;
     }
+`;
+
+const LeftText = styled.div`
+    margin-top: 50px;
+    text-align: left;
+
+    h1 {
+        font-size: 3rem;
+        font-weight: bold;
+    }
+`;
+
+const InfoBox = styled.div`
+    background-color: white;
+    border-radius: 20px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    padding: 2rem 3rem;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    gap: 100px;
+    max-width: 1200px;
+    width: 100%;
+    margin-top: 22rem;
+    flex-wrap: wrap;
+    z-index: 1;
+    opacity: 0.9;
+`;
+
+const InfoItem = styled.div`
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    flex: 1;
+    min-width: 300px;
+`;
+
+const InfoText = styled.p`
+    font-size: 1rem;
+    color: #333;
+    line-height: 1.5;
 `;
 
 const SearchBar = styled.div`
     position: absolute;
-    bottom: 19rem;
+    bottom: 10rem;
     left: 50%;
     transform: translateX(-50%);
-    width: 60%;
-    max-width: 1000px;
     display: flex;
-    gap: 1rem;
     align-items: center;
+    width: 60%;
+    max-width: 800px;
+    background: #ffffff;
+    border-radius: 999px;
+    overflow: hidden;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
     z-index: 3;
-    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
-
-    .search-input-group {
-        position: relative;
-        flex: 1;
-
-        input[type="text"] {
-            width: 100%;
-            padding: 0.75rem 3rem 0.75rem 1rem;
-            border: 1px solid #ccc;
-            border-radius: 0.5rem;
-            font-size: 1rem;
-        }
-
-        button {
-            position: absolute;
-            top: 50%;
-            right: 0.75rem;
-            transform: translateY(-50%);
-            background: transparent;
-            border: none;
-            font-size: 1.2rem;
-            color: #4a6cf7;
-            cursor: pointer;
-        }
-    }
-
-    input[type="date"] {
-        padding: 0.75rem 1rem;
-        border: 1px solid #ccc;
-        border-radius: 0.5rem;
-        font-size: 1rem;
-    }
 
     @media (max-width: 768px) {
         flex-direction: column;
-
-        .search-input-group,
-        input[type="date"] {
-            width: 100%;
-        }
+        border-radius: 1rem;
+        padding: 1rem;
+        gap: 0.5rem;
     }
 `;
 
-const PopularNewsWrapper = styled.div`
-    position: absolute;
-    bottom: 2rem;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 90%;
-    max-width: 1000px;
-    background: rgba(0, 0, 0, 0.7);
-    padding: 1.5rem;
-    border-radius: 1rem;
-    color: #fff;
-    z-index: 2;
-    font-family: 'Pretendard', sans-serif;
+const SearchInput = styled.input`
+    flex: 2;
+    border: none;
+    padding: 1rem 1.2rem;
+    font-size: 1rem;
+    outline: none;
+    background: transparent;
+`;
 
-    h2 {
-        font-size: 1.1rem;
-        margin-bottom: 1rem;
-        font-weight: bold;
-        color: #ffd700;
-        text-align: center;
+const DateInput = styled.input`
+    width: 160px;
+    border: none;
+    padding: 1rem;
+    font-size: 1rem;
+    text-align: center;
+    background-color: transparent;
+    outline: none;
+`;
+
+const SearchButton = styled.button`
+    width: 60px;
+    height: 60px;
+    background-color: #000;
+    color: white;
+    font-size: 1.2rem;
+    border: none;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+
+    &:hover {
+        background-color: #333;
+    }
+
+    svg {
+        font-size: 1.2rem;
     }
 
     @media (max-width: 768px) {
-        display: none;
+        border-radius: 0.5rem;
+        width: 100%;
+    }
+`;
+
+const Arrow = styled.div`
+    font-size: 4rem;
+    color: #aaa;
+    text-align: center;
+    margin: -2rem 0 2rem;
+    animation: bounce 2s infinite;
+    font-weight: bold;
+
+    @keyframes bounce {
+        0%, 100% {
+            transform: translateY(0);
+        }
+        50% {
+            transform: translateY(8px);
+        }
     }
 `;

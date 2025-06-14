@@ -16,8 +16,8 @@ function SearchResultPage() {
 
         const fetchSearchResults = async () => {
             const url = date
-                ? `http://localhost:8080/news/search?keyword=${keyword}&date=${date}`
-                : `http://localhost:8080/news/search?keyword=${keyword}`;
+                ? `http://localhost:8000/article-service/news/search?keyword=${keyword}&date=${date}`
+                : `http://localhost:8000/article-service/news/search?keyword=${keyword}`;
 
             try {
                 const res = await fetch(url);

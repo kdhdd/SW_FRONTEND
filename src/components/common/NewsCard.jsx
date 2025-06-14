@@ -1,27 +1,38 @@
 import React, {useState} from "react";
 import styled from "styled-components";
-import {FaHeart, FaCommentDots, FaBookmark} from "react-icons/fa";
+import {FaHeart, FaCommentDots} from "react-icons/fa";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {faCrown} from "@fortawesome/free-solid-svg-icons";
 
-export default function NewsCard({news}) {
+export default function NewsCard({news, rank}) {
     const [menuOpen, setMenuOpen] = useState(false);
-
     const parsedDate = new Date(news.pubDate);
     const isValidDate = !isNaN(parsedDate.getTime());
 
     return (
         <CardWrapper $background={news.imageUrl || "/src/assets/noImage.png"}>
-            <DateBadge>
-                {isValidDate ? (
-                    <>
-                        <span className="day">{parsedDate.getDate()}</span>
-                        <span
-                            className="month">{parsedDate.toLocaleString("default", {month: "short"}).toUpperCase()}</span>
-                        <span className="year">{parsedDate.getFullYear()}</span>
-                    </>
-                ) : (
-                    <span>날짜 없음</span>
-                )}
-            </DateBadge>
+            {isValidDate ? (
+                <DateBadge>
+                    <span className="day">{parsedDate.getDate()}</span>
+                    <span className="month">
+                            {parsedDate.toLocaleString("default", {month: "short"}).toUpperCase()}
+                        </span>
+                    <span className="year">{parsedDate.getFullYear()}</span>
+                    {rank !== undefined && (
+                        rank < 3 ? (
+                            <CrownWrapper rank={rank}>
+                                <FontAwesomeIcon icon={faCrown}/>
+                                <RankNumber>{rank + 1}</RankNumber>
+                            </CrownWrapper>
+                        ) : (
+                            <RankBadge>{rank + 1}</RankBadge>
+                        )
+                    )}
+
+                </DateBadge>
+            ) : (
+                <span>날짜 없음</span>
+            )}
 
             <SlidePanel>
                 {menuOpen && (
@@ -126,11 +137,6 @@ const ContentWrapper = styled.div`
     flex-direction: column;
 `;
 
-const Author = styled.div`
-    font-size: 13px;
-    color: #555;
-`;
-
 const Title = styled.h3`
     font-size: 1.1rem;
     margin: 10px 0 6px;
@@ -186,4 +192,47 @@ const MenuButton = styled.div`
             top: 8px;
         }
     }
+`;
+
+const RankBadge = styled.div`
+    position: absolute;
+    top: 6px;
+    right: -190px;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: #77d7b9;
+    color: white;
+    font-weight: bold;
+    font-size: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 3;
+`;
+
+const CrownWrapper = styled.div`
+    position: absolute;
+    top: 10px;
+    right: -185px;
+    font-size: 40px;
+    color: ${({rank}) =>
+            rank === 0 ? "#ffd700" : rank === 1 ? "#c0c0c0" : "#cd7f32"};
+    z-index: 3;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+`;
+
+const RankNumber = styled.span`
+    position: absolute;
+    font-size: 20px;
+    font-weight: bold;
+    color: white;
+    top: 6px;
+    text-align: center;
+    z-index: 4;
+    pointer-events: none;
 `;

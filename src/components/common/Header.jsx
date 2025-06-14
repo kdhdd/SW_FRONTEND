@@ -20,7 +20,8 @@ function Header() {
             <NavBar>
                 <li><LinkStyled to="/">홈</LinkStyled></li>
                 <li><LinkStyled to="/articles/page/1">뉴스 보기</LinkStyled></li>
-                <li><LinkStyled to="/bookmarks">서비스 소개</LinkStyled></li>
+                <li><LinkStyled to="/calendar">이슈 캘린더</LinkStyled></li>
+                <li><LinkStyled to="/about">서비스 소개</LinkStyled></li>
             </NavBar>
 
             <HeaderBtn>
@@ -50,15 +51,14 @@ function Header() {
 
 const HeaderWrapper = styled.header`
     position: fixed;
-    width: 100%;
     top: 0;
-    right: 0;
+    width: 100%;
     z-index: 100;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
     background: #eeeff1;
     padding: 15px 100px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
 
     @media (max-width: 991px) {
         padding: 18px 40px;
@@ -70,6 +70,7 @@ const HeaderWrapper = styled.header`
         padding: 6px 14px;
     }
 `;
+
 
 const Logo = styled(Link)`
     img {
@@ -97,13 +98,15 @@ const MenuIcon = styled.i.attrs({
 
 const NavBar = styled.ul.attrs({className: "navbar"})`
     display: flex;
-    flex: 1; /* ✅ NavBar가 가운데로 오도록 확장 */
-    justify-content: center; /* ✅ 가운데 정렬 */
-    gap: 11rem; /* ✅ 메뉴 사이 간격 */
+    justify-content: center;
+    flex: 1; // 중앙에 고정됨
+    gap: 5rem;
+    list-style: none;
+    margin: 0;
+    padding: 0;
 
     li {
         position: relative;
-        list-style: none;
     }
 
     a {
@@ -161,8 +164,6 @@ const NavBar = styled.ul.attrs({className: "navbar"})`
     }
 `;
 
-
-// Link 스타일링한 버전 (SPA용)
 const LinkStyled = styled(Link)`
     font-size: 1rem;
     padding: 10px 20px;
@@ -188,6 +189,11 @@ const LinkStyled = styled(Link)`
 `;
 
 const HeaderBtn = styled.div.attrs({className: "header-btn"})`
+    width: 0;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+
     a {
         padding: 10px 20px;
         color: var(--text-color);
@@ -203,6 +209,8 @@ const LogoutButton = styled.button`
     background: black;
     color: white;
     padding: 8px 16px;
+    min-width: 80px;
+    white-space: nowrap;
     border: none;
     border-radius: 0.5rem;
     cursor: pointer;
@@ -213,6 +221,7 @@ const LogoutButton = styled.button`
         background: var(--main-color);
     }
 `;
+
 
 const DropdownWrapper = styled.div`
     position: relative;
@@ -257,6 +266,5 @@ const DropdownContent = styled.div`
         }
     }
 `;
-
 
 export default Header;

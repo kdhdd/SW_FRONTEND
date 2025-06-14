@@ -115,7 +115,7 @@ export default function LoginPage() {
             formData.append('username', email);
             formData.append('password', password);
 
-            const res = await fetch('http://localhost:8080/users/login', {
+            const res = await fetch('http://localhost:8000/user-service/users/login', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded',
