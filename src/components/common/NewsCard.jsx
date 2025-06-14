@@ -8,7 +8,6 @@ export default function NewsCard({news, rank}) {
     const [menuOpen, setMenuOpen] = useState(false);
     const parsedDate = new Date(news.pubDate);
     const isValidDate = !isNaN(parsedDate.getTime());
-
     return (
         <CardWrapper $background={news.imageUrl || "/src/assets/noImage.png"}>
             {isValidDate ? (

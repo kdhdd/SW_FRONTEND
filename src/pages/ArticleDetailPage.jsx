@@ -43,7 +43,7 @@ function ArticleDetailPage() {
         try {
             const res = await fetch(`http://localhost:8000/article-service/news/${id}`);
             const data = await res.json();
-            setArticle(data);
+            setArticle(data.data);
         } catch (err) {
             console.error("기사 불러오기 실패:", err);
         }
@@ -64,7 +64,7 @@ function ArticleDetailPage() {
 
     const fetchSentimentStats = async () => {
         try {
-            const res = await fetch(`http://localhost:8000/article-service/comments/${id}/sentiment`);
+            const res = await fetch(`http://localhost:8000/sentiment-service/sentiments/${id}`);
             const json = await res.json();
             setSentimentData(json.data);
         } catch (err) {
@@ -80,8 +80,8 @@ function ArticleDetailPage() {
             });
             if (res.ok) {
                 const data = await res.json();
-                setLikesCount(data.likes);
-                setLiked(data.liked);
+                setLikesCount(data.data.likes);
+                setLiked(data.data.liked);
             }
         } catch (error) {
             console.error("공감 정보 가져오기 실패:", error);
@@ -144,8 +144,8 @@ function ArticleDetailPage() {
             });
             if (res.ok) {
                 const data = await res.json();
-                setLiked(data.liked);
-                setLikesCount(data.likes);
+                setLiked(data.data.liked);
+                setLikesCount(data.data.likes);
             } else alert("공감 처리 실패");
         } catch (error) {
             console.error("공감 처리 오류:", error);
