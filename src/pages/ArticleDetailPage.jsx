@@ -66,6 +66,7 @@ function ArticleDetailPage() {
         try {
             const res = await fetch(`http://localhost:8000/sentiment-service/sentiments/${id}`);
             const json = await res.json();
+            console.log('[Sentiment raw]', json);
             setSentimentData(json.data);
         } catch (err) {
             console.error("감정 통계 조회 실패:", err);
