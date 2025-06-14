@@ -21,25 +21,33 @@ export default function CommentSection(
         fetchComments,
         openMenuId,
         toggleMenu,
-        sentimentData
-
+        sentimentData,
+        isSentimentLoading
     }) {
     const policeStats = sentimentData.find(s => s.userRole === "POLICE");
     const userStats = sentimentData.find(s => s.userRole === "USER");
+    const hasValidData = (stats) =>
+        stats && (stats.positive > 0 || stats.negative > 0 || stats.neutral > 0);
+
     return (
         <Wrapper>
             <h3>댓글</h3>
             <CommentForm articleId={articleId} onCommentAdded={onCommentAdded}/>
 
             <ChartWrapper>
+                {/* 분석 중이면 텍스트 출력 (차트는 그대로 아래에서 보여짐) */}
+                {isSentimentLoading && (
+                    <p style={{textAlign: "center", margin: "10px 0"}}>⚙️ 감정 분석 중입니다...</p>
+                )}
+
                 <ChartRow>
-                    {policeStats && (
+                    {hasValidData(policeStats) && (
                         <ChartContainer>
                             <ChartTitle>POLICE 댓글 통계</ChartTitle>
                             <SentimentDonutChart stats={policeStats}/>
                         </ChartContainer>
                     )}
-                    {userStats && (
+                    {hasValidData(userStats) && (
                         <ChartContainer>
                             <ChartTitle>USER 댓글 통계</ChartTitle>
                             <SentimentDonutChart stats={userStats}/>
@@ -47,6 +55,7 @@ export default function CommentSection(
                     )}
                 </ChartRow>
             </ChartWrapper>
+
 
             <TwoColumnWrapper>
                 <div className="column left">

@@ -21,7 +21,7 @@ function CommentItem({
                          toggleMenu
                      }) {
     const isEditing = editingCommentId === comment.id;
-    const isOwn = currentUser?.username === comment.userId;
+    const isOwn = currentUser?.username === comment.username;
     //const replies = comments.filter(r => r.parentId === comment.id);
 
     return (
