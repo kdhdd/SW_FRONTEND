@@ -17,21 +17,26 @@ export default function NewsCard({news, rank}) {
                             {parsedDate.toLocaleString("default", {month: "short"}).toUpperCase()}
                         </span>
                     <span className="year">{parsedDate.getFullYear()}</span>
-                    {rank !== undefined && (
-                        rank < 3 ? (
-                            <CrownWrapper rank={rank}>
-                                <FontAwesomeIcon icon={faCrown}/>
-                                <RankNumber>{rank + 1}</RankNumber>
-                            </CrownWrapper>
-                        ) : (
-                            <RankBadge>{rank + 1}</RankBadge>
-                        )
-                    )}
-
                 </DateBadge>
             ) : (
                 <span>날짜 없음</span>
             )}
+
+            {rank !== undefined ? (
+                rank < 3 ? (
+                    <CrownWrapper rank={rank}>
+                        <CrownIconContainer>
+                            <StyledCrownIcon icon={faCrown} rank={rank}/>
+                            <RankNumberInCrown>{rank + 1}</RankNumberInCrown>
+                        </CrownIconContainer>
+                    </CrownWrapper>
+                ) : (
+                    <CrownWrapper>
+                        <RankBadge>{rank + 1}</RankBadge> {/* ✅ 초록색 동그라미 그대로! */}
+                    </CrownWrapper>
+                )
+            ) : null}
+
 
             <SlidePanel>
                 {menuOpen && (
@@ -82,7 +87,7 @@ const CardWrapper = styled.div`
 const DateBadge = styled.div`
     position: absolute;
     top: 0;
-    left: 0;
+    right: 0;
     background-color: #77d7b9;
     color: white;
     padding: 0.6em;
@@ -99,6 +104,7 @@ const DateBadge = styled.div`
         font-size: 11px;
     }
 `;
+
 
 const SlidePanel = styled.div.attrs({className: "slide-panel"})`
     position: absolute;
@@ -194,44 +200,54 @@ const MenuButton = styled.div`
 `;
 
 const RankBadge = styled.div`
-    position: absolute;
-    top: 6px;
-    right: -190px;
-    width: 40px;
-    height: 40px;
+    width: 35px;
+    height: 35px;
     border-radius: 50%;
-    background-color: #77d7b9;
+    background-color: #454444;
     color: white;
     font-weight: bold;
     font-size: 20px;
     display: flex;
     align-items: center;
     justify-content: center;
-    z-index: 3;
 `;
+
 
 const CrownWrapper = styled.div`
     position: absolute;
-    top: 10px;
-    right: -185px;
-    font-size: 40px;
-    color: ${({rank}) =>
-            rank === 0 ? "#ffd700" : rank === 1 ? "#c0c0c0" : "#cd7f32"};
-    z-index: 3;
-    width: 30px;
-    height: 30px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    top: 0;
+    left: 0;
+    background-color: white;
+    padding: 0.6em;
+    z-index: 2;
+    text-align: center;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 `;
 
-const RankNumber = styled.span`
+const CrownIconContainer = styled.div`
+    position: relative;
+    width: 35px;
+    height: 35px;
+`;
+
+const StyledCrownIcon = styled(FontAwesomeIcon)`
     position: absolute;
+    font-size: 40px;
+    top: -5%;
+    left: -14%;
+    color: ${({rank}) =>
+            rank === 0 ? "#ffd700" : rank === 1 ? "#c0c0c0" : "#cd7f32"};
+`;
+
+const RankNumberInCrown = styled.span`
+    position: absolute;
+    top: calc(50% + 5px);
+    left: calc(50%);
+    transform: translate(-50%, -50%);
     font-size: 20px;
     font-weight: bold;
     color: white;
-    top: 6px;
-    text-align: center;
-    z-index: 4;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.6);
     pointer-events: none;
 `;
+

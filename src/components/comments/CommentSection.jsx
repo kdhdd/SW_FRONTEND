@@ -24,8 +24,8 @@ export default function CommentSection(
         sentimentData
 
     }) {
-    const policeStats = sentimentData.find(s => s.role === "POLICE");
-    const userStats = sentimentData.find(s => s.role === "USER");
+    const policeStats = sentimentData.find(s => s.userRole === "POLICE");
+    const userStats = sentimentData.find(s => s.userRole === "USER");
     return (
         <Wrapper>
             <h3>댓글</h3>
