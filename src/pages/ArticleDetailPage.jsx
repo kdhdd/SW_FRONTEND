@@ -23,7 +23,6 @@ function ArticleDetailPage() {
     const [openMenuId, setOpenMenuId] = useState(null);
     const [sentimentData, setSentimentData] = useState([]);
 
-
     const toggleMenu = (id) => {
         setOpenMenuId((prev) => (prev === id ? null : id));
     };
@@ -63,6 +62,16 @@ function ArticleDetailPage() {
         }
     };
 
+    const fetchSentimentStats = async () => {
+        try {
+            const res = await fetch(`http://localhost:8080/comments/${id}/sentiment`);
+            const json = await res.json();
+            setSentimentData(json.data);
+        } catch (err) {
+            console.error("감정 통계 조회 실패:", err);
+        }
+    };
+
     const fetchLikes = async () => {
         const token = localStorage.getItem("accessToken");
         try {
@@ -83,19 +92,7 @@ function ArticleDetailPage() {
         fetchArticle();
         fetchComments();
         fetchLikes();
-    }, [id]);
-
-    useEffect(() => {
-        const fetchSentimentStats = async () => {
-            try {
-                const res = await fetch(`http://localhost:8080/comments/${id}/sentiment`);
-                const json = await res.json();
-                setSentimentData(json.data); // 배열 형태
-            } catch (err) {
-                console.error("감정 통계 조회 실패:", err);
-            }
-        };
-        fetchSentimentStats();
+        fetchSentimentStats(); // 초기 로딩 시 감정 통계도 함께
     }, [id]);
 
     const handleDeleteComment = async (commentId) => {
@@ -105,8 +102,10 @@ function ArticleDetailPage() {
                 method: "DELETE",
                 headers: {Authorization: token},
             });
-            if (res.ok) fetchComments();
-            else alert("댓글 삭제 실패");
+            if (res.ok) {
+                await fetchComments();
+                await fetchSentimentStats();
+            } else alert("댓글 삭제 실패");
         } catch (err) {
             console.error("댓글 삭제 오류:", err);
         }
@@ -127,7 +126,8 @@ function ArticleDetailPage() {
             if (res.ok) {
                 setEditingCommentId(null);
                 setEditContent("");
-                fetchComments();
+                await fetchComments();
+                await fetchSentimentStats();
             } else alert("댓글 수정 실패");
         } catch (err) {
             console.error("댓글 수정 오류:", err);
@@ -179,6 +179,10 @@ function ArticleDetailPage() {
                     openMenuId={openMenuId}
                     toggleMenu={toggleMenu}
                     sentimentData={sentimentData}
+                    onCommentAdded={async () => {
+                        await fetchComments();
+                        await fetchSentimentStats(); // 등록과 동시에 차트 새로고침
+                    }}
                 />
             </Wrapper>
             <Footer/>

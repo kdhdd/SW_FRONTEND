@@ -6,7 +6,6 @@ import Footer from '../components/common/Footer.jsx';
 
 function ArticlesPage() {
     const [newsData, setNewsData] = useState([]);
-    const [sortType, setSortType] = useState("latest");
     const navigate = useNavigate();
     const {page} = useParams();
 
@@ -14,6 +13,7 @@ function ArticlesPage() {
     const itemsPerPage = 12;
     const categories = ["마약", "성폭행", "사기", "살인", "방화", "폭행"];
     const [selectedCategory, setSelectedCategory] = useState("마약");
+    const [articleCount, setArticleCount] = useState(0);
 
     // 선택된 키워드에 따라 뉴스 가져오기
     useEffect(() => {
@@ -27,17 +27,23 @@ function ArticlesPage() {
                 console.error("뉴스 불러오기 실패:", err);
             }
         };
+        const fetchCount = async () => {
+            try {
+                const countRes = await fetch(`http://localhost:8080/news/count?keyword=${selectedCategory}`);
+                const countData = await countRes.json();
+                setArticleCount(countData.count); // ✅ 숫자만 넣기
+            } catch (err) {
+                console.error("카운트 불러오기 실패:", err);
+            }
+        };
         fetchNews();
+        fetchCount();
     }, [selectedCategory]);
 
 
-    const sortedNews = [...newsData].sort((a, b) => {
-        if (sortType === "latest") {
-            return new Date(b.pubDate) - new Date(a.pubDate);
-        } else {
-            return b.views - a.views; // views는 없는 경우 예외 처리 필요
-        }
-    });
+    const sortedNews = [...newsData].sort(
+        (a, b) => new Date(b.pubDate) - new Date(a.pubDate)
+    );
 
     const totalPages = Math.ceil(sortedNews.length / itemsPerPage);
     const start = (currentPage - 1) * itemsPerPage;
@@ -49,11 +55,7 @@ function ArticlesPage() {
         <>
             <PageWrapper>
                 <Header>
-                    <h2>오늘의 뉴스</h2>
-                    <Select onChange={(e) => setSortType(e.target.value)} value={sortType}>
-                        <option value="latest">최신순</option>
-                        <option value="popular">관련도순</option>
-                    </Select>
+                    <h2>오늘의 뉴스 <span style={{fontSize: '1rem', color: '#888'}}> (총 {articleCount}건)</span></h2>
                 </Header>
                 <CategoryBar>
                     {categories.map(cat => (
@@ -94,7 +96,7 @@ export default ArticlesPage;
 
 const PageWrapper = styled.div`
     padding: 100px 40px 40px;
-    background: #f7f7f7;
+    background: white;
     min-height: 100vh;
 `;
 
@@ -102,11 +104,12 @@ const Header = styled.div`
     display: flex;
     justify-content: space-between;
     align-items: center;
-`;
 
-const Select = styled.select`
-    padding: 6px 12px;
-    font-size: 1rem;
+    h2 {
+        font-size: 1.5rem;
+        font-weight: bold;
+        text-align: left;
+    }
 `;
 
 const Grid = styled.div`

@@ -1,11 +1,9 @@
 import React, {useEffect, useRef, useState} from "react";
 import styled from "styled-components";
 import FileImage from "../assets/3.png";
-import FileImage2 from "../assets/aboutBackground.png";
-import {FaChartPie, FaRegNewspaper} from "react-icons/fa";
-
 import SlideInBox from "../components/SlideInBox.jsx";
 import Footer from "../components/common/Footer.jsx";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 
 function AboutPage() {
     const section1Ref = useRef(null);
@@ -14,21 +12,25 @@ function AboutPage() {
 
     useEffect(() => {
         const handleWheel = (e) => {
-            if (isScrolling) return; // 스크롤 중이면 무시
-            setIsScrolling(true);
+            if (isScrolling) return;
+
+            const scrollY = window.scrollY;
+            const section2Top = section2Ref.current.offsetTop;
 
             const direction = e.deltaY > 0 ? "down" : "up";
 
-            if (direction === "down") {
+            // 👇 아래로 스크롤: section1 → section2
+            if (scrollY < section2Top - 50 && direction === "down") {
+                setIsScrolling(true);
                 section2Ref.current.scrollIntoView({behavior: "smooth"});
-            } else {
+            }
+            // 👇 위로 스크롤: section2에서 위로 올리다 section1을 침범한 경우
+            else if (scrollY < section2Top && direction === "up") {
+                setIsScrolling(true);
                 section1Ref.current.scrollIntoView({behavior: "smooth"});
             }
 
-            // debounce: 일정 시간 뒤 다시 스크롤 허용
-            setTimeout(() => {
-                setIsScrolling(false);
-            }, 800); // 애니메이션 지속 시간 고려
+            setTimeout(() => setIsScrolling(false), 800);
         };
 
         window.addEventListener("wheel", handleWheel, {passive: true});
@@ -37,37 +39,7 @@ function AboutPage() {
 
     return (
         <Container>
-            <Section ref={section1Ref}>
-                <ContentWrapperFlex>
-                    <LeftText>
-                        <h1>사용자 별 댓글 분석 서비스</h1>
-                        <h1>오늘의 뉴스</h1>
-                    </LeftText>
-                    <ImageBox>
-                        <img src={FileImage2} alt="소개 이미지"/>
-                    </ImageBox>
-                    <InfoBox>
-                        <InfoItem>
-                            <FaChartPie size={40}/>
-                            <InfoText>
-                                범죄 키워드 기반의 데이터 추출과 AI 모델을 이용한 분석으로 <br/>
-                                경찰과 시민의 관점을 분리 통계화합니다.
-                            </InfoText>
-                        </InfoItem>
-                        <InfoItem>
-                            <FaRegNewspaper size={40}/>
-                            <InfoText>
-                                실시간으로 수집되는 주요 기사 데이터를 분류하고 <br/>
-                                댓글을 통해 사회적 반응을 시각적으로 제공합니다.
-                            </InfoText>
-                        </InfoItem>
-                    </InfoBox>
-                </ContentWrapperFlex>
-            </Section>
-
-            <Arrow>↓</Arrow>
-
-            <Section ref={section2Ref}>
+            <FirstSection ref={section1Ref}>
                 <DiagramWrapper>
                     <h2>서비스 개념도</h2>
                     <Image src={FileImage} alt="서비스 개념도"/>
@@ -109,7 +81,43 @@ function AboutPage() {
                         </TextBlockRight>
                     </SlideInBox>
                 </DiagramWrapper>
-            </Section>
+            </FirstSection>
+
+            <Arrow>↓</Arrow>
+
+            <SecondSection ref={section2Ref} style={{backgroundColor: "white"}}>
+                <FeatureWrapper>
+                    <FeatureTitle>서비스 특징</FeatureTitle>
+                    <FeatureCards>
+                        <FeatureCard>
+                            <FeatureIcon src="/icons/data-icon.svg" alt="정형화된 데이터"/>
+                            <FeatureHeading>정형화된 데이터</FeatureHeading>
+                            <FeatureText>
+                                비정형 텍스트를 분석이 가능한 정형화된 데이터로 바꾸어,<br/>
+                                사회현상을 분석할 수 있는 기초 자료 제공
+                            </FeatureText>
+                        </FeatureCard>
+                        <FeatureCard>
+                            <FeatureIcon src="/icons/bigdata-icon.svg" alt="빅데이터화"/>
+                            <FeatureHeading>빅데이터화</FeatureHeading>
+                            <FeatureText>
+                                1990년부터 현재까지 104개 매체의 약 1억여건 뉴스 콘텐츠<br/>
+                                빅데이터화
+                            </FeatureText>
+                        </FeatureCard>
+                        <FeatureCard>
+                            <FeatureIcon src="/icons/info-icon.svg" alt="가치 있는 정보"/>
+                            <FeatureHeading>가치 있는 정보</FeatureHeading>
+                            <FeatureText>
+                                한번 읽고 버려지는 하루살이 정보인 뉴스 콘텐츠를 축적해<br/>
+                                분석할 수 있는 정보로
+                            </FeatureText>
+                        </FeatureCard>
+                    </FeatureCards>
+                </FeatureWrapper>
+            </SecondSection>
+
+
             <Footer/>
         </Container>
     );
@@ -119,16 +127,15 @@ export default AboutPage;
 
 const Container = styled.div`
     width: 100%;
-    padding-top: 150px;
+    padding-top: 10px;
 `;
 
-const Section = styled.section`
+const FirstSection = styled.section`
     min-height: 100vh;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: 4rem 2rem;
     text-align: center;
 
     h2 {
@@ -138,55 +145,17 @@ const Section = styled.section`
     }
 `;
 
-const ContentWrapperFlex = styled.div`
-    position: relative;
+const SecondSection = styled.section`
+    padding: 100px 0;
+    margin: 0;
+    width: 100%;
     display: flex;
+    flex-direction: column;
     align-items: center;
-    justify-content: space-between;
-    gap: 40px;
-    max-width: 1200px;
-    width: 100%;
-    margin: 0 auto;
-    flex-wrap: wrap;
-
-    @media (max-width: 768px) {
-        flex-direction: column;
-    }
+    text-align: center;
+    background-color: white;
 `;
 
-const ImageBox = styled.div`
-    position: absolute;
-    margin-top: -100px;
-    right: -70px;
-    width: 100%;
-    max-width: 900px;
-    z-index: 0;
-    filter: blur(0.4px);
-    opacity: 0.7;
-
-    img {
-        width: 100%;
-        height: auto;
-        object-fit: contain;
-    }
-
-    @media (max-width: 768px) {
-        position: static;
-        width: 100%;
-        max-width: none;
-        opacity: 1;
-    }
-`;
-
-const LeftText = styled.div`
-    margin-top: -50px;
-    text-align: left;
-
-    h1 {
-        font-size: 3rem;
-        font-weight: bold;
-    }
-`;
 
 const Arrow = styled.div`
     font-size: 4rem;
@@ -204,37 +173,6 @@ const Arrow = styled.div`
             transform: translateY(8px);
         }
     }
-`;
-
-const InfoBox = styled.div`
-    background-color: white;
-    border-radius: 20px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-    padding: 2rem 3rem;
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
-    gap: 100px;
-    max-width: 1200px;
-    width: 100%;
-    margin-top: 17rem;
-    flex-wrap: wrap;
-    z-index: 1;
-    opacity: 0.9;
-`;
-
-const InfoItem = styled.div`
-    display: flex;
-    align-items: center;
-    gap: 20px;
-    flex: 1;
-    min-width: 300px;
-`;
-
-const InfoText = styled.p`
-    font-size: 1rem;
-    color: #333;
-    line-height: 1.5;
 `;
 
 const DiagramWrapper = styled.div`
@@ -262,4 +200,64 @@ const TextBlockLeft = styled.div`
 
 const TextBlockRight = styled(TextBlockLeft)`
     text-align: right;
+`;
+
+const FeatureTitle = styled.h2`
+    font-size: 2.8rem;
+    font-weight: bold;
+    margin-bottom: 3rem;
+    text-align: center;
+`;
+
+const FeatureCards = styled.div`
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    flex-wrap: wrap;
+    max-width: 1200px;
+    width: 100%;
+    padding: 0 20px;
+`;
+
+const FeatureCard = styled.div`
+    background-color: white;
+    color: black;
+    border-radius: 16px;
+    padding: 2rem;
+    flex: 1;
+    min-width: 260px;
+    max-width: 320px;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+`;
+
+const FeatureIcon = styled.img`
+    width: 48px;
+    height: 48px;
+    margin-bottom: 1rem;
+`;
+
+const FeatureHeading = styled.h3`
+    font-size: 1.3rem;
+    font-weight: bold;
+    margin-bottom: 0.8rem;
+`;
+
+const FeatureText = styled.p`
+    font-size: 1rem;
+    line-height: 1.5;
+    color: #333;
+`;
+const FeatureWrapper = styled.div`
+    width: 100%;
+    background-color: #4256f4;
+    padding: 4rem 2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: white;
+    min-height: 650px;
 `;

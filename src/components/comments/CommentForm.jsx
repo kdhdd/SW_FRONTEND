@@ -21,7 +21,7 @@ export default function CommentForm({articleId, onCommentAdded}) {
 
             if (res.ok) {
                 setContent("");
-                onCommentAdded(); // 댓글 등록 후 부모에서 새로고침
+                onCommentAdded();
             } else {
                 alert("댓글 등록 실패");
             }

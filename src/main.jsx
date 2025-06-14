@@ -16,6 +16,8 @@ import ArticleDetailPage from "./pages/ArticleDetailPage.jsx";
 import SearchResultPage from "./pages/SearchResultPage";
 import AboutPage from "./pages/AboutPage.jsx";
 
+import IssueCalendarPage from "./pages/IssueCalendarPage.jsx";
+
 ReactDOM.createRoot(document.getElementById("root")).render(
     <AuthProvider>
         <BrowserRouter>
@@ -32,8 +34,10 @@ ReactDOM.createRoot(document.getElementById("root")).render(
                     <Route path="/articles/:id" element={<ArticleDetailPage/>}/>
 
                     <Route path="/search-result" element={<SearchResultPage/>}/>
+                    <Route path="/calendar" element={<IssueCalendarPage/>}/>
 
-                    <Route path="/about" element={<AboutPage />} />
+
+                    <Route path="/about" element={<AboutPage/>}/>
                 </Route>
             </Routes>
         </BrowserRouter>

@@ -7,6 +7,7 @@ import SentimentDonutChart from "./SentimentDonutChart";
 export default function CommentSection(
     {
         articleId,
+        onCommentAdded,
         currentUser,
         comments,
         editContent,
@@ -28,22 +29,24 @@ export default function CommentSection(
     return (
         <Wrapper>
             <h3>댓글</h3>
-            <CommentForm articleId={articleId} onCommentAdded={fetchComments} />
+            <CommentForm articleId={articleId} onCommentAdded={onCommentAdded}/>
 
-            <ChartRow>
-                {policeStats && (
-                    <ChartContainer>
-                        <ChartTitle>POLICE 댓글 통계</ChartTitle>
-                        <SentimentDonutChart stats={policeStats} />
-                    </ChartContainer>
-                )}
-                {userStats && (
-                    <ChartContainer>
-                        <ChartTitle>USER 댓글 통계</ChartTitle>
-                        <SentimentDonutChart stats={userStats} />
-                    </ChartContainer>
-                )}
-            </ChartRow>
+            <ChartWrapper>
+                <ChartRow>
+                    {policeStats && (
+                        <ChartContainer>
+                            <ChartTitle>POLICE 댓글 통계</ChartTitle>
+                            <SentimentDonutChart stats={policeStats}/>
+                        </ChartContainer>
+                    )}
+                    {userStats && (
+                        <ChartContainer>
+                            <ChartTitle>USER 댓글 통계</ChartTitle>
+                            <SentimentDonutChart stats={userStats}/>
+                        </ChartContainer>
+                    )}
+                </ChartRow>
+            </ChartWrapper>
 
             <TwoColumnWrapper>
                 <div className="column left">
@@ -61,6 +64,7 @@ export default function CommentSection(
                             comments={comments}
                             fetchComments={fetchComments}
                             articleId={articleId}
+                            onCommentAdded={onCommentAdded}
                             openMenuId={openMenuId}
                             toggleMenu={toggleMenu}
                         />
@@ -122,18 +126,27 @@ const ChartRow = styled.div`
     display: flex;
     justify-content: center;
     gap: 240px;
-    margin: 30px 0 10px;
+    margin: 0 0 10px;
 `;
 
 const ChartContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 `;
 
 const ChartTitle = styled.div`
-  font-size: 1rem;
-  font-weight: bold;
-  margin-bottom: 10px;
-  text-align: center;
+    font-size: 1rem;
+    font-weight: bold;
+    margin-bottom: 10px;
+    text-align: center;
+`;
+
+const ChartWrapper = styled.div`
+    background: rgba(255, 255, 255, 0.6);
+    padding: 10px;
+    border-radius: 16px;
+    backdrop-filter: blur(6px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    margin: 30px 0;
 `;

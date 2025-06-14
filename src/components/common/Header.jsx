@@ -20,6 +20,7 @@ function Header() {
             <NavBar>
                 <li><LinkStyled to="/">홈</LinkStyled></li>
                 <li><LinkStyled to="/articles/page/1">뉴스 보기</LinkStyled></li>
+                <li><LinkStyled to="/calendar">이슈 캘린더</LinkStyled></li>
                 <li><LinkStyled to="/about">서비스 소개</LinkStyled></li>
             </NavBar>
 
@@ -95,10 +96,10 @@ const MenuIcon = styled.i.attrs({
     }
 `;
 
-const NavBar = styled.ul.attrs({ className: "navbar" })`
+const NavBar = styled.ul.attrs({className: "navbar"})`
     display: flex;
     justify-content: center;
-    flex: 1;     // 중앙에 고정됨
+    flex: 1; // 중앙에 고정됨
     gap: 5rem;
     list-style: none;
     margin: 0;
