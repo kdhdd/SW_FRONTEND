@@ -22,7 +22,7 @@ function SearchResultPage() {
             try {
                 const res = await fetch(url);
                 const data = await res.json();
-                setNewsData(data);
+                setNewsData(data.data);
             } catch (err) {
                 console.error("검색 결과 불러오기 실패:", err);
             }

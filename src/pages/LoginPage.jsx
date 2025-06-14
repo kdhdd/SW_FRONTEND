@@ -106,8 +106,7 @@ export default function LoginPage() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const navigate = useNavigate();
-    const {setAuthUser} = useAuth(); // ✅ 사용자 상태 설정 함수
-
+    const {setAuthUser, fetchUser} = useAuth();
     const handleLogin = async (e) => {
         e.preventDefault();
         try {
@@ -136,7 +135,8 @@ export default function LoginPage() {
                     setAuthUser(json.data); // 상태 저장
 
                     alert('로그인 성공!');
-                    navigate('/');
+                    await fetchUser(); // ✅ 여기서 /users/me 호출
+                    navigate("/");
                 } else {
                     alert('로그인은 되었지만 토큰이 없습니다.');
                 }
@@ -163,6 +163,7 @@ export default function LoginPage() {
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
                         required
+                        autoComplete="username"
                     />
                     <Input
                         type="password"
@@ -170,6 +171,7 @@ export default function LoginPage() {
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
                         required
+                        autoComplete="current-password"
                     />
                     <Button type="submit" value="로그인"/>
                 </form>

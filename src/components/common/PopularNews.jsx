@@ -11,14 +11,22 @@ function PopularNews() {
         const fetchRankedArticles = async () => {
             try {
                 const rankRes = await fetch("http://localhost:8000/article-service/rank");
-                const rankIds = await rankRes.json().data;
+                const json = await rankRes.json();
+                console.log("🔥 랭킹 응답:", json);
+                let rankIds = [];
+                if (Array.isArray(json)) {
+                    rankIds = json;
+                }
 
                 const articlePromises = rankIds.map((id) =>
                     fetch(`http://localhost:8000/article-service/news/${id}`).then((res) => res.json())
+                        .then((json) => json.data)
                 );
 
                 const articles = await Promise.all(articlePromises);
                 setRankedArticles(articles);
+
+                console.log(articles)
             } catch (error) {
                 console.error("인기 뉴스 불러오기 실패:", error);
             }
