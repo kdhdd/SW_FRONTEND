@@ -26,9 +26,9 @@ function SlideInBox({children, direction = "left", delay = "0s", style}) {
     return (
         <Box
             ref={ref}
-            isVisible={isVisible}
-            direction={direction}
-            delay={delay}
+            $isVisible={isVisible}
+            $direction={direction}
+            $delay={delay}
             style={style}
         >
             {children}
@@ -66,10 +66,10 @@ const Box = styled.div`
     z-index: 5;
     opacity: 0;
 
-    ${({isVisible, direction, delay}) =>
-            isVisible &&
+    ${({$isVisible, $direction, $delay}) =>
+            $isVisible &&
             css`
-                animation: ${direction === "left" ? slideInLeft : slideInRight} 0.8s ease forwards;
-                animation-delay: ${delay};
+                animation: ${$direction === "left" ? slideInLeft : slideInRight} 0.8s ease forwards;
+                animation-delay: ${$delay};
             `}
 `;

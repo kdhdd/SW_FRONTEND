@@ -22,6 +22,8 @@ function ArticleDetailPage() {
     const [liked, setLiked] = useState(false);
     const [openMenuId, setOpenMenuId] = useState(null);
     const [sentimentData, setSentimentData] = useState([]);
+    const [isSentimentLoading, setIsSentimentLoading] = useState(false);
+
 
     const toggleMenu = (id) => {
         setOpenMenuId((prev) => (prev === id ? null : id));
@@ -31,7 +33,7 @@ function ArticleDetailPage() {
         const token = localStorage.getItem("accessToken");
         if (!token) return;
 
-        fetch("http://localhost:8000/user-service/users/me", {
+        fetch("https://crimearticle.net/user-service/users/me", {
             headers: {Authorization: token},
         })
             .then((res) => res.json())
@@ -41,7 +43,7 @@ function ArticleDetailPage() {
 
     const fetchArticle = async () => {
         try {
-            const res = await fetch(`http://localhost:8000/article-service/news/${id}`);
+            const res = await fetch(`https://crimearticle.net/article-service/news/${id}`);
             const data = await res.json();
             setArticle(data.data);
         } catch (err) {
@@ -52,7 +54,7 @@ function ArticleDetailPage() {
     const fetchComments = async () => {
         const token = localStorage.getItem("accessToken");
         try {
-            const res = await fetch(`http://localhost:8000/article-service/comments/${id}`, {
+            const res = await fetch(`https://crimearticle.net/article-service/comments/${id}`, {
                 headers: {Authorization: token},
             });
             const data = await res.json();
@@ -62,21 +64,34 @@ function ArticleDetailPage() {
         }
     };
 
-    const fetchSentimentStats = async () => {
+    const fetchSentimentStats = async (prevData = []) => {
+        setIsSentimentLoading(true);
         try {
-            const res = await fetch(`http://localhost:8000/sentiment-service/sentiments/${id}`);
+            const res = await fetch(`https://crimearticle.net/sentiment-service/sentiments/${id}`);
             const json = await res.json();
-            console.log('[Sentiment raw]', json);
-            setSentimentData(json.data);
+
+            const newData = json.data;
+
+            // 데이터가 완전히 똑같으면 아직 분석 반영 안된 것 → 재요청
+            const isSame = JSON.stringify(prevData) === JSON.stringify(newData);
+
+            if (!isSame && Array.isArray(newData) && newData.length > 0) {
+                setSentimentData(newData);
+                setIsSentimentLoading(false);
+            } else {
+                setTimeout(() => fetchSentimentStats(sentimentData), 500); // 1초 후 재시도
+            }
         } catch (err) {
             console.error("감정 통계 조회 실패:", err);
+            setIsSentimentLoading(false);
         }
     };
+
 
     const fetchLikes = async () => {
         const token = localStorage.getItem("accessToken");
         try {
-            const res = await fetch(`http://localhost:8000/article-service/articles/like/${id}`, {
+            const res = await fetch(`https://crimearticle.net/article-service/articles/like/${id}`, {
                 headers: {Authorization: token},
             });
             if (res.ok) {
@@ -99,13 +114,13 @@ function ArticleDetailPage() {
     const handleDeleteComment = async (commentId) => {
         const token = localStorage.getItem("accessToken");
         try {
-            const res = await fetch(`http://localhost:8000/article-service/comments/${commentId}`, {
+            const res = await fetch(`https://crimearticle.net/article-service/comments/${commentId}`, {
                 method: "DELETE",
                 headers: {Authorization: token},
             });
             if (res.ok) {
                 await fetchComments();
-                await fetchSentimentStats();
+                await fetchSentimentStats(sentimentData);
             } else alert("댓글 삭제 실패");
         } catch (err) {
             console.error("댓글 삭제 오류:", err);
@@ -116,7 +131,7 @@ function ArticleDetailPage() {
         const token = localStorage.getItem("accessToken");
         if (!editContent.trim()) return;
         try {
-            const res = await fetch(`http://localhost:8000/article-service/comments/${commentId}`, {
+            const res = await fetch(`https://crimearticle.net/article-service/comments/${commentId}`, {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json",
@@ -128,7 +143,7 @@ function ArticleDetailPage() {
                 setEditingCommentId(null);
                 setEditContent("");
                 await fetchComments();
-                await fetchSentimentStats();
+                await fetchSentimentStats(sentimentData);
             } else alert("댓글 수정 실패");
         } catch (err) {
             console.error("댓글 수정 오류:", err);
@@ -139,7 +154,7 @@ function ArticleDetailPage() {
         const token = localStorage.getItem("accessToken");
         if (!token) return alert("로그인이 필요합니다.");
         try {
-            const res = await fetch(`http://localhost:8000/article-service/articles/like/${id}`, {
+            const res = await fetch(`https://crimearticle.net/article-service/articles/like/${id}`, {
                 method: "POST",
                 headers: {Authorization: token},
             });
@@ -180,9 +195,10 @@ function ArticleDetailPage() {
                     openMenuId={openMenuId}
                     toggleMenu={toggleMenu}
                     sentimentData={sentimentData}
+                    isSentimentLoading={isSentimentLoading}
                     onCommentAdded={async () => {
                         await fetchComments();
-                        await fetchSentimentStats(); // 등록과 동시에 차트 새로고침
+                        await fetchSentimentStats(sentimentData); // 등록과 동시에 차트 새로고침
                     }}
                 />
             </Wrapper>

@@ -9,7 +9,6 @@ import {faMagnifyingGlass} from "@fortawesome/free-solid-svg-icons";
 import PopularNews from "../components/common/PopularNews.jsx";
 
 function Home() {
-
     const section1Ref = useRef(null);
     const section2Ref = useRef(null);
     const [isScrolling, setIsScrolling] = useState(false);
@@ -32,18 +31,21 @@ function Home() {
     };
 
     useEffect(() => {
-        ScrollReveal().reveal(".text", {delay: 200, origin: "top"});
-        ScrollReveal().reveal(".form-container", {delay: 400, origin: "left"});
-        ScrollReveal().reveal(".reveal-title", {
-            distance: "40px",
-            origin: "top",
-            opacity: 0,
-            duration: 700,
-            interval: 600,
-            easing: "ease-out",
-            reset: false,
+        const elements = document.querySelectorAll(".reveal-title");
+        elements.forEach((el, i) => {
+            ScrollReveal().reveal(el, {
+                delay: i * 300,
+                origin: "top",
+                distance: "40px",
+                opacity: 0,
+                duration: 700,
+                interval: 600,
+                easing: "ease-out",
+                reset: true
+            });
         });
     }, []);
+
 
     useEffect(() => {
         const handleWheel = (e) => {

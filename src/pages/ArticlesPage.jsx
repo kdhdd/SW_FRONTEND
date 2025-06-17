@@ -19,7 +19,7 @@ function ArticlesPage() {
     useEffect(() => {
         const fetchNews = async () => {
             try {
-                const url = `http://localhost:8000/article-service/news?keyword=${selectedCategory}`;
+                const url = `https://crimearticle.net/article-service/news?keyword=${selectedCategory}`;
                 const res = await fetch(url);
                 const json = await res.json();
                 const data = Array.isArray(json.data) ? json.data : []; // 안전하게 fallback
@@ -30,7 +30,7 @@ function ArticlesPage() {
         };
         const fetchCount = async () => {
             try {
-                const countRes = await fetch(`http://localhost:8000/article-service/news/count?keyword=${selectedCategory}`);
+                const countRes = await fetch(`https://crimearticle.net/article-service/news/count?keyword=${selectedCategory}`);
                 const countData = await countRes.json();
                 setArticleCount(countData.count); // ✅ 숫자만 넣기
             } catch (err) {

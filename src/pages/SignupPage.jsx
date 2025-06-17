@@ -121,8 +121,8 @@ export default function SignupPage({type}) {
         try {
             const endpoint =
                 type === "police"
-                    ? "http://localhost:8000/user-service/signup/police/email"
-                    : "http://localhost:8000/user-service/signup/general/email";
+                    ? "https://crimearticle.net/user-service/signup/police/email"
+                    : "https://crimearticle.net/user-service/signup/general/email";
 
             const res = await fetch(endpoint, {
                 method: "POST",
@@ -145,8 +145,8 @@ export default function SignupPage({type}) {
 
     const verifyCode = async () => {
         const endpoint = type === "police"
-            ? "http://localhost:8000/user-service/signup/police/emailAuth"
-            : "http://localhost:8000/user-service/signup/general/emailAuth";
+            ? "https://crimearticle.net/user-service/signup/police/emailAuth"
+            : "https://crimearticle.net/user-service/signup/general/emailAuth";
 
         try {
             const res = await fetch(endpoint, {
@@ -174,8 +174,8 @@ export default function SignupPage({type}) {
             return;
         }
         const url = type === "police"
-            ? "http://localhost:8000/user-service/users/police"
-            : "http://localhost:8000/user-service/users/general";
+            ? "https://crimearticle.net/user-service/users/police"
+            : "https://crimearticle.net/user-service/users/general";
 
         try {
             const res = await fetch(url, {

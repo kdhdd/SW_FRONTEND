@@ -10,7 +10,7 @@ function PopularNews() {
     useEffect(() => {
         const fetchRankedArticles = async () => {
             try {
-                const rankRes = await fetch("http://localhost:8000/article-service/rank");
+                const rankRes = await fetch("https://crimearticle.net/article-service/rank");
                 const json = await rankRes.json();
                 console.log("🔥 랭킹 응답:", json);
                 let rankIds = [];
@@ -19,7 +19,7 @@ function PopularNews() {
                 }
 
                 const articlePromises = rankIds.map((id) =>
-                    fetch(`http://localhost:8000/article-service/news/${id}`).then((res) => res.json())
+                    fetch(`https://crimearticle.net/article-service/news/${id}`).then((res) => res.json())
                         .then((json) => json.data)
                 );
 
