@@ -1,11 +1,10 @@
-import React, {useState} from "react";
+import React from "react";
 import styled from "styled-components";
 import {FaHeart, FaCommentDots} from "react-icons/fa";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faCrown} from "@fortawesome/free-solid-svg-icons";
 
 export default function NewsCard({news, rank}) {
-    const [menuOpen, setMenuOpen] = useState(false);
     const parsedDate = new Date(news.pubDate);
     return (
         <CardWrapper $background={news.imageUrl || "/src/assets/noImage.png"}>
@@ -13,9 +12,9 @@ export default function NewsCard({news, rank}) {
 
             {rank !== undefined ? (
                 rank < 3 ? (
-                    <CrownWrapper rank={rank}>
+                    <CrownWrapper $rank={rank}>
                         <CrownIconContainer>
-                            <StyledCrownIcon icon={faCrown} rank={rank}/>
+                            <StyledCrownIcon icon={faCrown} $rank={rank}/>
                             <RankNumberInCrown>{rank + 1}</RankNumberInCrown>
                         </CrownIconContainer>
                     </CrownWrapper>
@@ -182,8 +181,10 @@ const StyledCrownIcon = styled(FontAwesomeIcon)`
     font-size: 40px;
     top: -5%;
     left: -14%;
-    color: ${({rank}) =>
-            rank === 0 ? "#ffd700" : rank === 1 ? "#c0c0c0" : "#cd7f32"};
+    color: ${({$rank}) =>
+            $rank === 0 ? "#ffd700" :
+                    $rank === 1 ? "#c0c0c0" :
+                            "#cd7f32"};
 `;
 
 const RankNumberInCrown = styled.span`

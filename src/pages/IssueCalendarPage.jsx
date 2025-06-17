@@ -140,7 +140,7 @@ export default function IssueCalendarPage() {
 
     useEffect(() => {
         const fetchByKeyword = async (keyword) => {
-            const res = await fetch(`http://localhost:8000/article-service/news?keyword=${keyword}`);
+            const res = await fetch(`https://crimearticle.net/article-service/news?keyword=${keyword}`);
             const json = await res.json();
             const data = (json.data ?? []).filter(article => article && article.title && article.pubDate);
             return data.map(article => {

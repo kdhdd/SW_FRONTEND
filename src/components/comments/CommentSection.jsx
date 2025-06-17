@@ -35,9 +35,14 @@ export default function CommentSection(
             <CommentForm articleId={articleId} onCommentAdded={onCommentAdded}/>
 
             <ChartWrapper>
-                {/* 분석 중이면 텍스트 출력 (차트는 그대로 아래에서 보여짐) */}
-                {isSentimentLoading && (
-                    <p style={{textAlign: "center", margin: "10px 0"}}>⚙️ 감정 분석 중입니다...</p>
+                {/* 댓글이 없으면 아무것도 보여주지 않음 */}
+                {comments.length === 0 && (
+                    <p style={{textAlign: "center", margin: "10px 0"}}>📝 분석할 의견이 없습니다.</p>
+                )}
+
+                {/* 댓글은 있는데 감정 분석 중일 때 */}
+                {comments.length > 0 && isSentimentLoading && (
+                    <p style={{textAlign: "center", margin: "10px 0"}}>⚙️ 의견 분석 중입니다...</p>
                 )}
 
                 <ChartRow>
