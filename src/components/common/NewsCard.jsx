@@ -126,18 +126,30 @@ const TopHalf = styled.div`
 const BottomHalf = styled.div`
     background-color: white;
     padding: 0.8em 1em;
+    min-height: 4.2em; /* 고정 높이 (2줄 + 여백 고려) */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
 `;
 
 const Title = styled.h3`
     font-size: 1.1rem;
-    margin: 5px 0 6px;
     color: #222;
+    margin: 0.4em 0;
+    line-height: 1.3em;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    height: 2.6em;
 `;
+
 
 const Text = styled.p`
     font-size: 0.9rem;
     color: #444;
-    max-height: 0;
+    max-height: 1px;
     overflow: hidden;
     transition: max-height 0.4s ease;
 

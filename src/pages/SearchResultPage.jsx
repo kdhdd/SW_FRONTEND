@@ -59,7 +59,7 @@ export default SearchResultPage;
 
 const PageWrapper = styled.div`
     padding: 100px 40px 40px;
-    background: #f7f7f7;
+    background: white;
     min-height: 100vh;
 `;
 

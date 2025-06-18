@@ -45,20 +45,24 @@ export default function CommentSection(
                     <p style={{textAlign: "center", margin: "10px 0"}}>⚙️ 의견 분석 중입니다...</p>
                 )}
 
-                <ChartRow>
-                    {hasValidData(policeStats) && (
-                        <ChartContainer>
-                            <ChartTitle>POLICE 댓글 통계</ChartTitle>
-                            <SentimentDonutChart stats={policeStats}/>
-                        </ChartContainer>
-                    )}
-                    {hasValidData(userStats) && (
-                        <ChartContainer>
-                            <ChartTitle>USER 댓글 통계</ChartTitle>
-                            <SentimentDonutChart stats={userStats}/>
-                        </ChartContainer>
-                    )}
-                </ChartRow>
+                {/* 댓글이 있을 때만 차트 렌더링 */}
+                {comments.length > 0 && (
+                    <ChartRow>
+                        {hasValidData(policeStats) && (
+                            <ChartContainer>
+                                <ChartTitle>POLICE 댓글 통계</ChartTitle>
+                                <SentimentDonutChart stats={policeStats}/>
+                            </ChartContainer>
+                        )}
+                        {hasValidData(userStats) && (
+                            <ChartContainer>
+                                <ChartTitle>USER 댓글 통계</ChartTitle>
+                                <SentimentDonutChart stats={userStats}/>
+                            </ChartContainer>
+                        )}
+                    </ChartRow>
+                )}
+
             </ChartWrapper>
 
 

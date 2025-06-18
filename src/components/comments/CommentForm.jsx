@@ -1,8 +1,12 @@
 import React, {useState} from 'react';
 import styled from 'styled-components';
+import {showLoginRequiredAlert} from "../../utils/alert.jsx";
+import {useNavigate} from "react-router-dom";
+import SwalGlobalStyle from "../../styles/SwalGlobalStyle.jsx";
 
 export default function CommentForm({articleId, onCommentAdded}) {
     const [content, setContent] = useState("");
+    const navigate = useNavigate();
 
     const handleSubmit = async () => {
         if (!content.trim()) return;
@@ -23,25 +27,29 @@ export default function CommentForm({articleId, onCommentAdded}) {
                 setContent("");
                 onCommentAdded();
             } else {
-                alert("댓글 등록 실패");
+                await showLoginRequiredAlert(navigate);
             }
         } catch (err) {
+            await showLoginRequiredAlert(navigate);
             console.error("댓글 등록 에러:", err);
         }
     };
 
     return (
-        <FormContainer>
-            <StyledTextarea
-                rows="5"
-                placeholder="따뜻한 댓글은 모두에게 힘이 됩니다"
-                value={content}
-                onChange={(e) => setContent(e.target.value)}
-            />
-            <ButtonWrapper>
-                <SubmitButton onClick={handleSubmit}>등록</SubmitButton>
-            </ButtonWrapper>
-        </FormContainer>
+        <>
+            <SwalGlobalStyle/>
+            <FormContainer>
+                <StyledTextarea
+                    rows="5"
+                    placeholder="따뜻한 댓글은 모두에게 힘이 됩니다"
+                    value={content}
+                    onChange={(e) => setContent(e.target.value)}
+                />
+                <ButtonWrapper>
+                    <SubmitButton onClick={handleSubmit}>등록</SubmitButton>
+                </ButtonWrapper>
+            </FormContainer>
+        </>
     );
 }
 

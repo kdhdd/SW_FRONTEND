@@ -133,8 +133,6 @@ export default function LoginPage() {
 
                     const json = await res.json();
                     setAuthUser(json.data); // 상태 저장
-
-                    alert('로그인 성공!');
                     await fetchUser(); // ✅ 여기서 /users/me 호출
                     navigate("/");
                 } else {

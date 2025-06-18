@@ -4,48 +4,73 @@ import {useNavigate, Link} from "react-router-dom";
 import {useAuth} from "../../contexts/AuthContext.jsx";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faUser} from "@fortawesome/free-solid-svg-icons";
+import Swal from "sweetalert2";
+import SwalGlobalStyle from "../../styles/SwalGlobalStyle.jsx";
 
 function Header() {
     const {authUser, logout} = useAuth();
     const navigate = useNavigate();
 
+
+    const handleLogout = async () => {
+        const result = await Swal.fire({
+            title: "로그아웃 하시겠습니까?",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonText: "로그아웃",
+            cancelButtonText: "취소",
+            customClass: {
+                popup: "custom-swal-popup",
+                confirmButton: "custom-swal-button",
+                cancelButton: "custom-swal-button",
+            }
+        });
+
+        if (result.isConfirmed) {
+            logout();
+            window.location.reload();
+        }
+    };
+
     return (
-        <HeaderWrapper>
-            <Logo to="/">
-                <img src={Icon} alt="handcuffs logo"/>
-            </Logo>
+        <> <SwalGlobalStyle/>
+            <HeaderWrapper>
+                <Logo to="/">
+                    <img src={Icon} alt="handcuffs logo"/>
+                </Logo>
 
-            <MenuIcon/>
+                <MenuIcon/>
 
-            <NavBar>
-                <li><LinkStyled to="/">홈</LinkStyled></li>
-                <li><LinkStyled to="/articles/page/1">뉴스 보기</LinkStyled></li>
-                <li><LinkStyled to="/calendar">이슈 캘린더</LinkStyled></li>
-                <li><LinkStyled to="/about">서비스 소개</LinkStyled></li>
-            </NavBar>
+                <NavBar>
+                    <li><LinkStyled to="/">홈</LinkStyled></li>
+                    <li><LinkStyled to="/articles/page/1">뉴스 보기</LinkStyled></li>
+                    <li><LinkStyled to="/calendar">이슈 캘린더</LinkStyled></li>
+                    <li><LinkStyled to="/about">서비스 소개</LinkStyled></li>
+                </NavBar>
 
-            <HeaderBtn>
-                {!authUser && (
-                    <DropdownWrapper>
-                        <UserIcon/>
-                        <DropdownContent>
-                            <div onClick={() => navigate("/auth/login")}>로그인</div>
-                            <div onClick={() => navigate("/auth/signup")}>회원가입</div>
-                        </DropdownContent>
-                    </DropdownWrapper>
-                )}
-                {authUser && (
-                    <div style={{display: "flex", alignItems: "center", gap: "1rem"}}>
-                        <div style={{textAlign: "right", color: "#333", fontSize: "0.9rem", lineHeight: "1.2"}}>
-                            <div>{authUser.username}</div>
-                            <div>{authUser.nickname}님 ({authUser.role})</div>
+                <HeaderBtn>
+                    {!authUser && (
+                        <DropdownWrapper>
+                            <UserIcon/>
+                            <DropdownContent>
+                                <div onClick={() => navigate("/auth/login")}>로그인</div>
+                                <div onClick={() => navigate("/auth/signup")}>회원가입</div>
+                            </DropdownContent>
+                        </DropdownWrapper>
+                    )}
+                    {authUser && (
+                        <div style={{display: "flex", alignItems: "center", gap: "1rem"}}>
+                            <div style={{textAlign: "right", color: "#333", fontSize: "0.9rem", lineHeight: "1.2"}}>
+                                <div>{authUser.username}</div>
+                                <div>{authUser.nickname}님 ({authUser.role})</div>
+                            </div>
+                            <LogoutButton onClick={handleLogout}>로그아웃</LogoutButton>
                         </div>
-                        <LogoutButton onClick={logout}>로그아웃</LogoutButton>
-                    </div>
-                )}
-            </HeaderBtn>
+                    )}
+                </HeaderBtn>
 
-        </HeaderWrapper>
+            </HeaderWrapper>
+        </>
     );
 }
 
