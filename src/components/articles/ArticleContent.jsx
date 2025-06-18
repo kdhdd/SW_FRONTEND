@@ -2,12 +2,15 @@ import React from "react";
 import styled from "styled-components";
 
 export default function ArticleContent({content}) {
+    if (!content) return <p>내용이 없습니다.</p>;
+
     const cleaned = content
         .replace(/data-src=/g, "src=")
-        .replace(/style=\"display:\s?none;?\"/g, "");
+        .replace(/style="display:\s?none;?"/g, "");
 
     return <Content dangerouslySetInnerHTML={{__html: cleaned}}/>;
 }
+
 
 const Content = styled.div`
     margin-top: 20px;

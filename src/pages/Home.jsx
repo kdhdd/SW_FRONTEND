@@ -7,27 +7,34 @@ import {FaChartPie, FaRegNewspaper} from "react-icons/fa";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faMagnifyingGlass} from "@fortawesome/free-solid-svg-icons";
 import PopularNews from "../components/common/PopularNews.jsx";
+import Swal from "sweetalert2";
+import SwalGlobalStyle from "../styles/SwalGlobalStyle";
 
 function Home() {
     const section1Ref = useRef(null);
     const section2Ref = useRef(null);
     const [isScrolling, setIsScrolling] = useState(false);
-
     const [keyword, setKeyword] = useState("");
     const [date, setDate] = useState("");
     const navigate = useNavigate();
 
     const searchNews = async (keyword, date) => {
         if (!keyword) {
-            alert("검색어를 입력해주세요.");
+            await Swal.fire({
+                icon: 'warning',
+                title: '검색어를 입력해주세요.',
+                confirmButtonText: '확인',
+                customClass: {
+                    popup: 'custom-swal-popup',
+                    confirmButton: 'custom-swal-button'
+                }
+            });
+
             return;
         }
-
         let query = `?keyword=${encodeURIComponent(keyword)}`;
         if (date) query += `&date=${date}`;
-
         navigate(`/search-result${query}`);
-
     };
 
     useEffect(() => {
@@ -46,96 +53,83 @@ function Home() {
         });
     }, []);
 
-
     useEffect(() => {
         const handleWheel = (e) => {
             if (isScrolling) return;
-
             const scrollY = window.scrollY;
             const section2Top = section2Ref.current.offsetTop;
-
             const direction = e.deltaY > 0 ? "down" : "up";
-
-            // 👇 아래로 스크롤: section1 → section2
             if (scrollY < section2Top - 50 && direction === "down") {
                 setIsScrolling(true);
                 section2Ref.current.scrollIntoView({behavior: "smooth"});
-            }
-            // 👇 위로 스크롤: section2에서 위로 올리다 section1을 침범한 경우
-            else if (scrollY < section2Top && direction === "up") {
+            } else if (scrollY < section2Top && direction === "up") {
                 setIsScrolling(true);
                 section1Ref.current.scrollIntoView({behavior: "smooth"});
             }
-
             setTimeout(() => setIsScrolling(false), 800);
         };
-
         window.addEventListener("wheel", handleWheel, {passive: true});
         return () => window.removeEventListener("wheel", handleWheel);
     }, [isScrolling]);
 
     return (
-        <Container>
-            <HomeSection ref={section1Ref}>
-                <ContentWrapperFlex>
-                    <LeftText>
-                        <h1 className="reveal-title">사용자 별 댓글 분석 서비스</h1>
-                        <h1 className="reveal-title">오늘의 뉴스</h1>
-                        <h2 className="reveal-title">실시간 기사와 인기 순위,</h2>
-                        <h2 className="reveal-title">경찰과 시민이 나눈 생생한 의견까지 한자리에</h2>
-                    </LeftText>
-                    <ImageBox>
-                        <img src={FileImage2} alt="소개 이미지"/>
-                    </ImageBox>
-                    <InfoBox>
-                        <InfoItem>
-                            <FaChartPie size={40}/>
-                            <InfoText>
-                                범죄 키워드 기반의 데이터 추출과 AI 모델을 이용한 분석으로 <br/>
-                                경찰과 시민의 관점을 분리 통계화합니다.
-                            </InfoText>
-                        </InfoItem>
-                        <InfoItem>
-                            <FaRegNewspaper size={40}/>
-                            <InfoText>
-                                실시간으로 수집되는 주요 기사 데이터를 분류하고 <br/>
-                                댓글을 통해 사회적 반응을 시각적으로 제공합니다.
-                            </InfoText>
-                        </InfoItem>
-                    </InfoBox>
-
-                    <SearchBar>
-                        <SearchInput
-                            type="text"
-                            placeholder="검색어를 입력하세요"
-                            value={keyword}
-                            onChange={(e) => setKeyword(e.target.value)}
-                            onKeyDown={(e) => {
-                                if (e.key === "Enter") searchNews(keyword, date);
-                            }}
-                        />
-                        <DateInput
-                            type="date"
-                            value={date}
-                            onChange={(e) => setDate(e.target.value)}
-                        />
-                        <SearchButton onClick={() => searchNews(keyword, date)}>
-                            <FontAwesomeIcon icon={faMagnifyingGlass}/>
-                        </SearchButton>
-                    </SearchBar>
-
-
-                </ContentWrapperFlex>
-            </HomeSection>
-
-            <Arrow>↓</Arrow>
-
-            <NewsSection
-                ref={section2Ref}
-            >
-                <PopularNews/>
-            </NewsSection>
-        </Container>
+        <>
+            <SwalGlobalStyle/>
+            <Container>
+                <HomeSection ref={section1Ref}>
+                    <ContentWrapperFlex>
+                        <LeftText>
+                            <h1 className="reveal-title">사용자 별 댓글 분석 서비스</h1>
+                            <h1 className="reveal-title">오늘의 뉴스</h1>
+                            <h2 className="reveal-title">실시간 기사와 인기 순위,</h2>
+                            <h2 className="reveal-title">경찰과 시민이 나눈 생생한 의견까지 한자리에</h2>
+                        </LeftText>
+                        <ImageBox>
+                            <img src={FileImage2} alt="소개 이미지"/>
+                        </ImageBox>
+                        <InfoBox>
+                            <InfoItem>
+                                <FaChartPie size={40}/>
+                                <InfoText>
+                                    범죄 키워드 기반의 데이터 추출과 AI 모델을 이용한 분석으로 <br/>
+                                    경찰과 시민의 관점을 분리 통계화합니다.
+                                </InfoText>
+                            </InfoItem>
+                            <InfoItem>
+                                <FaRegNewspaper size={40}/>
+                                <InfoText>
+                                    실시간으로 수집되는 주요 기사 데이터를 분류하고 <br/>
+                                    댓글을 통해 사회적 반응을 시각적으로 제공합니다.
+                                </InfoText>
+                            </InfoItem>
+                        </InfoBox>
+                        <SearchBar>
+                            <SearchInput
+                                type="text"
+                                placeholder="검색어를 입력하세요"
+                                value={keyword}
+                                onChange={(e) => setKeyword(e.target.value)}
+                                onKeyDown={(e) => {
+                                    if (e.key === "Enter") searchNews(keyword, date);
+                                }}
+                            />
+                            <DateInput
+                                type="date"
+                                value={date}
+                                onChange={(e) => setDate(e.target.value)}
+                            />
+                            <SearchButton onClick={() => searchNews(keyword, date)}>
+                                <FontAwesomeIcon icon={faMagnifyingGlass}/>
+                            </SearchButton>
+                        </SearchBar>
+                    </ContentWrapperFlex>
+                </HomeSection>
+                <Arrow>↓</Arrow>
+                <NewsSection ref={section2Ref}>
+                    <PopularNews/>
+                </NewsSection>
+            </Container>
+        </>
     );
 }
 
@@ -144,6 +138,7 @@ export default Home;
 const Container = styled.div`
     width: 100%;
     padding-top: 10px;
+    overflow-x: hidden;
 `;
 
 const HomeSection = styled.section`
@@ -152,11 +147,11 @@ const HomeSection = styled.section`
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: 4rem 2rem;
+    padding: 4rem 1rem;
     text-align: center;
 
     h1 {
-        font-size: 3rem;
+        font-size: clamp(1.8rem, 4vw, 3rem);
         font-weight: bold;
     }
 `;
@@ -183,6 +178,7 @@ const ContentWrapperFlex = styled.div`
 
     @media (max-width: 768px) {
         flex-direction: column;
+        padding: 0 1rem;
     }
 `;
 
@@ -207,15 +203,17 @@ const ImageBox = styled.div`
         width: 100%;
         max-width: none;
         opacity: 1;
+        margin-top: 2rem;
     }
 `;
 
 const LeftText = styled.div`
     margin-top: 50px;
     text-align: left;
+    flex: 1;
 
     h1 {
-        font-size: 3rem;
+        font-size: clamp(1.8rem, 4vw, 3rem);
         font-weight: bold;
     }
 `;
@@ -224,17 +222,23 @@ const InfoBox = styled.div`
     background-color: white;
     border-radius: 20px;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-    padding: 2rem 3rem;
+    padding: 2rem 2rem;
     display: flex;
-    justify-content: space-around;
+    flex-direction: row;
+    justify-content: center;
     align-items: center;
-    gap: 100px;
+    gap: 2rem;
     max-width: 1200px;
     width: 100%;
-    margin-top: 22rem;
+    margin-top: 20rem;
     flex-wrap: wrap;
     z-index: 1;
-    opacity: 0.9;
+    opacity: 0.95;
+
+    @media (max-width: 768px) {
+        gap: 1.5rem;
+        padding: 1.2rem;
+    }
 `;
 
 const InfoItem = styled.div`
@@ -242,11 +246,11 @@ const InfoItem = styled.div`
     align-items: center;
     gap: 20px;
     flex: 1;
-    min-width: 300px;
+    min-width: 250px;
 `;
 
 const InfoText = styled.p`
-    font-size: 1rem;
+    font-size: 0.95rem;
     color: #333;
     line-height: 1.5;
 `;
@@ -258,7 +262,7 @@ const SearchBar = styled.div`
     transform: translateX(-50%);
     display: flex;
     align-items: center;
-    width: 60%;
+    width: 90%;
     max-width: 800px;
     background: #ffffff;
     border-radius: 999px;
@@ -267,10 +271,10 @@ const SearchBar = styled.div`
     z-index: 3;
 
     @media (max-width: 768px) {
-        flex-direction: column;
+        padding: 0.8rem;
+        gap: 0.6rem;
         border-radius: 1rem;
-        padding: 1rem;
-        gap: 0.5rem;
+        width: 95%;
     }
 `;
 
@@ -281,6 +285,7 @@ const SearchInput = styled.input`
     font-size: 1rem;
     outline: none;
     background: transparent;
+    min-width: 0;
 `;
 
 const DateInput = styled.input`
@@ -291,6 +296,7 @@ const DateInput = styled.input`
     text-align: center;
     background-color: transparent;
     outline: none;
+    min-width: 0;
 `;
 
 const SearchButton = styled.button`
@@ -315,8 +321,10 @@ const SearchButton = styled.button`
     }
 
     @media (max-width: 768px) {
-        border-radius: 0.5rem;
         width: 100%;
+        height: 45px;
+        font-size: 1rem;
+        border-radius: 0.5rem;
     }
 `;
 

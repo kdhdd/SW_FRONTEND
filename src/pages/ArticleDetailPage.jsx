@@ -1,12 +1,29 @@
 import React, {useEffect, useState} from "react";
 import {useParams, useNavigate} from "react-router-dom";
 import styled, {createGlobalStyle} from "styled-components";
+import {showLoginRequiredAlert} from "../utils/alert.jsx";
+import SwalGlobalStyle from "../styles/SwalGlobalStyle";
 
 import ArticleTitle from "../components/articles/ArticleTitle";
 import ArticleContent from "../components/articles/ArticleContent";
 import LikeButton from "../components/articles/LikeButton";
 import CommentSection from "../components/comments/CommentSection";
 import Footer from "../components/common/Footer.jsx";
+
+function formatPubDate(pubDateStr) {
+    try {
+        const date = new Date(pubDateStr);
+        const hours = date.getHours();
+        const minutes = String(date.getMinutes()).padStart(2, '0');
+        const ampm = hours >= 12 ? 'PM' : 'AM';
+        const displayHour = hours % 12 || 12; // 0시를 12시로 변환
+
+        return `${date.getFullYear()}년 ${date.getMonth() + 1}월 ${date.getDate()}일 ${ampm} ${displayHour}:${minutes}`;
+        // eslint-disable-next-line no-unused-vars
+    } catch (e) {
+        return pubDateStr;
+    }
+}
 
 function ArticleDetailPage() {
     const {id} = useParams();
@@ -105,11 +122,15 @@ function ArticleDetailPage() {
     };
 
     useEffect(() => {
-        fetchArticle();
-        fetchComments();
-        fetchLikes();
-        fetchSentimentStats(); // 초기 로딩 시 감정 통계도 함께
+        const fetchData = async () => {
+            await fetchArticle();
+            await fetchComments();
+            await fetchLikes();
+            await fetchSentimentStats();
+        };
+        fetchData();
     }, [id]);
+
 
     const handleDeleteComment = async (commentId) => {
         const token = localStorage.getItem("accessToken");
@@ -121,7 +142,7 @@ function ArticleDetailPage() {
             if (res.ok) {
                 await fetchComments();
                 await fetchSentimentStats(sentimentData);
-            } else alert("댓글 삭제 실패");
+            } else await showLoginRequiredAlert(navigate);
         } catch (err) {
             console.error("댓글 삭제 오류:", err);
         }
@@ -144,7 +165,7 @@ function ArticleDetailPage() {
                 setEditContent("");
                 await fetchComments();
                 await fetchSentimentStats(sentimentData);
-            } else alert("댓글 수정 실패");
+            } else await showLoginRequiredAlert(navigate);
         } catch (err) {
             console.error("댓글 수정 오류:", err);
         }
@@ -152,7 +173,10 @@ function ArticleDetailPage() {
 
     const handleLikeClick = async () => {
         const token = localStorage.getItem("accessToken");
-        if (!token) return alert("로그인이 필요합니다.");
+        if (!token) {
+            await showLoginRequiredAlert(navigate);
+            return;
+        }
         try {
             const res = await fetch(`https://crimearticle.net/article-service/articles/like/${id}`, {
                 method: "POST",
@@ -162,20 +186,21 @@ function ArticleDetailPage() {
                 const data = await res.json();
                 setLiked(data.data.liked);
                 setLikesCount(data.data.likes);
-            } else alert("공감 처리 실패");
+            } else await showLoginRequiredAlert(navigate);
         } catch (error) {
             console.error("공감 처리 오류:", error);
         }
     };
 
-    if (!id || isNaN(parseInt(id))) return <NotFound>유효하지 않은 기사 ID입니다.</NotFound>;
+    if (!id || Number.isNaN(Number(id))) return <NotFound>유효하지 않은 기사 ID입니다.</NotFound>;
     if (!article) return <NotFound>기사를 불러오는 중입니다...</NotFound>;
 
     return (
         <>
+            <SwalGlobalStyle/>
             <Wrapper>
                 <BackButton onClick={() => navigate(-1)}>← 돌아가기</BackButton>
-                <ArticleTitle title={article.title} date={article.pubDate}/>
+                <ArticleTitle title={article.title} date={formatPubDate(article.pubDate)}/>
                 <GlobalStyles/>
                 <ArticleContent content={article.content}/>
                 <LikeButton liked={liked} count={likesCount} onClick={handleLikeClick}/>
