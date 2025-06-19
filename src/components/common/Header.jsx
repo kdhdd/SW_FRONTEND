@@ -196,7 +196,7 @@ const NavBar = styled.ul.attrs({className: "navbar"})`
         justify-content: flex-start;
         align-items: flex-start;
         z-index: 999;
-        gap: 0rem;
+        gap: 0;
         transform: ${({$isOpen}) => ($isOpen ? "translateX(0)" : "translateX(100%)")};
         opacity: ${({$isOpen}) => ($isOpen ? 1 : 0)};
         pointer-events: ${({$isOpen}) => ($isOpen ? "auto" : "none")};

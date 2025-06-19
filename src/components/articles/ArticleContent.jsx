@@ -23,28 +23,11 @@ const Content = styled.div`
         display: block;
     }
 
-    em.img_desc {
-        display: block;
-        font-size: 0.9rem;
-        color: #666;
-        font-style: italic;
-        margin-top: 6px;
-        line-height: 1.4;
-    }
-
     @media (max-width: 768px) {
         font-size: 1rem;
-
-        em.img_desc {
-            font-size: 0.85rem;
-        }
     }
 
     @media (max-width: 480px) {
         font-size: 0.95rem;
-
-        em.img_desc {
-            font-size: 0.8rem;
-        }
     }
 `;
