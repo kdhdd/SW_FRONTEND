@@ -60,13 +60,16 @@ function Header() {
                     )}
                     {authUser && (
                         <div style={{display: "flex", alignItems: "center", gap: "1rem"}}>
-                            <div style={{textAlign: "right", color: "#333", fontSize: "0.9rem", lineHeight: "1.2"}}>
-                                <div>{authUser.username}</div>
-                                <div>{authUser.nickname}님 ({authUser.role})</div>
+                            <div style={{fontSize: "1rem", whiteSpace: "nowrap", color: "#333"}}>
+                                {authUser.nickname}님{" "}
+                                <span style={{color: authUser.role === "POLICE" ? "#1e88e5" : "#333"}}>
+                ({authUser.role})
+            </span>
                             </div>
                             <LogoutButton onClick={handleLogout}>로그아웃</LogoutButton>
                         </div>
                     )}
+
                 </HeaderBtn>
 
             </HeaderWrapper>
@@ -84,8 +87,6 @@ const HeaderWrapper = styled.header`
     display: flex;
     align-items: center;
     justify-content: space-between;
-
-    /* ✅ 아래 경계선 스타일 추가 */
 
     &::after {
         content: "";
@@ -163,7 +164,6 @@ const NavBar = styled.ul.attrs({className: "navbar"})`
             content: "";
             width: 0;
             height: 3px;
-            background: var(--gradient);
             position: absolute;
             bottom: -4px;
             left: 0;
@@ -219,7 +219,6 @@ const LinkStyled = styled(Link)`
         content: "";
         width: 0;
         height: 3px;
-        background: var(--gradient);
         position: absolute;
         bottom: -4px;
         left: 0;
