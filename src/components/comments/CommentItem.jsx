@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useEffect, useRef} from "react";
 import styled from "styled-components";
 import policeBadge from "../../assets/policeBadge.png";
 
@@ -17,6 +17,21 @@ function CommentItem({
     const isEditing = editingCommentId === comment.id;
     const isOwn = currentUser?.username === comment.username;
 
+    // ✅ 메뉴 영역 감지용 ref
+    const menuRef = useRef();
+
+    // ✅ 외부 클릭 감지 로직
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (openMenuId === comment.id && menuRef.current && !menuRef.current.contains(event.target)) {
+                toggleMenu(null); // 닫기
+            }
+        };
+
+        document.addEventListener("mousedown", handleClickOutside);
+        return () => document.removeEventListener("mousedown", handleClickOutside);
+    }, [openMenuId, comment.id, toggleMenu]);
+
     return (
         <CommentContainer>
             <CommentBox className={comment.parentId ? "reply" : ""}>
@@ -30,22 +45,26 @@ function CommentItem({
                         </UserInfo>
 
                         {isOwn && (
-                            <MenuWrapper>
+                            <MenuWrapper ref={menuRef}> {/* ✅ ref 연결 */}
                                 <MenuButton onClick={() => toggleMenu(comment.id)}>⋯</MenuButton>
                                 {openMenuId === comment.id && (
                                     <MenuDropdown>
                                         <button onClick={() => {
+                                            toggleMenu(null);
                                             setEditingCommentId(comment.id);
                                             setEditContent(comment.content);
                                         }}>수정
                                         </button>
-                                        <button onClick={() => handleDeleteComment(comment.id)}>삭제</button>
+                                        <button onClick={() => {
+                                            toggleMenu(null);
+                                            handleDeleteComment(comment.id)
+                                        }}>삭제
+                                        </button>
                                     </MenuDropdown>
                                 )}
                             </MenuWrapper>
                         )}
                     </TopRow>
-
                 </Meta>
 
                 {isEditing ? (
@@ -89,12 +108,6 @@ const CommentBox = styled.div`
     flex-direction: column;
     gap: 0.5rem;
     position: relative;
-
-    &.reply {
-        width: 280px;
-        background-color: #f1f1f1;
-        margin-top: 10px;
-    }
 `;
 
 const Meta = styled.div`
@@ -106,11 +119,6 @@ const TopRow = styled.div`
     display: flex;
     justify-content: space-between;
     align-items: center;
-`;
-
-const Role = styled.span`
-    color: ${({role}) => (role === "POLICE" ? "#007BFF" : "black")};
-    font-weight: normal;
 `;
 
 const MenuWrapper = styled.div`
@@ -162,18 +170,6 @@ const InfoRow = styled.div`
     justify-content: space-between;
     font-size: 0.85rem;
     color: #888;
-`;
-
-const ReplyButton = styled.button`
-    background: none;
-    border: none;
-    font-size: 0.85rem;
-    color: #888;
-    cursor: pointer;
-
-    &:hover {
-        text-decoration: underline;
-    }
 `;
 
 const Actions = styled.div`
