@@ -114,15 +114,14 @@ export default function SignupPage({type}) {
     const [name, setName] = useState("");
     const [nickname, setNickname] = useState("");
     const navigate = useNavigate(); // ⬅️ 추가
-
-    //const [nicknameError, setNicknameError] = useState("");
+    const [codeMessage, setCodeMessage] = useState(""); // 인증 관련 메시지
+    const [codeMessageColor, setCodeMessageColor] = useState("white"); // 성공/실패 색상
 
     const sendVerificationCode = async () => {
         try {
-            const endpoint =
-                type === "police"
-                    ? "https://crimearticle.net/user-service/signup/police/email"
-                    : "https://crimearticle.net/user-service/signup/general/email";
+            const endpoint = type === "police"
+                ? "https://crimearticle.net/user-service/signup/police/email"
+                : "https://crimearticle.net/user-service/signup/general/email";
 
             const res = await fetch(endpoint, {
                 method: "POST",
@@ -132,13 +131,16 @@ export default function SignupPage({type}) {
             });
 
             if (res.ok) {
-                alert("인증번호 전송 완료!");
-                setCodeSent(true); // ✅ 전송 후 버튼 전환
+                setCodeSent(true);
+                setCodeMessage("인증번호 전송 완료 ✅");
+                setCodeMessageColor("lightgreen");
             } else {
-                alert("이메일 전송 실패");
+                setCodeMessage("이메일 전송 실패 ❌");
+                setCodeMessageColor("tomato");
             }
         } catch (err) {
-            alert("서버 오류 발생");
+            setCodeMessage("서버 오류 발생 ❌");
+            setCodeMessageColor("tomato");
             console.error(err);
         }
     };
@@ -156,13 +158,16 @@ export default function SignupPage({type}) {
             });
 
             if (res.ok) {
-                alert("이메일 인증 성공!");
                 setEmailVerified(true);
+                setCodeMessage("이메일 인증 성공 🎉");
+                setCodeMessageColor("lightgreen");
             } else {
-                alert("인증번호가 틀렸습니다.");
+                setCodeMessage("인증번호가 틀렸습니다 ❌");
+                setCodeMessageColor("tomato");
             }
         } catch (err) {
-            alert("서버 오류 발생");
+            setCodeMessage("서버 오류 발생 ❌");
+            setCodeMessageColor("tomato");
             console.error(err);
         }
     };
@@ -224,23 +229,41 @@ export default function SignupPage({type}) {
                             required
                         />
 
-                        <Button
-                            type="button"
-                            onClick={
-                                emailVerified
-                                    ? null // 인증 완료되면 클릭 불가
+                        <div style={{display: "flex", flexDirection: "column"}}>
+                            <Button
+                                type="button"
+                                onClick={
+                                    emailVerified
+                                        ? null
+                                        : codeSent
+                                            ? verifyCode
+                                            : sendVerificationCode
+                                }
+                                disabled={emailVerified}
+                            >
+                                {emailVerified
+                                    ? "인증 완료"
                                     : codeSent
-                                        ? verifyCode
-                                        : sendVerificationCode
-                            }
-                            disabled={emailVerified} // 버튼 비활성화
-                        >
-                            {emailVerified
-                                ? "인증 완료"
-                                : codeSent
-                                    ? "인증번호 확인"
-                                    : "인증번호 전송"}
-                        </Button>
+                                        ? "인증번호 확인"
+                                        : "인증번호 전송"}
+                            </Button>
+
+                            {codeMessage && (
+                                <div
+                                    style={{
+                                        color: codeMessageColor,
+                                        fontSize: "0.9rem",
+                                        marginTop: "0.4rem",
+                                        textAlign: "right",
+                                        whiteSpace: "nowrap", // 줄바꿈 방지
+                                        width: "max-content", // 혹은 100%
+                                    }}
+                                >
+                                    {codeMessage}
+                                </div>
+
+                            )}
+                        </div>
                     </Row>
 
                     <FullInput

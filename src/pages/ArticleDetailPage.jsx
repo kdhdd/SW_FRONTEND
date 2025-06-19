@@ -81,22 +81,32 @@ function ArticleDetailPage() {
         }
     };
 
-    const fetchSentimentStats = async (prevData = []) => {
+    const fetchSentimentStats = async (prevData = [], retryCount = 0) => {
         setIsSentimentLoading(true);
+
         try {
             const res = await fetch(`https://crimearticle.net/sentiment-service/sentiments/${id}`);
             const json = await res.json();
-
             const newData = json.data;
 
-            // 데이터가 완전히 똑같으면 아직 분석 반영 안된 것 → 재요청
+            // 응답이 배열이 아니면 바로 종료
+            if (!Array.isArray(newData)) {
+                setIsSentimentLoading(false);
+                return;
+            }
+
             const isSame = JSON.stringify(prevData) === JSON.stringify(newData);
 
-            if (!isSame && Array.isArray(newData) && newData.length > 0) {
+            if (!isSame) {
+                // 분석 결과 바뀐 경우 → 업데이트 & 로딩 종료
                 setSentimentData(newData);
                 setIsSentimentLoading(false);
+            } else if (retryCount < 5) {
+                // 동일하면 최대 5회까지 재시도
+                setTimeout(() => fetchSentimentStats(newData, retryCount + 1), 1000);
             } else {
-                setTimeout(() => fetchSentimentStats(sentimentData), 500); // 1초 후 재시도
+                // 5회 재시도 후에도 동일하면 종료
+                setIsSentimentLoading(false);
             }
         } catch (err) {
             console.error("감정 통계 조회 실패:", err);

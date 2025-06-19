@@ -80,7 +80,7 @@ const CardWrapper = styled.div`
 const FormattedDate = styled.div`
     font-size: 1rem;
     font-weight: bold;
-    color: #222;
+    color: white;
 `;
 
 
@@ -98,19 +98,21 @@ const IconBar = styled.div`
     display: flex;
     justify-content: space-around;
     align-items: center;
-    background-color: #c2e9df;
+    background-color: #3c3b3b;
     padding: 0.5em 0;
 
     svg {
-        font-size: 1.2rem;
-        color: #333;
+    + color: #fff;
     }
 `;
+
 
 const IconGroup = styled.div`
     display: flex;
     align-items: center;
     gap: 4px;
+    color: white;
+
 `;
 
 const ContentWrapper = styled.div`
@@ -119,7 +121,7 @@ const ContentWrapper = styled.div`
 `;
 
 const TopHalf = styled.div`
-    background-color: #e2faf6;
+    background-color: #5a5959;
     padding: 0.8em 1em 0.6em 1em;
 `;
 

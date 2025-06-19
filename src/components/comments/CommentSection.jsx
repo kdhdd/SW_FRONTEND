@@ -4,26 +4,23 @@ import CommentForm from "./CommentForm";
 import CommentItem from "./CommentItem";
 import SentimentDonutChart from "./SentimentDonutChart";
 
-export default function CommentSection(
-    {
-        articleId,
-        onCommentAdded,
-        currentUser,
-        comments,
-        editContent,
-        setEditContent,
-        editingCommentId,
-        setEditingCommentId,
-        handleUpdateComment,
-        handleDeleteComment,
-        //replyFormVisibleId,
-        //setReplyFormVisibleId,
-        fetchComments,
-        openMenuId,
-        toggleMenu,
-        sentimentData,
-        isSentimentLoading
-    }) {
+export default function CommentSection({
+                                           articleId,
+                                           onCommentAdded,
+                                           currentUser,
+                                           comments,
+                                           editContent,
+                                           setEditContent,
+                                           editingCommentId,
+                                           setEditingCommentId,
+                                           handleUpdateComment,
+                                           handleDeleteComment,
+                                           fetchComments,
+                                           openMenuId,
+                                           toggleMenu,
+                                           sentimentData,
+                                           isSentimentLoading
+                                       }) {
     const policeStats = sentimentData.find(s => s.userRole === "POLICE");
     const userStats = sentimentData.find(s => s.userRole === "USER");
     const hasValidData = (stats) =>
@@ -35,18 +32,18 @@ export default function CommentSection(
             <CommentForm articleId={articleId} onCommentAdded={onCommentAdded}/>
 
             <ChartWrapper>
-                {/* 댓글이 없으면 아무것도 보여주지 않음 */}
-                {comments.length === 0 && (
+
+                {/* 댓글 없고 분석도 안 돌고 차트도 없으면 이 메시지 */}
+                {!isSentimentLoading && sentimentData.length === 0 && comments.length === 0 && (
                     <p style={{textAlign: "center", margin: "10px 0"}}>📝 분석할 의견이 없습니다.</p>
                 )}
-
-                {/* 댓글은 있는데 감정 분석 중일 때 */}
+                {/* 분석중 텍스트는 항상 상단에 */}
                 {comments.length > 0 && isSentimentLoading && (
                     <p style={{textAlign: "center", margin: "10px 0"}}>⚙️ 의견 분석 중입니다...</p>
                 )}
 
-                {/* 댓글이 있을 때만 차트 렌더링 */}
-                {comments.length > 0 && (
+                {/* 이전 감정 분석 결과가 유효하면 항상 차트 표시 */}
+                {(hasValidData(policeStats) || hasValidData(userStats)) && (
                     <ChartRow>
                         {hasValidData(policeStats) && (
                             <ChartContainer>
@@ -62,7 +59,6 @@ export default function CommentSection(
                         )}
                     </ChartRow>
                 )}
-
             </ChartWrapper>
 
 
@@ -86,7 +82,6 @@ export default function CommentSection(
                             openMenuId={openMenuId}
                             toggleMenu={toggleMenu}
                         />
-
                     ))}
                 </div>
                 <div className="column right">
@@ -104,10 +99,10 @@ export default function CommentSection(
                             comments={comments}
                             fetchComments={fetchComments}
                             articleId={articleId}
+                            onCommentAdded={onCommentAdded}
                             openMenuId={openMenuId}
                             toggleMenu={toggleMenu}
                         />
-
                     ))}
                 </div>
             </TwoColumnWrapper>
@@ -140,6 +135,15 @@ const TwoColumnWrapper = styled.div`
     }
 `;
 
+const ChartWrapper = styled.div`
+    background: rgba(255, 255, 255, 0.6);
+    padding: 10px;
+    border-radius: 16px;
+    backdrop-filter: blur(6px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    margin: 30px 0;
+`;
+
 const ChartRow = styled.div`
     display: flex;
     justify-content: center;
@@ -158,13 +162,4 @@ const ChartTitle = styled.div`
     font-weight: bold;
     margin-bottom: 10px;
     text-align: center;
-`;
-
-const ChartWrapper = styled.div`
-    background: rgba(255, 255, 255, 0.6);
-    padding: 10px;
-    border-radius: 16px;
-    backdrop-filter: blur(6px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    margin: 30px 0;
 `;
