@@ -118,14 +118,13 @@ const HeaderWrapper = styled.header`
 
 
 const Logo = styled(Link)`
-    img {
-        width: 40px;
-
-        @media (max-width: 460px) {
-            width: 30px;
-        }
-    }
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 50px; /* 메뉴바 높이 유지 */
+    overflow: visible; /* 로고가 삐져나오게 허용 */
 `;
+
 
 const MenuIcon = styled.i.attrs({
     className: "bx bx-menu",
@@ -310,8 +309,10 @@ const DropdownContent = styled.div`
     }
 `;
 const LogoImg = styled.img`
-    width: 40px !important;
-    height: auto !important;
+    height: 60px; /* 원하는 크기로 조절 */
+    width: auto;
+    object-fit: contain;
 `;
+
 
 export default Header;
