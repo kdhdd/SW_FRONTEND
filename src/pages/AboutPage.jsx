@@ -7,35 +7,7 @@ import Footer from "../components/common/Footer";
 function AboutPage() {
     const section1Ref = useRef(null);
     const section2Ref = useRef(null);
-    const [isScrolling, setIsScrolling] = useState(false);
     const [isSection2Visible, setIsSection2Visible] = useState(false);
-
-    useEffect(() => {
-        const handleWheel = (e) => {
-            if (isScrolling) return;
-            const scrollY = window.scrollY;
-            const section2Top = section2Ref.current.offsetTop;
-            const direction = e.deltaY > 0 ? "down" : "up";
-
-            if (scrollY < section2Top - 50 && direction === "down") {
-                setIsScrolling(true);
-
-                window.scrollTo({
-                    top: section2Top,
-                    behavior: "smooth"
-                });
-
-            } else if (scrollY > 0 && scrollY < section2Top && direction === "up") {
-                setIsScrolling(true);
-                section1Ref.current.scrollIntoView({behavior: "smooth"});
-            }
-
-            setTimeout(() => setIsScrolling(false), 800);
-        };
-
-        window.addEventListener("wheel", handleWheel, {passive: true});
-        return () => window.removeEventListener("wheel", handleWheel);
-    }, [isScrolling]);
 
     useEffect(() => {
         const observer = new IntersectionObserver(
