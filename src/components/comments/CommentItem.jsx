@@ -1,7 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-
-//import ReplyForm from "./ReplyForm.jsx";
+import policeBadge from "../../assets/policeBadge.png";
 
 function CommentItem({
                          comment,
@@ -12,26 +11,24 @@ function CommentItem({
                          setEditingCommentId,
                          handleUpdateComment,
                          handleDeleteComment,
-                         //replyFormVisibleId,
-                         //setReplyFormVisibleId,
-                         //comments,
-                         //fetchComments,
-                         //articleId,
                          openMenuId,
                          toggleMenu
                      }) {
     const isEditing = editingCommentId === comment.id;
     const isOwn = currentUser?.username === comment.username;
-    //const replies = comments.filter(r => r.parentId === comment.id);
 
     return (
         <CommentContainer>
             <CommentBox className={comment.parentId ? "reply" : ""}>
                 <Meta>
                     <TopRow>
-                        <span>
-                            {comment.nickname} <Role role={comment.role}>({comment.role})</Role>
-                        </span>
+                        <UserInfo>
+                            {comment.nickname}
+                            {comment.role === "POLICE" && (
+                                <BadgeImage src={policeBadge} alt="police badge"/>
+                            )}
+                        </UserInfo>
+
                         {isOwn && (
                             <MenuWrapper>
                                 <MenuButton onClick={() => toggleMenu(comment.id)}>⋯</MenuButton>
@@ -48,6 +45,7 @@ function CommentItem({
                             </MenuWrapper>
                         )}
                     </TopRow>
+
                 </Meta>
 
                 {isEditing ? (
@@ -67,48 +65,10 @@ function CommentItem({
                         <Content>{comment.parentId ? `└ ${comment.content}` : comment.content}</Content>
                         <InfoRow>
                             <span>{new Date(comment.createdAt).toLocaleString()}</span>
-                            {/*    {!comment.parentId && (*/}
-                            {/*    <ReplyButton*/}
-                            {/*        onClick={() => setReplyFormVisibleId(prev => prev === comment.id ? null : comment.id)}*/}
-                            {/*    >*/}
-                            {/*        답글쓰기*/}
-                            {/*    </ReplyButton>*/}
-                            {/*)}*/}
                         </InfoRow>
                     </>
                 )}
 
-                {/*{replies.map(reply => (*/}
-                {/*    <CommentItem*/}
-                {/*        key={reply.id}*/}
-                {/*        comment={reply}*/}
-                {/*        currentUser={currentUser}*/}
-                {/*        editContent={editContent}*/}
-                {/*        setEditContent={setEditContent}*/}
-                {/*        editingCommentId={editingCommentId}*/}
-                {/*        setEditingCommentId={setEditingCommentId}*/}
-                {/*        handleUpdateComment={handleUpdateComment}*/}
-                {/*        handleDeleteComment={handleDeleteComment}*/}
-                {/*        replyFormVisibleId={replyFormVisibleId}*/}
-                {/*        setReplyFormVisibleId={setReplyFormVisibleId}*/}
-                {/*        comments={comments}*/}
-                {/*        fetchComments={fetchComments}*/}
-                {/*        articleId={articleId}*/}
-                {/*        openMenuId={openMenuId}*/}
-                {/*        toggleMenu={toggleMenu}*/}
-                {/*    />*/}
-                {/*))}*/}
-
-                {/*{replyFormVisibleId === comment.id && !comment.parentId && (*/}
-                {/*    <ReplyForm*/}
-                {/*        parentId={comment.id}*/}
-                {/*        articleId={articleId}*/}
-                {/*        onReplyAdded={() => {*/}
-                {/*            fetchComments();*/}
-                {/*            setReplyFormVisibleId(null);*/}
-                {/*        }}*/}
-                {/*    />*/}
-                {/*)}*/}
             </CommentBox>
         </CommentContainer>
     );
@@ -233,4 +193,16 @@ const Actions = styled.div`
             background: #d0e5ff;
         }
     }
+`;
+
+const UserInfo = styled.span`
+    display: flex;
+    align-items: center;
+    gap: 6px;
+`;
+
+const BadgeImage = styled.img`
+    width: 20px;
+    height: 20px;
+    object-fit: contain;
 `;

@@ -6,6 +6,7 @@ import {faUser} from "@fortawesome/free-solid-svg-icons";
 import Swal from "sweetalert2";
 import SwalGlobalStyle from "../../styles/SwalGlobalStyle.jsx";
 import logo from '../../assets/logo.png';
+import policeBadge from "../../assets/policeBadge.png";
 
 function Header() {
     const {authUser, logout} = useAuth();
@@ -60,12 +61,22 @@ function Header() {
                     )}
                     {authUser && (
                         <div style={{display: "flex", alignItems: "center", gap: "1rem"}}>
-                            <div style={{fontSize: "1rem", whiteSpace: "nowrap", color: "#333"}}>
+                            <div style={{
+                                fontSize: "1rem",
+                                whiteSpace: "nowrap",
+                                color: "#333",
+                                display: "flex",
+                                alignItems: "center",
+                                gap: "0.4rem"
+                            }}>
                                 {authUser.nickname}님{" "}
-                                <span style={{color: authUser.role === "POLICE" ? "#1e88e5" : "#333"}}>
-                ({authUser.role === "POLICE" ? "경찰" : "일반"})
-            </span>
+                                {authUser.role === "POLICE" ? (
+                                    <img src={policeBadge} alt="경찰 뱃지" style={{width: "20px", height: "20px"}}/>
+                                ) : (
+                                    <span>(일반)</span>
+                                )}
                             </div>
+
                             <LogoutButton onClick={handleLogout}>로그아웃</LogoutButton>
                         </div>
                     )}
