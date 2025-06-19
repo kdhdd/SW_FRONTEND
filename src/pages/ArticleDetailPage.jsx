@@ -89,7 +89,6 @@ function ArticleDetailPage() {
             const json = await res.json();
             const newData = json.data;
 
-            // 응답이 배열이 아니면 바로 종료
             if (!Array.isArray(newData)) {
                 setIsSentimentLoading(false);
                 return;
@@ -97,15 +96,20 @@ function ArticleDetailPage() {
 
             const isSame = JSON.stringify(prevData) === JSON.stringify(newData);
 
-            if (!isSame) {
-                // 분석 결과 바뀐 경우 → 업데이트 & 로딩 종료
+            // ✅ 어떤 userRole의 합계가 0이 되었는지를 체크
+            const isZeroed = newData.some(stat =>
+                (stat.positive + stat.negative + stat.neutral === 0) &&
+                prevData.some(p => p.userRole === stat.userRole &&
+                    (p.positive + p.negative + p.neutral > 0))
+            );
+
+            if (!isSame || isZeroed) {
+                // 변화가 있거나, 특정 역할의 수치가 0으로 바뀐 경우 → 갱신
                 setSentimentData(newData);
                 setIsSentimentLoading(false);
             } else if (retryCount < 5) {
-                // 동일하면 최대 5회까지 재시도
                 setTimeout(() => fetchSentimentStats(newData, retryCount + 1), 1000);
             } else {
-                // 5회 재시도 후에도 동일하면 종료
                 setIsSentimentLoading(false);
             }
         } catch (err) {
@@ -113,6 +117,7 @@ function ArticleDetailPage() {
             setIsSentimentLoading(false);
         }
     };
+
 
     const fetchLikes = async () => {
         const token = localStorage.getItem("accessToken");
