@@ -75,7 +75,6 @@ const Image = styled.img`
     position: relative;
 `;
 
-// ✅ 텍스트 블록 스타일
 const TextBlock = styled.div`
     position: absolute;
     max-width: 260px;

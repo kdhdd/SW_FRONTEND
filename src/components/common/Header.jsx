@@ -6,6 +6,7 @@ import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faUser} from "@fortawesome/free-solid-svg-icons";
 import Swal from "sweetalert2";
 import SwalGlobalStyle from "../../styles/SwalGlobalStyle.jsx";
+import logo from '../../assets/logo.png';
 
 function Header() {
     const {authUser, logout} = useAuth();
@@ -36,7 +37,7 @@ function Header() {
         <> <SwalGlobalStyle/>
             <HeaderWrapper>
                 <Logo to="/">
-                    <img src={Icon} alt="handcuffs logo"/>
+                    <LogoImg src={logo} alt="logo"/>
                 </Logo>
 
                 <MenuIcon/>
@@ -307,6 +308,10 @@ const DropdownContent = styled.div`
             background-color: #f2f2f2;
         }
     }
+`;
+const LogoImg = styled.img`
+    width: 40px !important;
+    height: auto !important;
 `;
 
 export default Header;

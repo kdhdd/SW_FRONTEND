@@ -19,8 +19,13 @@ function AboutPage() {
 
             if (scrollY < section2Top - 50 && direction === "down") {
                 setIsScrolling(true);
-                section2Ref.current.scrollIntoView({behavior: "smooth"});
-            } else if (scrollY < section2Top && direction === "up") {
+
+                window.scrollTo({
+                    top: section2Top,
+                    behavior: "smooth"
+                });
+
+            } else if (scrollY > 0 && scrollY < section2Top && direction === "up") {
                 setIsScrolling(true);
                 section1Ref.current.scrollIntoView({behavior: "smooth"});
             }
@@ -35,7 +40,7 @@ function AboutPage() {
     useEffect(() => {
         const observer = new IntersectionObserver(
             ([entry]) => setIsSection2Visible(entry.isIntersecting),
-            {threshold: 0.3}
+            {threshold: 0.1}
         );
 
         if (section2Ref.current) observer.observe(section2Ref.current);
@@ -56,7 +61,7 @@ export default AboutPage;
 
 const Container = styled.div`
     width: 100%;
-    padding-top: 10px;
+    padding-top: 30px;
 `;
 
 const Arrow = styled.div`

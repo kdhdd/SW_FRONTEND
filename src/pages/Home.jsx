@@ -13,7 +13,6 @@ import SwalGlobalStyle from "../styles/SwalGlobalStyle";
 function Home() {
     const section1Ref = useRef(null);
     const section2Ref = useRef(null);
-    const [isScrolling, setIsScrolling] = useState(false);
     const [keyword, setKeyword] = useState("");
     const [date, setDate] = useState("");
     const navigate = useNavigate();
@@ -52,25 +51,6 @@ function Home() {
             });
         });
     }, []);
-
-    useEffect(() => {
-        const handleWheel = (e) => {
-            if (isScrolling) return;
-            const scrollY = window.scrollY;
-            const section2Top = section2Ref.current.offsetTop;
-            const direction = e.deltaY > 0 ? "down" : "up";
-            if (scrollY < section2Top - 50 && direction === "down") {
-                setIsScrolling(true);
-                section2Ref.current.scrollIntoView({behavior: "smooth"});
-            } else if (scrollY < section2Top && direction === "up") {
-                setIsScrolling(true);
-                section1Ref.current.scrollIntoView({behavior: "smooth"});
-            }
-            setTimeout(() => setIsScrolling(false), 800);
-        };
-        window.addEventListener("wheel", handleWheel, {passive: true});
-        return () => window.removeEventListener("wheel", handleWheel);
-    }, [isScrolling]);
 
     return (
         <>
