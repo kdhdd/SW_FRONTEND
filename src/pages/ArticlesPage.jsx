@@ -160,7 +160,7 @@ const CategoryButton = styled.button`
     padding: 8px 16px;
     border-radius: 20px;
     border: none;
-    background-color: ${({$active}) => ($active ? "#9ddbcf" : "#eee")};
+    background-color: ${({$active}) => ($active ? "#3c3b3b" : "#eee")};
     color: ${({$active}) => ($active ? "white" : "black")};
     font-weight: 500;
     cursor: pointer;

@@ -79,11 +79,30 @@ const HeaderWrapper = styled.header`
     top: 0;
     width: 100%;
     z-index: 100;
-    background: #eeeff1;
+    background: white;
     padding: 15px 100px;
     display: flex;
     align-items: center;
     justify-content: space-between;
+
+    /* ✅ 아래 경계선 스타일 추가 */
+
+    &::after {
+        content: "";
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 90%;
+        height: 4px;
+        background: linear-gradient(
+                to right,
+                rgba(0, 0, 0, 0.0) 0%, /* 시작도 완전 투명 X */ black 25%,
+                black 75%,
+                rgba(0, 0, 0, 0.0) 100% /* 끝도 약간 보이게 */
+        );
+    }
+
 
     @media (max-width: 991px) {
         padding: 18px 40px;
