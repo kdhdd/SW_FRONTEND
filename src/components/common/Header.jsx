@@ -70,10 +70,8 @@ function Header() {
                                 gap: "0.4rem"
                             }}>
                                 {authUser.nickname}님{" "}
-                                {authUser.role === "POLICE" ? (
+                                {authUser.role === "POLICE" && (
                                     <img src={policeBadge} alt="경찰 뱃지" style={{width: "20px", height: "20px"}}/>
-                                ) : (
-                                    <span>(일반)</span>
                                 )}
                             </div>
 

@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useEffect, useState} from "react";
 import styled from "styled-components";
 import CommentForm from "./CommentForm";
 import CommentItem from "./CommentItem";
@@ -25,20 +25,33 @@ export default function CommentSection({
     const userStats = sentimentData.find(s => s.userRole === "USER");
     const hasValidData = (stats) =>
         stats && (stats.positive > 0 || stats.negative > 0 || stats.neutral > 0);
+    const [hasTriggeredSentiment, setHasTriggeredSentiment] = useState(false);
+
+    // ✅ 분석 중 상태가 true가 되는 순간만 감지해서 true로 설정
+    useEffect(() => {
+        if (isSentimentLoading) {
+            setHasTriggeredSentiment(true);
+        }
+    }, [isSentimentLoading]);
 
     return (
         <Wrapper>
             <h3>댓글</h3>
-            <CommentForm articleId={articleId} onCommentAdded={onCommentAdded}/>
+            <CommentForm
+                articleId={articleId}
+                onCommentAdded={async () => {
+                    await onCommentAdded(); // 기존 props로 받은 콜백
+                    setHasTriggeredSentiment(true); // ✅ 분석 다시 시작 플래그 설정
+                }}
+            />
 
             <ChartWrapper>
-
                 {/* 댓글 없고 분석도 안 돌고 차트도 없으면 이 메시지 */}
                 {!isSentimentLoading && sentimentData.length === 0 && comments.length === 0 && (
                     <p style={{textAlign: "center", margin: "10px 0"}}>📝 분석할 의견이 없습니다.</p>
                 )}
                 {/* 분석중 텍스트는 항상 상단에 */}
-                {comments.length > 0 && isSentimentLoading && (
+                {isSentimentLoading && hasTriggeredSentiment && (
                     <p style={{textAlign: "center", margin: "10px 0"}}>⚙️ 의견 분석 중입니다...</p>
                 )}
 

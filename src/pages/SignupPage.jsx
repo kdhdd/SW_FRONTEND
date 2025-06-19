@@ -176,7 +176,6 @@ export default function SignupPage({type}) {
     const handleRegister = async (e) => {
         e.preventDefault();
         if (!emailVerified) {
-            alert("이메일 인증을 먼저 완료하세요.");
             return;
         }
         const url = type === "police"
@@ -192,12 +191,8 @@ export default function SignupPage({type}) {
 
             if (res.ok) {
                 await showSignupSuccessAlert(navigate);
-            } else {
-                const data = await res.json();
-                alert(data.message || "회원가입 실패");
             }
         } catch (err) {
-            alert("회원가입 오류 발생");
             console.error(err);
         }
     };

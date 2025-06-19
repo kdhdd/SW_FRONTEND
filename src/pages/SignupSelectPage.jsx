@@ -72,7 +72,6 @@ export default function SignupSelectPage() {
 
     const handleMove = (path) => {
         if (!isAgreed) {
-            alert("필수 약관에 모두 동의해야 회원가입이 가능합니다.");
             return;
         }
         navigate(path);
