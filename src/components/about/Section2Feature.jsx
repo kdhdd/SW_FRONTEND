@@ -46,10 +46,15 @@ const Wrapper = styled.div`
     align-items: center;
     color: white;
     min-height: 650px;
+
+    @media (max-width: 768px) {
+        padding: 2rem 1rem;
+        min-height: auto;
+    }
 `;
 
 const Title = styled.h2`
-    font-size: 2.8rem;
+    font-size: clamp(1.8rem, 6vw, 2.8rem);
     font-weight: bold;
     margin-bottom: 3rem;
 `;
@@ -62,4 +67,10 @@ const CardContainer = styled.div`
     max-width: 1200px;
     width: 100%;
     padding: 0 20px;
+
+    @media (max-width: 768px) {
+        flex-direction: column;
+        gap: 1.5rem;
+        align-items: center;
+    }
 `;

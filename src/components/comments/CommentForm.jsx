@@ -55,6 +55,10 @@ export default function CommentForm({articleId, onCommentAdded}) {
 
 const FormContainer = styled.div`
     margin: 24px 0;
+
+    @media (max-width: 480px) {
+        margin: 20px 0;
+    }
 `;
 
 const StyledTextarea = styled.textarea`
@@ -72,17 +76,26 @@ const StyledTextarea = styled.textarea`
     &:focus {
         border-color: var(--main-color);
     }
+
+    @media (max-width: 480px) {
+        padding: 12px 14px;
+        font-size: 0.95rem;
+    }
 `;
 
 const ButtonWrapper = styled.div`
     display: flex;
     justify-content: flex-end;
     margin-top: 12px;
+
+    @media (max-width: 480px) {
+        margin-top: 10px;
+    }
 `;
 
 const SubmitButton = styled.button`
     padding: 10px 20px;
-    font-size: 0.95rem;
+    font-size: clamp(0.85rem, 2.5vw, 0.95rem); /* ✅ 반응형 글자 크기 */
     font-weight: bold;
     color: white;
     background-color: var(--main-color);
@@ -93,5 +106,9 @@ const SubmitButton = styled.button`
 
     &:hover {
         background-color: #333;
+    }
+
+    @media (max-width: 480px) {
+        padding: 9px 16px;
     }
 `;

@@ -108,6 +108,23 @@ const CommentBox = styled.div`
     flex-direction: column;
     gap: 0.5rem;
     position: relative;
+
+    @media (max-width: 480px) {
+        width: 100%;
+        font-size: 0.9rem;
+    }
+
+    textarea {
+        font-size: 0.95rem;
+        padding: 8px;
+        border-radius: 6px;
+        border: 1px solid #ccc;
+        resize: vertical;
+
+        @media (max-width: 480px) {
+            font-size: 0.9rem;
+        }
+    }
 `;
 
 const Meta = styled.div`

@@ -114,15 +114,24 @@ const UnderlayBlack = styled.div`
 `;
 
 const FormWrapper = styled.div`
-    max-width: 50%;
+    width: 90%;
+    max-width: 400px;
     margin: 150px auto;
-    padding: 0.5rem;
+    padding: 2rem;
     text-align: center;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 16px;
+
+    @media (max-width: 600px) {
+        margin: 80px auto;
+        padding: 1.5rem;
+    }
 `;
 
 const Title = styled.h1`
     color: white;
     margin-bottom: 2rem;
+    font-size: clamp(1.6rem, 4vw, 2rem);
 `;
 
 const Input = styled.input`
@@ -132,7 +141,8 @@ const Input = styled.input`
     color: white;
     margin: 1rem 0;
     padding: 0.5rem;
-    width: calc(100% - 3rem);
+    width: 100%;
+    font-size: 1rem;
     transition: 250ms background ease-in;
 
     &::placeholder {
@@ -155,7 +165,9 @@ const Button = styled.input`
     background: transparent;
     color: white;
     margin-top: 20px;
-    padding: 0.5rem 2rem;
+    padding: 0.7rem 2rem;
+    font-size: 1rem;
+    border-radius: 6px;
     cursor: pointer;
     transition: 250ms background ease-in;
 

@@ -3,109 +3,6 @@ import styled, {keyframes} from "styled-components";
 import {useNavigate} from "react-router-dom";
 import {showSignupSuccessAlert} from "../utils/alert";
 
-const hueRotate = keyframes`
-    from {
-        filter: grayscale(30%) hue-rotate(0deg);
-    }
-    to {
-        filter: grayscale(30%) hue-rotate(360deg);
-    }
-`;
-
-const UnderlayPhoto = styled.div`
-    position: fixed;
-    top: 0;
-    left: 0;
-    min-width: 100%;
-    min-height: 100%;
-    background: url('https://31.media.tumblr.com/41c01e3f366d61793e5a3df70e46b462/tumblr_n4vc8sDHsd1st5lhmo1_1280.jpg');
-    background-size: cover;
-    z-index: -1;
-    animation: ${hueRotate} 6s infinite;
-    -webkit-filter: grayscale(30%);
-`;
-
-const UnderlayBlack = styled.div`
-    position: fixed;
-    top: 0;
-    left: 0;
-    min-width: 100%;
-    min-height: 100%;
-    background: rgba(0, 0, 0, 0.7);
-    z-index: -1;
-`;
-
-const FormWrapper = styled.div`
-    max-width: 50%;
-    margin: 150px auto;
-    padding: 0.5rem;
-    text-align: center;
-`;
-
-const Title = styled.h1`
-    color: white;
-    margin-bottom: 2rem;
-`;
-
-const FullInput = styled.input`
-    background: transparent;
-    border: none;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.5);
-    color: white;
-    margin: 1rem 0;
-    padding: 0.5rem;
-    width: calc(100% - 3rem);
-    transition: 250ms background ease-in;
-
-    &::placeholder {
-        color: rgba(255, 255, 255, 0.7);
-    }
-
-    &:focus {
-        outline: none;
-        background: white;
-        color: black;
-
-        &::placeholder {
-            color: rgba(0, 0, 0, 0.7);
-        }
-    }
-`;
-
-const CodeInput = styled(FullInput)`
-    width: 150px;
-    margin: 0.5rem 0;
-`;
-
-const Row = styled.div`
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 1rem;
-    margin-bottom: 0.5rem 0;
-`;
-
-const Button = styled.button`
-    border: 1px solid white;
-    background: transparent;
-    color: white;
-    padding: 0.5rem 1rem;
-    cursor: pointer;
-    white-space: nowrap;
-    transition: 250ms background ease-in;
-
-    &:hover,
-    &:focus {
-        background: white;
-        color: black;
-    }
-
-    &:disabled {
-        opacity: 0.4;
-        cursor: not-allowed;
-    }
-`;
-
 export default function SignupPage({type}) {
     const [codeSent, setCodeSent] = useState(false);
     const [email, setEmail] = useState("");
@@ -290,3 +187,122 @@ export default function SignupPage({type}) {
         </>
     );
 }
+
+const hueRotate = keyframes`
+    from {
+        filter: grayscale(30%) hue-rotate(0deg);
+    }
+    to {
+        filter: grayscale(30%) hue-rotate(360deg);
+    }
+`;
+
+const UnderlayPhoto = styled.div`
+    position: fixed;
+    top: 0;
+    left: 0;
+    min-width: 100%;
+    min-height: 100%;
+    background: url('https://31.media.tumblr.com/41c01e3f366d61793e5a3df70e46b462/tumblr_n4vc8sDHsd1st5lhmo1_1280.jpg');
+    background-size: cover;
+    z-index: -1;
+    animation: ${hueRotate} 6s infinite;
+    -webkit-filter: grayscale(30%);
+`;
+
+const UnderlayBlack = styled.div`
+    position: fixed;
+    top: 0;
+    left: 0;
+    min-width: 100%;
+    min-height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    z-index: -1;
+`;
+
+const FormWrapper = styled.div`
+    width: 90%;
+    max-width: 500px;
+    margin: 150px auto;
+    padding: 2rem;
+    text-align: center;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 16px;
+
+    @media (max-width: 600px) {
+        margin: 80px auto;
+        padding: 1.5rem;
+    }
+`;
+
+const Title = styled.h1`
+    color: white;
+    margin-bottom: 2rem;
+    font-size: clamp(1.5rem, 5vw, 2rem);
+`;
+
+const FullInput = styled.input`
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.5);
+    color: white;
+    margin: 1rem 0;
+    padding: 0.5rem;
+    width: 100%;
+    font-size: 1rem;
+    transition: 250ms background ease-in;
+
+    &::placeholder {
+        color: rgba(255, 255, 255, 0.7);
+    }
+
+    &:focus {
+        outline: none;
+        background: white;
+        color: black;
+
+        &::placeholder {
+            color: rgba(0, 0, 0, 0.7);
+        }
+    }
+`;
+
+const CodeInput = styled(FullInput)`
+    width: 160px;
+
+    @media (max-width: 600px) {
+        width: 100%;
+    }
+`;
+
+const Row = styled.div`
+    display: flex;
+    flex-wrap: wrap; /* ✅ 작은 화면에서 줄바꿈 */
+    align-items: center;
+    justify-content: center;
+    gap: 0.8rem;
+    margin-bottom: 1.2rem;
+`;
+
+const Button = styled.button`
+    border: 1px solid white;
+    background: transparent;
+    color: white;
+    padding: 0.5rem 1.2rem;
+    font-size: 0.95rem;
+    cursor: pointer;
+    white-space: nowrap;
+    border-radius: 6px;
+    transition: 250ms background ease-in;
+
+    &:hover,
+    &:focus {
+        background: white;
+        color: black;
+    }
+
+    &:disabled {
+        opacity: 0.4;
+        cursor: not-allowed;
+    }
+`;

@@ -3,6 +3,41 @@ import {useState} from "react";
 import styled, {keyframes} from "styled-components";
 import TermsAgreement from "../pages/TermsAgreement";
 
+export default function SignupSelectPage() {
+    const navigate = useNavigate();
+    const [isAgreed, setIsAgreed] = useState(false);
+
+    const handleMove = (path) => {
+        if (!isAgreed) {
+            return;
+        }
+        navigate(path);
+    };
+
+    return (
+        <>
+            <UnderlayPhoto/>
+            <UnderlayBlack/>
+            <Container>
+                <Title>회원가입</Title> {/* ✅ clamp 크기 적용 */}
+                <TermsAgreement onAgreeChange={(agreement) => {
+                    const agreed = agreement.terms && agreement.community && agreement.personalInfo && agreement.age14;
+                    setIsAgreed(agreed);
+                }}/>
+                <ButtonRow>
+                    <Button disabled={!isAgreed} onClick={() => handleMove("/auth/signup/police")}>
+                        경찰 회원가입
+                    </Button>
+                    <Button disabled={!isAgreed} onClick={() => handleMove("/auth/signup/general")}>
+                        일반 회원가입
+                    </Button>
+                </ButtonRow>
+            </Container>
+
+        </>
+    );
+}
+
 const hueRotate = keyframes`
     from {
         filter: grayscale(30%) hue-rotate(0deg);
@@ -38,22 +73,32 @@ const UnderlayBlack = styled.div`
 const Container = styled.div`
     text-align: center;
     margin-top: 100px;
+    padding: 0 1rem;
     color: white;
 `;
 
 const ButtonRow = styled.div`
     display: flex;
     justify-content: center;
+    flex-wrap: wrap;
     gap: 1rem;
     margin-top: 2rem;
+
+    @media (max-width: 500px) {
+        flex-direction: column;
+        align-items: center;
+    }
 `;
 
 const Button = styled.button`
-    padding: 0.5rem 2rem;
+    padding: 0.6rem 2rem;
     border: 1px solid white;
     background: transparent;
     color: white;
+    font-size: 1rem;
     cursor: pointer;
+    border-radius: 6px;
+    transition: all 0.25s ease;
 
     &:hover {
         background: white;
@@ -66,32 +111,7 @@ const Button = styled.button`
     }
 `;
 
-export default function SignupSelectPage() {
-    const navigate = useNavigate();
-    const [isAgreed, setIsAgreed] = useState(false);
-
-    const handleMove = (path) => {
-        if (!isAgreed) {
-            return;
-        }
-        navigate(path);
-    };
-
-    return (
-        <>
-            <UnderlayPhoto/>
-            <UnderlayBlack/>
-            <Container>
-                <h1>회원가입</h1>
-                <TermsAgreement onAgreeChange={(agreement) => {
-                    const agreed = agreement.terms && agreement.community && agreement.personalInfo && agreement.age14;
-                    setIsAgreed(agreed);
-                }}/>
-                <ButtonRow>
-                    <Button disabled={!isAgreed} onClick={() => handleMove("/auth/signup/police")}>경찰 회원가입</Button>
-                    <Button disabled={!isAgreed} onClick={() => handleMove("/auth/signup/general")}>일반 회원가입</Button>
-                </ButtonRow>
-            </Container>
-        </>
-    );
-}
+const Title = styled.h1`
+    font-size: clamp(1.8rem, 5vw, 2.5rem);
+    margin-bottom: 2rem;
+`;

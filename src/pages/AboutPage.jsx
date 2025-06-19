@@ -34,10 +34,14 @@ export default AboutPage;
 const Container = styled.div`
     width: 100%;
     padding-top: 30px;
+
+    @media (max-width: 480px) {
+        padding-top: 20px;
+    }
 `;
 
 const Arrow = styled.div`
-    font-size: 4rem;
+    font-size: clamp(2rem, 6vw, 4rem); // ✅ 반응형 폰트 크기
     color: #aaa;
     text-align: center;
     margin: -2rem 0 2rem;

@@ -99,17 +99,27 @@ const PageWrapper = styled.div`
     padding: 100px 40px 40px;
     background: white;
     min-height: 100vh;
+
+    @media (max-width: 768px) {
+        padding: 80px 20px 30px;
+    }
 `;
 
 const Header = styled.div`
     display: flex;
     justify-content: space-between;
     align-items: center;
+    flex-wrap: wrap;
+    gap: 0.5rem;
 
     h2 {
         font-size: 1.5rem;
         font-weight: bold;
         text-align: left;
+
+        @media (max-width: 768px) {
+            font-size: 1.3rem;
+        }
     }
 `;
 
@@ -133,25 +143,28 @@ const Grid = styled.div`
 const Pagination = styled.div`
     display: flex;
     justify-content: center;
+    flex-wrap: wrap;
+    gap: 10px;
     margin-top: 30px;
 
     button {
-        margin: 0 5px;
+        margin: 0;
         padding: 8px 14px;
         background: white;
         border: 1px solid #ccc;
         border-radius: 4px;
         cursor: pointer;
 
-        &.active {
-            background: var(--main-color);
-            color: white;
-            font-weight: bold;
+        @media (max-width: 480px) {
+            padding: 6px 10px;
+            font-size: 0.9rem;
         }
     }
 `;
+
 const CategoryBar = styled.div`
     display: flex;
+    flex-wrap: wrap;
     gap: 10px;
     margin: 1rem 0 1.5rem;
 `;
@@ -168,5 +181,9 @@ const CategoryButton = styled.button`
     &:hover {
         background-color: #ddd;
     }
-`;
 
+    @media (max-width: 480px) {
+        font-size: 0.9rem;
+        padding: 6px 12px;
+    }
+`;

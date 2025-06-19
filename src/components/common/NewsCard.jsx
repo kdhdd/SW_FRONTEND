@@ -75,6 +75,13 @@ const CardWrapper = styled.div`
     justify-content: flex-end;
     transition: all 0.4s ease-in-out;
 
+    @media (max-width: 768px) {
+        height: 360px;
+    }
+
+    @media (max-width: 480px) {
+        height: 320px;
+    }
 `;
 
 const FormattedDate = styled.div`
@@ -82,7 +89,6 @@ const FormattedDate = styled.div`
     font-weight: bold;
     color: white;
 `;
-
 
 const SlidePanel = styled.div.attrs({className: "slide-panel"})`
     position: absolute;
@@ -102,17 +108,19 @@ const IconBar = styled.div`
     padding: 0.5em 0;
 
     svg {
-    + color: #fff;
+        color: #fff;
+    }
+
+    @media (max-width: 480px) {
+        padding: 0.4em 0.2em;
     }
 `;
-
 
 const IconGroup = styled.div`
     display: flex;
     align-items: center;
     gap: 4px;
     color: white;
-
 `;
 
 const ContentWrapper = styled.div`
@@ -145,8 +153,15 @@ const Title = styled.h3`
     overflow: hidden;
     text-overflow: ellipsis;
     height: 2.6em;
-`;
 
+    @media (max-width: 768px) {
+        font-size: 1rem;
+    }
+
+    @media (max-width: 480px) {
+        font-size: 0.95rem;
+    }
+`;
 
 const Text = styled.p`
     font-size: 0.9rem;
@@ -157,6 +172,14 @@ const Text = styled.p`
 
     ${CardWrapper}:hover & {
         max-height: 100px;
+    }
+
+    @media (max-width: 768px) {
+        font-size: 0.85rem;
+    }
+
+    @media (max-width: 480px) {
+        font-size: 0.8rem;
     }
 `;
 

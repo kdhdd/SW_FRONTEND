@@ -46,4 +46,28 @@ const Card = styled.div`
                 animation: ${slideUp} 0.9s ease-out forwards;
                 animation-delay: ${$delay}s;
             `}
+    h3 {
+        font-size: 1.2rem;
+        font-weight: bold;
+    }
+
+    p {
+        font-size: 0.95rem;
+        line-height: 1.5;
+    }
+
+    @media (max-width: 768px) {
+        width: 100%;
+        max-width: 100%;
+        padding: 1.5rem 1rem;
+        box-sizing: border-box;
+
+        h3 {
+            font-size: 1rem;
+        }
+
+        p {
+            font-size: 0.85rem;
+        }
+    }
 `;

@@ -11,7 +11,6 @@ export default function ArticleContent({content}) {
     return <Content dangerouslySetInnerHTML={{__html: cleaned}}/>;
 }
 
-
 const Content = styled.div`
     margin-top: 20px;
     font-size: 1.05rem;
@@ -21,9 +20,8 @@ const Content = styled.div`
         max-width: 100%;
         height: auto;
         margin: 12px 0;
+        display: block;
     }
-
-    // 네이버 기사 이미지 설명 대응
 
     em.img_desc {
         display: block;
@@ -32,5 +30,21 @@ const Content = styled.div`
         font-style: italic;
         margin-top: 6px;
         line-height: 1.4;
+    }
+
+    @media (max-width: 768px) {
+        font-size: 1rem;
+
+        em.img_desc {
+            font-size: 0.85rem;
+        }
+    }
+
+    @media (max-width: 480px) {
+        font-size: 0.95rem;
+
+        em.img_desc {
+            font-size: 0.8rem;
+        }
     }
 `;

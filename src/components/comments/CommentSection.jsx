@@ -146,6 +146,17 @@ const TwoColumnWrapper = styled.div`
     .right {
         align-items: flex-end;
     }
+
+    @media (max-width: 768px) {
+
+        .left {
+            align-items: flex-start;
+        }
+
+        .right {
+            align-items: flex-end;
+        }
+    }
 `;
 
 const ChartWrapper = styled.div`
@@ -155,23 +166,45 @@ const ChartWrapper = styled.div`
     backdrop-filter: blur(6px);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     margin: 30px 0;
+    overflow-x: hidden; // ✅ 추가
 `;
+
 
 const ChartRow = styled.div`
     display: flex;
     justify-content: center;
-    gap: 150px;
+    gap: 40px;
+    flex-wrap: wrap;
     margin: 0 0 10px;
+    @media (max-width: 768px) {
+        gap: 12px;
+        justify-content: space-between;
+        align-items: flex-start;
+        flex-wrap: wrap;       // ✅ 한 줄로 다 안 들어가면 자동 줄바꿈
+        overflow-x: hidden;    // ✅ 스크롤 방지
+    }
 `;
 
+
 const ChartContainer = styled.div`
+    flex: 1;
+    min-width: 200px;
     display: flex;
     flex-direction: column;
     align-items: center;
+    @media (max-width: 768px) {
+        width: 45vw;         // ✅ 한 줄 2개 배치
+        min-width: 160px;    // ✅ 너무 커지지 않도록 제한
+    }
 `;
+
 
 const ChartTitle = styled.div`
     font-size: 1rem;
     font-weight: bold;
     text-align: center;
+
+    @media (max-width: 480px) {
+        font-size: 0.95rem;
+    }
 `;
