@@ -34,7 +34,13 @@ export default function SentimentDonutChart({stats}) {
             legend: {
                 position: 'top',
                 labels: {
-                    font: {size: 14}
+                    usePointStyle: true,     // ✅ 범례 아이콘을 원으로
+                    pointStyle: 'circle',    // ✅ 아이콘 스타일 지정 (기본은 'rect')
+                    boxWidth: 12,            // 아이콘 크기
+                    padding: 20,
+                    font: {
+                        size: 14
+                    }
                 }
             }
         },
@@ -43,7 +49,7 @@ export default function SentimentDonutChart({stats}) {
     };
 
     return (
-        <div style={{width: 220, height: 220}}>
+        <div style={{width: 280, height: 220}}>
             <Doughnut data={data} options={options}/>
         </div>
     );

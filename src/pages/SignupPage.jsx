@@ -1,6 +1,7 @@
 import React, {useState} from "react";
 import styled, {keyframes} from "styled-components";
 import {useNavigate} from "react-router-dom";
+import {showSignupSuccessAlert} from "../utils/alert";
 
 const hueRotate = keyframes`
     from {
@@ -190,8 +191,7 @@ export default function SignupPage({type}) {
             });
 
             if (res.ok) {
-                alert("회원가입 완료!");
-                navigate("/auth/login"); // ✅ 자동 이동
+                await showSignupSuccessAlert(navigate);
             } else {
                 const data = await res.json();
                 alert(data.message || "회원가입 실패");

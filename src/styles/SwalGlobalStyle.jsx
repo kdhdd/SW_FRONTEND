@@ -2,7 +2,7 @@ import {createGlobalStyle} from "styled-components";
 
 const SwalGlobalStyle = createGlobalStyle`
     .swal2-popup.custom-swal-popup {
-        width: 400px !important;
+        width: 430px !important;
         padding: 0.6rem !important;
         border-radius: 12px !important;
     }
