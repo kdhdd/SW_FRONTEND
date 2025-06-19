@@ -94,15 +94,14 @@ const HeaderWrapper = styled.header`
         left: 50%;
         transform: translateX(-50%);
         width: 90%;
-        height: 4px;
+        height: 1px;
         background: linear-gradient(
                 to right,
-                rgba(0, 0, 0, 0.0) 0%, /* 시작도 완전 투명 X */ black 25%,
-                black 75%,
+                rgba(0, 0, 0, 0.0) 0%, /* 시작도 완전 투명 X */ lightgray 25%,
+                lightgray 75%,
                 rgba(0, 0, 0, 0.0) 100% /* 끝도 약간 보이게 */
         );
     }
-
 
     @media (max-width: 991px) {
         padding: 18px 40px;
