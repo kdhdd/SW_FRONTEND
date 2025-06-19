@@ -77,8 +77,8 @@ function Home() {
                             <InfoItem>
                                 <FaRegNewspaper size={40}/>
                                 <InfoText>
-                                    실시간으로 수집되는 주요 기사 데이터를 분류하고 <br/>
-                                    댓글을 통해 사회적 반응을 시각적으로 제공합니다.
+                                    실시간으로 수집되는 주요 뉴스 데이터를 분류하고 <br/>
+                                    사용자 의견을 통해 사회적 반응을 시각적으로 제공합니다.
                                 </InfoText>
                             </InfoItem>
                         </InfoBox>
