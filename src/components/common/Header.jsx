@@ -63,7 +63,7 @@ function Header() {
                             <div style={{fontSize: "1rem", whiteSpace: "nowrap", color: "#333"}}>
                                 {authUser.nickname}님{" "}
                                 <span style={{color: authUser.role === "POLICE" ? "#1e88e5" : "#333"}}>
-                ({authUser.role === "POLICE" ? "경찰" : "시민"})
+                ({authUser.role === "POLICE" ? "경찰" : "일반"})
             </span>
                             </div>
                             <LogoutButton onClick={handleLogout}>로그아웃</LogoutButton>

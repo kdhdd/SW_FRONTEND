@@ -53,7 +53,7 @@ export default function CommentSection({
                         )}
                         {hasValidData(userStats) && (
                             <ChartContainer>
-                                <ChartTitle>시민 댓글 통계</ChartTitle>
+                                <ChartTitle>일반 댓글 통계</ChartTitle>
                                 <SentimentDonutChart stats={userStats}/>
                             </ChartContainer>
                         )}
