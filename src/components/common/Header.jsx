@@ -1,5 +1,4 @@
 import styled from "styled-components";
-import Icon from "../../assets/newspaper-regular.svg";
 import {useNavigate, Link} from "react-router-dom";
 import {useAuth} from "../../contexts/AuthContext.jsx";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
@@ -52,7 +51,7 @@ function Header() {
                 <HeaderBtn>
                     {!authUser && (
                         <DropdownWrapper>
-                            <UserIcon/>
+                            <UserIcon icon={faUser}/>
                             <DropdownContent>
                                 <div onClick={() => navigate("/auth/login")}>로그인</div>
                                 <div onClick={() => navigate("/auth/signup")}>회원가입</div>
@@ -64,12 +63,13 @@ function Header() {
                             <div style={{fontSize: "1rem", whiteSpace: "nowrap", color: "#333"}}>
                                 {authUser.nickname}님{" "}
                                 <span style={{color: authUser.role === "POLICE" ? "#1e88e5" : "#333"}}>
-                ({authUser.role})
+                ({authUser.role === "POLICE" ? "경찰" : "시민"})
             </span>
                             </div>
                             <LogoutButton onClick={handleLogout}>로그아웃</LogoutButton>
                         </div>
                     )}
+
 
                 </HeaderBtn>
 
