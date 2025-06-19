@@ -70,8 +70,8 @@ function Home() {
                             <InfoItem>
                                 <FaChartPie size={40}/>
                                 <InfoText>
-                                    범죄 키워드 기반의 데이터 추출과 AI 모델을 이용한 분석으로 <br/>
-                                    경찰과 시민의 관점을 분리 통계화합니다.
+                                    범죄 키워드 기반의 데이터 추출과 AI 모델을 이용한<br/>
+                                    분석으로 경찰과 시민의 관점을 분리 통계화합니다.
                                 </InfoText>
                             </InfoItem>
                             <InfoItem>
@@ -233,6 +233,7 @@ const InfoText = styled.p`
     font-size: 0.95rem;
     color: #333;
     line-height: 1.5;
+    text-align: left;
 `;
 
 const SearchBar = styled.div`

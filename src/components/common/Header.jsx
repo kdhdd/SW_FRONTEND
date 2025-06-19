@@ -320,7 +320,7 @@ const DropdownContent = styled.div`
     }
 `;
 const LogoImg = styled.img`
-    height: 60px; /* 원하는 크기로 조절 */
+    height: 45px; /* 원하는 크기로 조절 */
     width: auto;
     object-fit: contain;
 `;
