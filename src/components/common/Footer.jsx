@@ -2,86 +2,53 @@ import React from "react";
 import styled from "styled-components";
 
 function Footer() {
-    return (
-        <FooterWrapper>
-            <TextSection>
-                <FooterLinks>
-                    <li><a href="#">이용약관</a></li>
-                    <li><a href="#">개인정보처리방침</a></li>
-                    <li><a href="#">이메일무단수집거부</a></li>
-                </FooterLinks>
+  return (
+    <FooterWrapper>
+      <TextSection>
+        <Address>서울특별시 성북구 서경로 124</Address>
+        <Copy>COPYRIGHT© 2025 ALJALDDAGGALSAEN. ALL RIGHTS RESERVED.</Copy>
+      </TextSection>
 
-                <Address>서울특별시 성북구 서경로 124</Address>
-                <Copy>COPYRIGHT© 2025 ALJALDDAGGALSAEN. ALL RIGHTS RESERVED.</Copy>
-
-                <LogoBox>
-                    <img src="/src/assets/teamlogo.png" alt="알잘딱깔센 로고"/>
-                </LogoBox>
-            </TextSection>
-        </FooterWrapper>
-    );
+      {/* ❗ TextSection 밖으로 이동 */}
+      <LogoBox>
+        <img src="/src/assets/teamlogo.png" alt="알잘딱깔센 로고" />
+      </LogoBox>
+    </FooterWrapper>
+  );
 }
-
 
 export default Footer;
 
+/* ────────── styled-components ────────── */
+
 const FooterWrapper = styled.footer`
-    width: 100%;
-    align-items: flex-start;
-    background-color: #f9f9f9;
-    padding: 2rem 1rem;
-    color: #555;
+  width: 100%;
+  display: flex;                 /* 한 줄 */
+  justify-content: space-between;/* 좌우 끝 정렬 */
+  align-items: center;           /* 수직 가운데 */
+  padding: 0.75rem 1rem;         /* 높이도 살짝 축소 */
+  background: #f9f9f9;
+  color: #555;
+  font-size: 0.8rem;
 `;
 
 const TextSection = styled.div`
-    position: relative;
-    max-width: 550px;
-    padding-right: 100px;
-`;
-
-const FooterLinks = styled.ul`
-    display: flex;
-    gap: 1.5rem;
-    list-style: none;
-    padding: 0;
-    margin-bottom: 0.5rem;
-
-    li {
-        border-right: 1px solid #555;
-        padding-right: 1rem;
-    }
-
-    li:last-child {
-        border-right: none;
-    }
-
-    a {
-        text-decoration: none;
-        color: #555;
-
-        &:hover {
-            color: #000;
-        }
-    }
+  max-width: 550px;
+  line-height: 1.25;
 `;
 
 const Address = styled.address`
-    font-style: normal;
-    margin-bottom: 0.3rem;
+  font-style: normal;
+  margin: 0 0 0.25rem 0;
 `;
 
 const Copy = styled.p`
-    font-size: 0.85rem;
-    color: #777;
-    margin-bottom: 0;
+  margin: 0;
+  color: #777;
 `;
 
 const LogoBox = styled.div`
-    position: absolute;
-    bottom: 0;
-    right: 0;
-
-    img {
-        height: 60px;
-    }
+  img {
+    height: 48px;               /* 필요하면 크기 조정 */
+  }
 `;
