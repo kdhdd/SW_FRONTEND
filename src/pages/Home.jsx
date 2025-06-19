@@ -79,10 +79,9 @@ function Home() {
                 <HomeSection ref={section1Ref}>
                     <ContentWrapperFlex>
                         <LeftText>
-                            <h1 className="reveal-title">사용자 별 댓글 분석 서비스</h1>
                             <h1 className="reveal-title">오늘의 뉴스</h1>
-                            <h2 className="reveal-title">실시간 기사와 인기 순위,</h2>
-                            <h2 className="reveal-title">경찰과 시민이 나눈 생생한 의견까지 한자리에</h2>
+                            <h2 className="reveal-title">지금 일어나는 범죄 뉴스를 한눈에</h2>
+                            <h2 className="reveal-title">경찰과 시민의 목소리를 모두 담다</h2>
                         </LeftText>
                         <ImageBox>
                             <img src={FileImage2} alt="소개 이미지"/>
@@ -215,6 +214,7 @@ const LeftText = styled.div`
     h1 {
         font-size: clamp(1.8rem, 4vw, 3rem);
         font-weight: bold;
+        margin-bottom: 1rem;
     }
 `;
 
