@@ -47,13 +47,13 @@ export default function CommentSection({
                     <ChartRow>
                         {hasValidData(policeStats) && (
                             <ChartContainer>
-                                <ChartTitle>POLICE 댓글 통계</ChartTitle>
+                                <ChartTitle>경찰 댓글 통계</ChartTitle>
                                 <SentimentDonutChart stats={policeStats}/>
                             </ChartContainer>
                         )}
                         {hasValidData(userStats) && (
                             <ChartContainer>
-                                <ChartTitle>USER 댓글 통계</ChartTitle>
+                                <ChartTitle>시민 댓글 통계</ChartTitle>
                                 <SentimentDonutChart stats={userStats}/>
                             </ChartContainer>
                         )}
@@ -147,7 +147,7 @@ const ChartWrapper = styled.div`
 const ChartRow = styled.div`
     display: flex;
     justify-content: center;
-    gap: 240px;
+    gap: 150px;
     margin: 0 0 10px;
 `;
 
@@ -160,6 +160,5 @@ const ChartContainer = styled.div`
 const ChartTitle = styled.div`
     font-size: 1rem;
     font-weight: bold;
-    margin-bottom: 10px;
     text-align: center;
 `;

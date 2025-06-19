@@ -114,22 +114,34 @@ function ArticleDetailPage() {
         }
     };
 
-
     const fetchLikes = async () => {
         const token = localStorage.getItem("accessToken");
+
         try {
             const res = await fetch(`https://crimearticle.net/article-service/articles/like/${id}`, {
-                headers: {Authorization: token},
+                headers: token ? {Authorization: token} : {},
             });
+
             if (res.ok) {
-                const data = await res.json();
-                setLikesCount(data.data.likes);
-                setLiked(data.data.liked);
+                const result = await res.json();
+
+                const likes = result?.data?.likes ?? 0; // ✅ 공감 수가 없으면 0
+                const liked = result?.data?.liked ?? false; // ✅ 로그인 안하면 false
+
+                setLikesCount(likes);
+                setLiked(liked);
+            } else {
+                console.warn("공감 정보 가져오기 실패:", res.status);
+                setLikesCount(0); // 안전한 fallback
+                setLiked(false);
             }
         } catch (error) {
-            console.error("공감 정보 가져오기 실패:", error);
+            console.error("공감 정보 요청 오류:", error);
+            setLikesCount(0);
+            setLiked(false);
         }
     };
+
 
     useEffect(() => {
         const fetchData = async () => {

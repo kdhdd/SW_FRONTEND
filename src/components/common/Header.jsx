@@ -227,7 +227,7 @@ const LinkStyled = styled(Link)`
     }
 
     &:hover::after {
-        width: 100%;
+        width: 50%;
     }
 `;
 

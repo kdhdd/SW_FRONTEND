@@ -18,3 +18,17 @@ export const showLoginRequiredAlert = async (navigate) => {
         navigate("/auth/login");
     }
 };
+
+export const showSignupSuccessAlert = async (navigate) => {
+    await Swal.fire({
+        icon: 'success',
+        title: '회원가입이 완료되었습니다!',
+        confirmButtonText: '로그인하러 가기',
+        customClass: {
+            popup: 'custom-swal-popup-register',
+            confirmButton: 'custom-swal-button'
+        }
+    });
+
+    navigate("/auth/login");
+};
