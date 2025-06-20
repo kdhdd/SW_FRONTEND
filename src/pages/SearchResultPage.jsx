@@ -105,14 +105,17 @@ const Grid = styled.div`
     margin-top: 20px;
 
     @media (max-width: 1200px) {
+        padding: 0;
         grid-template-columns: repeat(3, 1fr);
     }
 
     @media (max-width: 900px) {
+        padding: 0;
         grid-template-columns: repeat(2, 1fr);
     }
 
     @media (max-width: 600px) {
-        grid-template-columns: 1fr;
+        padding: 0;
+        grid-template-columns: repeat(2, 1fr); /* ✅ 여전히 2개 유지 */
     }
 `;
