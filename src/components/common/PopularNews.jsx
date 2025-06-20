@@ -56,9 +56,12 @@ const Wrapper = styled.div`
     background: white;
     width: 100%;
     margin: 0 auto;
-    max-width: 1600px; // 💡 충분히 넓게
-    height: 100vh; // 💡 한 화면 안에 다 보이도록 고정
+    max-width: 1600px;
+    min-height: 800px; // 💡 한 화면 안에 다 보이도록 고정
     box-sizing: border-box;
+    @media (max-width: 768px) {
+        padding: 1rem;
+    }
 
     h2 {
         font-size: 1.5rem;
@@ -77,9 +80,7 @@ const Wrapper = styled.div`
 const CardGrid = styled.div`
     display: grid;
     grid-template-columns: repeat(5, 1fr);
-    grid-template-rows: repeat(2, 1fr);
     gap: 16px;
-    height: calc(100vh - 120px);
     padding: 0 2rem;
     box-sizing: border-box;
 

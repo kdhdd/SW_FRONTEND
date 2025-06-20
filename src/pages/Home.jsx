@@ -1,4 +1,4 @@
-import React, {lazy, Suspense, useEffect, useRef, useState} from "react";
+import React, {useEffect, useState} from "react";
 import ScrollReveal from "scrollreveal";
 import styled from "styled-components";
 import {useNavigate} from "react-router-dom";
@@ -6,8 +6,7 @@ import FileImage2 from "../assets/aboutBackground.png";
 import {FaChartPie, FaRegNewspaper} from "react-icons/fa";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faMagnifyingGlass} from "@fortawesome/free-solid-svg-icons";
-
-const PopularNews = lazy(() => import("../components/common/PopularNews.jsx"));
+import PopularNews from "../components/common/PopularNews.jsx";
 import Swal from "sweetalert2";
 import SwalGlobalStyle from "../styles/SwalGlobalStyle";
 
@@ -15,25 +14,6 @@ function Home() {
     const [keyword, setKeyword] = useState("");
     const [date, setDate] = useState("");
     const navigate = useNavigate();
-    const [showPopularNews, setShowPopularNews] = useState(false);
-    const newsSectionRef = useRef(null);
-
-    useEffect(() => {
-        const observer = new IntersectionObserver(
-            ([entry]) => {
-                if (entry.isIntersecting) {
-                    setShowPopularNews(true);
-                    observer.disconnect();
-                }
-            },
-            {threshold: 0.1}
-        );
-        if (newsSectionRef.current) {
-            observer.observe(newsSectionRef.current);
-        }
-
-        return () => observer.disconnect();
-    }, []);
 
     const searchNews = async (keyword, date) => {
         if (!keyword) {
@@ -65,7 +45,7 @@ function Home() {
                 duration: 700,
                 interval: 600,
                 easing: "ease-out",
-                reset: false
+                reset: true
             });
         });
     }, []);
@@ -123,10 +103,8 @@ function Home() {
                     </ContentWrapperFlex>
                 </HomeSection>
                 <Arrow>↓</Arrow>
-                <NewsSection ref={newsSectionRef}>
-                    <Suspense fallback={<div>로딩 중...</div>}>
-                        {showPopularNews && <PopularNews/>}
-                    </Suspense>
+                <NewsSection>
+                    <PopularNews/>
                 </NewsSection>
 
             </Container>
@@ -152,8 +130,12 @@ const HomeSection = styled.section`
     text-align: center;
 
     h1 {
+        margin-top: 2rem;
         font-size: clamp(1.8rem, 4vw, 3rem);
         font-weight: bold;
+        @media (max-width: 768px) {
+            margin-top: 0;
+        }
     }
 `;
 
@@ -201,12 +183,12 @@ const ImageBox = styled.div`
     }
 
     @media (max-width: 768px) {
-        position: static;         // ✅ 절대 위치 제거
+        position: relative;
+        right: 0;
         margin-top: 0;
         max-width: 100%;
-        padding: 0;
-        filter: none;             // ✅ blur 제거
-        opacity: 1;               // ✅ 자연스럽게
+        padding: 0 0;
+        opacity: 1;
     }
 `;
 
@@ -294,14 +276,13 @@ const SearchBar = styled.div`
     z-index: 3;
 
     @media (max-width: 768px) {
-        position: static;        // ✅ 고정 제거
+        position: static;
         transform: none;
         margin: 2rem auto 0;
         flex-direction: column;
         gap: 0.6rem;
         padding: 1rem;
         border-radius: 1rem;
-        box-shadow: none;        // ✅ 모바일에서는 그림자 제거해도 자연스러움
     }
 `;
 
@@ -370,10 +351,11 @@ const Arrow = styled.div`
     color: #aaa;
     text-align: center;
     margin: 3rem 0 2rem;
+    animation: bounce 2s infinite;
     font-weight: bold;
 
     @media (max-width: 768px) {
-        animation: none; // 또는 duration 줄이기
+        margin: 0;
     }
     @keyframes bounce {
         0%, 100% {
@@ -383,7 +365,4 @@ const Arrow = styled.div`
             transform: translateY(8px);
         }
     }
-    animation: bounce 2s infinite;
-
-
 `;
