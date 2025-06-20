@@ -265,6 +265,16 @@ const Wrapper = styled.div`
     max-width: 800px;
     margin: 100px auto 40px;
     padding: 0 20px;
+
+    @media (max-width: 768px) {
+        padding: 0 16px;
+        margin-top: 80px;
+    }
+
+    @media (max-width: 480px) {
+        padding: 0 12px;
+        margin-top: 60px;
+    }
 `;
 
 const BackButton = styled.button`
@@ -274,17 +284,28 @@ const BackButton = styled.button`
     cursor: pointer;
     margin-bottom: 20px;
     font-size: 1rem;
+
+    @media (max-width: 480px) {
+        font-size: 0.95rem;
+        margin-bottom: 0;
+        margin-top: 30px;
+    }
 `;
 
 const NotFound = styled.div`
     margin-top: 150px;
     text-align: center;
     font-size: 1.2rem;
+
+    @media (max-width: 480px) {
+        font-size: 1rem;
+        margin-top: 120px;
+    }
 `;
 
 const GlobalStyles = createGlobalStyle`
     .nbd_table td {
-        font-size: 0.85rem;
+        font-size: clamp(0.75rem, 2.5vw, 0.85rem);
         color: #666;
         line-height: 1.4;
     }

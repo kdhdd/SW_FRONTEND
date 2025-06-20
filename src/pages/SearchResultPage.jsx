@@ -61,12 +61,27 @@ const PageWrapper = styled.div`
     padding: 100px 40px 40px;
     background: white;
     min-height: 100vh;
+
+    @media (max-width: 768px) {
+        padding: 80px 20px 30px;
+    }
 `;
 
 const Header = styled.div`
     display: flex;
     justify-content: space-between;
     align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+
+    h2 {
+        font-size: 1.4rem;
+
+        @media (max-width: 768px) {
+            font-size: 1.1rem;
+            flex: 1 1 100%;
+        }
+    }
 `;
 
 const BackBtn = styled.button`
@@ -76,6 +91,11 @@ const BackBtn = styled.button`
     border-radius: 4px;
     cursor: pointer;
     font-size: 0.9rem;
+
+    @media (max-width: 768px) {
+        font-size: 0.85rem;
+        padding: 5px 10px;
+    }
 `;
 
 const Grid = styled.div`
@@ -87,9 +107,11 @@ const Grid = styled.div`
     @media (max-width: 1200px) {
         grid-template-columns: repeat(3, 1fr);
     }
+
     @media (max-width: 900px) {
         grid-template-columns: repeat(2, 1fr);
     }
+
     @media (max-width: 600px) {
         grid-template-columns: 1fr;
     }

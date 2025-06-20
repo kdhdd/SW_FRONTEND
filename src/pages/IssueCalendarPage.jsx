@@ -357,11 +357,10 @@ const StyledCalendar = styled(Calendar)`
     .react-calendar__navigation button {
         background: none;
         border: none;
-        color: white; /* 기본 상태 */
+        color: white;
         font-size: 1.2rem;
         transition: color 0.2s ease;
     }
-
 
     .react-calendar__month-view__weekdays {
         text-align: center;
@@ -378,6 +377,11 @@ const StyledCalendar = styled(Calendar)`
         background-color: white;
         border: 1px solid #eee;
         font-size: 1rem;
+
+        @media (max-width: 768px) {
+            height: 60px;
+            font-size: 0.85rem;
+        }
     }
 
     .react-calendar__month-view__days__day--weekend {
@@ -417,16 +421,38 @@ const Wrapper = styled.div`
     padding: 20px;
     display: flex;
     gap: 40px;
+
+    @media (max-width: 768px) {
+        flex-direction: column;
+        gap: 20px;
+        margin: 60px auto;
+    }
 `;
 
 const LeftPanel = styled.div`
     flex: 1;
-    min-width: 600px; // ← 캘린더 전체 너비 확보
-`;
+    min-width: 600px;
 
+    @media (max-width: 768px) {
+        min-width: 100%;
+    }
+`;
 
 const RightPanel = styled.div`
     flex: 1;
+
+    h3 {
+        font-size: 1.2rem;
+
+        @media (max-width: 768px) {
+            font-size: 1rem;
+            text-align: center;
+        }
+    }
+
+    @media (max-width: 768px) {
+        width: 100%;
+    }
 `;
 
 const EventList = styled.div`
@@ -446,7 +472,6 @@ const EventItem = styled.div`
         background: #f1f1f1;
     }
 `;
-
 
 const Label = styled.div`
     display: flex;

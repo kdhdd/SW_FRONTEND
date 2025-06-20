@@ -156,6 +156,7 @@ const ContentWrapperFlex = styled.div`
     flex-wrap: wrap;
 
     @media (max-width: 768px) {
+        gap: 10px;
         flex-direction: column;
         padding: 0 1rem;
     }
@@ -178,11 +179,12 @@ const ImageBox = styled.div`
     }
 
     @media (max-width: 768px) {
-        position: static;
-        width: 100%;
-        max-width: none;
+        position: relative;
+        right: 0;
+        margin-top: 0;
+        max-width: 100%;
+        padding: 0 0;
         opacity: 1;
-        margin-top: 2rem;
     }
 `;
 
@@ -191,12 +193,29 @@ const LeftText = styled.div`
     text-align: left;
     flex: 1;
 
+    @media (max-width: 768px) {
+        margin-top: 20px;
+        line-height: 1.4;     // ✅ 줄간격도 조금 줄임
+        font-size: 1rem;      // 필요 시 폰트도 살짝 줄이기
+    }
+
     h1 {
         font-size: clamp(1.8rem, 4vw, 3rem);
         font-weight: bold;
         margin-bottom: 1rem;
     }
+
+    h2 {
+        margin: 1rem 0; // 데스크톱 기준 간격 유지
+
+        @media (max-width: 768px) {
+            margin: 0 0;     // ✅ 모바일에서 간격 좁게
+            line-height: 1.4;     // ✅ 줄간격도 조금 줄임
+            font-size: 1rem;      // 필요 시 폰트도 살짝 줄이기
+        }
+    }
 `;
+
 
 const InfoBox = styled.div`
     background-color: white;
@@ -218,6 +237,7 @@ const InfoBox = styled.div`
     @media (max-width: 768px) {
         gap: 1.5rem;
         padding: 1.2rem;
+        margin-top: 0;
     }
 `;
 
@@ -252,10 +272,13 @@ const SearchBar = styled.div`
     z-index: 3;
 
     @media (max-width: 768px) {
-        padding: 0.8rem;
+        position: static;
+        transform: none;
+        margin: 2rem auto 0;
+        flex-direction: column;
         gap: 0.6rem;
+        padding: 1rem;
         border-radius: 1rem;
-        width: 95%;
     }
 `;
 
@@ -267,6 +290,11 @@ const SearchInput = styled.input`
     outline: none;
     background: transparent;
     min-width: 0;
+
+    @media (max-width: 768px) {
+        width: 100%;
+        padding: 0.8rem;
+    }
 `;
 
 const DateInput = styled.input`
@@ -278,6 +306,11 @@ const DateInput = styled.input`
     background-color: transparent;
     outline: none;
     min-width: 0;
+
+    @media (max-width: 768px) {
+        width: 100%;
+        padding: 0.8rem;
+    }
 `;
 
 const SearchButton = styled.button`
@@ -313,7 +346,7 @@ const Arrow = styled.div`
     font-size: 4rem;
     color: #aaa;
     text-align: center;
-    margin: -2rem 0 2rem;
+    margin: 3rem 0 2rem;
     animation: bounce 2s infinite;
     font-weight: bold;
 
@@ -324,5 +357,9 @@ const Arrow = styled.div`
         50% {
             transform: translateY(8px);
         }
+    }
+
+    @media (max-width: 768px) {
+        margin-top: 1rem;
     }
 `;

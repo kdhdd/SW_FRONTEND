@@ -2,6 +2,7 @@ import {Doughnut} from 'react-chartjs-2';
 import {Chart as ChartJS, ArcElement, Tooltip, Legend} from 'chart.js';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 import 'chart.js/auto';
+import styled from "styled-components";
 
 ChartJS.register(ArcElement, Tooltip, Legend, ChartDataLabels);
 
@@ -26,17 +27,20 @@ export default function SentimentDonutChart({stats}) {
                     return percentage > 0 ? `${percentage}%` : "";
                 },
                 color: 'black',
-                font: {
-                    weight: 'bold',
-                    size: 16,
+                font: (context) => {
+                    const chartWidth = context.chart.width;
+                    return {
+                        weight: 'bold',
+                        size: chartWidth < 300 ? 12 : 16,
+                    };
                 },
             },
             legend: {
                 position: 'top',
                 labels: {
-                    usePointStyle: true,     // ✅ 범례 아이콘을 원으로
-                    pointStyle: 'circle',    // ✅ 아이콘 스타일 지정 (기본은 'rect')
-                    boxWidth: 12,            // 아이콘 크기
+                    usePointStyle: true,
+                    pointStyle: 'circle',
+                    boxWidth: 12,
                     padding: 20,
                     font: {
                         size: 14
@@ -45,12 +49,26 @@ export default function SentimentDonutChart({stats}) {
             }
         },
         maintainAspectRatio: false,
-        cutout: '40%' // 도넛 두께 조절
+        cutout: '45%' // 도넛 두께
     };
 
     return (
-        <div style={{width: 280, height: 220}}>
+        <ChartContainer>
             <Doughnut data={data} options={options}/>
-        </div>
+        </ChartContainer>
     );
 }
+
+const ChartContainer = styled.div`
+    width: 100%;
+    max-width: 280px;
+    height: 220px;
+    @media (max-width: 768px) {
+        flex: 1 1 45%;        // ✅ 한 줄에 2개 배치될 수 있도록 설정
+        max-width: 160px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        box-sizing: border-box;
+    }
+`;

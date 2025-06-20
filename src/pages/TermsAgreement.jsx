@@ -105,10 +105,14 @@ const Wrapper = styled.div`
     color: black;
     padding: 1.5rem;
     border-radius: 8px;
+    width: 100%;
     max-width: 600px;
     margin: 0 auto 2rem;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    min-width: 600px;
+
+    @media (max-width: 600px) {
+        padding: 1rem;
+    }
 `;
 
 const Title = styled.h2`
@@ -127,7 +131,7 @@ const Checkbox = styled.label`
     }
 
     span {
-        font-size: 0.95rem;
+        font-size: clamp(0.9rem, 2vw, 1rem);
     }
 `;
 

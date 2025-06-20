@@ -1,6 +1,6 @@
 import React, {forwardRef} from "react";
 import styled from "styled-components";
-import FileImage from "../../assets/3.png";
+import FileImage from "../../assets/serviceArchitecture.png";
 
 const Section1Concept = forwardRef((props, ref) => {
     const SlideInTextBlock = ({title, desc, direction, delay, positionStyle}) => {
@@ -54,7 +54,7 @@ const Section = styled.section`
     text-align: center;
 
     h2 {
-        font-size: 3rem;
+        font-size: clamp(1.6rem, 5vw, 3rem);
         font-weight: bold;
         margin-bottom: 50px;
     }
@@ -66,13 +66,24 @@ const Wrapper = styled.div`
     max-width: 900px;
     margin: 0 auto;
     height: 700px;
-    overflow: visible;
+
+    @media (max-width: 768px) {
+        height: auto;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 1rem;
+    }
 `;
 
 const Image = styled.img`
     width: 100%;
     z-index: 1;
     position: relative;
+
+    @media (max-width: 768px) {
+        display: none; // 📱 모바일에서는 안 보이게!
+    }
 `;
 
 const TextBlock = styled.div`
@@ -87,8 +98,18 @@ const TextBlock = styled.div`
     flex-direction: column;
     align-items: center;
     text-align: center;
-
     animation: ${({delay}) => `slide-in 0.6s ${delay} ease-out both`};
+
+    font-size: 0.9rem;
+
+    @media (max-width: 768px) {
+        position: static !important;
+        margin: 1rem auto;
+        transform: none !important;
+        animation: none !important;
+        width: 90%;
+        max-width: 400px;
+    }
 
     @keyframes slide-in {
         from {

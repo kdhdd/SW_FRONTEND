@@ -66,16 +66,37 @@ const Wrapper = styled.div`
         font-weight: bold;
         text-align: left;
         padding: 0 2rem;
+
+        @media (max-width: 768px) {
+            font-size: 1.25rem;
+            text-align: center;
+        }
     }
 `;
 
-
 const CardGrid = styled.div`
     display: grid;
-    grid-template-columns: repeat(5, 1fr); // 5열
+    grid-template-columns: repeat(5, 1fr);
     grid-template-rows: repeat(2, 1fr); // 2행
     gap: 16px;
     height: calc(100vh - 120px); // 💡 상단 padding, 제목 고려
     padding: 0 2rem;
     box-sizing: border-box;
+
+    @media (max-width: 1200px) {
+        grid-template-columns: repeat(4, 1fr);
+    }
+
+    @media (max-width: 992px) {
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+    @media (max-width: 768px) {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    @media (max-width: 480px) {
+        grid-template-columns: 1fr;
+    }
 `;
+
