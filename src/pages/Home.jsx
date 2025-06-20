@@ -64,7 +64,7 @@ function Home() {
                             <h2 className="reveal-title">경찰과 시민의 목소리를 모두 담다</h2>
                         </LeftText>
                         <ImageBox>
-                            <img src={FileImage2} alt="소개 이미지"/>
+                            <img src={FileImage2} alt="소개 이미지" style={{ width: '95%', height: '95%', objectFit: 'cover' }}/>
                         </ImageBox>
                         <InfoBox>
                             <InfoItem>
