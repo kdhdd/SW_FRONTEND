@@ -221,14 +221,10 @@ const UnderlayBlack = styled.div`
 `;
 
 const FormWrapper = styled.div`
-    width: 90%;
-    max-width: 500px;
+    max-width: 50%;
     margin: 150px auto;
-    padding: 2rem;
+    padding: 0.5rem;
     text-align: center;
-    background: rgba(255, 255, 255, 0.05);
-    border-radius: 16px;
-
     @media (max-width: 600px) {
         margin: 80px auto;
         padding: 1.5rem;
@@ -238,7 +234,6 @@ const FormWrapper = styled.div`
 const Title = styled.h1`
     color: white;
     margin-bottom: 2rem;
-    font-size: clamp(1.5rem, 5vw, 2rem);
 `;
 
 const FullInput = styled.input`
@@ -248,8 +243,7 @@ const FullInput = styled.input`
     color: white;
     margin: 1rem 0;
     padding: 0.5rem;
-    width: 100%;
-    font-size: 1rem;
+    width: calc(100% - 3rem);
     transition: 250ms background ease-in;
 
     &::placeholder {
@@ -268,7 +262,8 @@ const FullInput = styled.input`
 `;
 
 const CodeInput = styled(FullInput)`
-    width: 160px;
+    width: 150px;
+    margin: 0.5rem 0;
 
     @media (max-width: 600px) {
         width: 100%;
@@ -277,22 +272,19 @@ const CodeInput = styled(FullInput)`
 
 const Row = styled.div`
     display: flex;
-    flex-wrap: wrap; /* ✅ 작은 화면에서 줄바꿈 */
     align-items: center;
     justify-content: center;
-    gap: 0.8rem;
-    margin-bottom: 1.2rem;
+    gap: 1rem;
+    margin-bottom: 0.5rem 0;
 `;
 
 const Button = styled.button`
     border: 1px solid white;
     background: transparent;
     color: white;
-    padding: 0.5rem 1.2rem;
-    font-size: 0.95rem;
+    padding: 0.5rem 1rem;
     cursor: pointer;
     white-space: nowrap;
-    border-radius: 6px;
     transition: 250ms background ease-in;
 
     &:hover,
