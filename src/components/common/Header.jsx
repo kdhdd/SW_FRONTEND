@@ -13,6 +13,7 @@ function Header() {
     const {authUser, logout} = useAuth();
     const navigate = useNavigate();
     const [menuOpen, setMenuOpen] = useState(false);
+    const [dropdownOpen, setDropdownOpen] = useState(false);
 
     const toggleMenu = () => setMenuOpen(prev => !prev);
 
@@ -64,13 +65,37 @@ function Header() {
 
                 <HeaderBtn>
                     {!authUser ? (
-                        <DropdownWrapper>
-                            <UserIcon icon={faUser}/>
-                            <DropdownContent>
-                                <div onClick={() => navigate("/auth/login")}>로그인</div>
-                                <div onClick={() => navigate("/auth/signup")}>회원가입</div>
-                            </DropdownContent>
+                        <DropdownWrapper
+                            onMouseEnter={() => {
+                                if (window.innerWidth > 768) setDropdownOpen(true);
+                            }}
+                            onMouseLeave={() => {
+                                if (window.innerWidth > 768) setDropdownOpen(false);
+                            }}
+                        >
+                            <UserIcon
+                                icon={faUser}
+                                onClick={() => {
+                                    if (window.innerWidth <= 768) setDropdownOpen(prev => !prev);
+                                }}
+                            />
+                            {dropdownOpen && (
+                                <DropdownContent>
+                                    <div onClick={() => {
+                                        setDropdownOpen(false);
+                                        navigate("/auth/login");
+                                    }}>로그인
+                                    </div>
+                                    <div onClick={() => {
+                                        setDropdownOpen(false);
+                                        navigate("/auth/signup");
+                                    }}>회원가입
+                                    </div>
+                                </DropdownContent>
+                            )}
                         </DropdownWrapper>
+
+
                     ) : (
                         <div style={{display: "flex", alignItems: "center", gap: "1rem"}}>
                             <div style={{
@@ -331,7 +356,6 @@ const UserIcon = styled(FontAwesomeIcon)`
 `;
 
 const DropdownContent = styled.div`
-    display: none;
     position: absolute;
     top: 100%;
     right: 0;
@@ -359,6 +383,7 @@ const DropdownContent = styled.div`
         font-size: 0.85rem;
     }
 `;
+
 
 const LogoImg = styled.img`
     height: 45px;
