@@ -64,8 +64,16 @@ const ChartContainer = styled.div`
     max-width: 280px;
     height: 220px;
     @media (max-width: 768px) {
-        flex: 1 1 45%;        // ✅ 한 줄에 2개 배치될 수 있도록 설정
+        width: 160px;
+        flex: 1 1 45%;
         max-width: 160px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        box-sizing: border-box;
+    }
+    @media (max-width: 480px) {
+        width: 160px;
         display: flex;
         flex-direction: column;
         align-items: center;
