@@ -167,6 +167,20 @@ const ChartWrapper = styled.div`
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     margin: 30px 0;
     overflow-x: hidden; // ✅ 추가
+    @media (max-width: 768px) {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        box-sizing: border-box;
+    }
+    @media (max-width: 480px) {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        box-sizing: border-box;
+    }
 `;
 
 
@@ -192,9 +206,12 @@ const ChartContainer = styled.div`
     display: flex;
     flex-direction: column;
     align-items: center;
+
     @media (max-width: 768px) {
-        width: 45vw;         // ✅ 한 줄 2개 배치
-        min-width: 160px;    // ✅ 너무 커지지 않도록 제한
+        min-width: 160px;
+    }
+    @media (max-width: 480px) {
+        min-width: 120px;
     }
 `;
 
