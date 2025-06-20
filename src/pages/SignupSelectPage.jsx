@@ -83,11 +83,6 @@ const ButtonRow = styled.div`
     flex-wrap: wrap;
     gap: 1rem;
     margin-top: 2rem;
-
-    @media (max-width: 500px) {
-        flex-direction: column;
-        align-items: center;
-    }
 `;
 
 const Button = styled.button`

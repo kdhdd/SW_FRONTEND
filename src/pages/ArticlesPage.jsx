@@ -220,6 +220,10 @@ const CategoryBar = styled.div`
     flex-wrap: wrap;
     gap: 10px;
     margin: 1rem 0 1.5rem;
+    @media (max-width: 480px) {
+        gap: 5px;
+        justify-content: center;
+    }
 `;
 
 const CategoryButton = styled.button`
@@ -236,7 +240,7 @@ const CategoryButton = styled.button`
     }
 
     @media (max-width: 480px) {
-        font-size: 0.9rem;
+        font-size: 0.85rem;
         padding: 6px 12px;
     }
 `;
