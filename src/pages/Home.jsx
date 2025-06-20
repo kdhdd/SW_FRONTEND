@@ -59,7 +59,7 @@ function Home() {
                 <HomeSection ref={section1Ref}>
                     <ContentWrapperFlex>
                         <LeftText>
-                            <h1 className="reveal-title">오늘의 뉴스</h1>
+                            <h1 className="reveal-title">사건, 오늘</h1>
                             <h2 className="reveal-title">지금 일어나는 범죄 뉴스를 한눈에</h2>
                             <h2 className="reveal-title">경찰과 시민의 목소리를 모두 담다</h2>
                         </LeftText>
