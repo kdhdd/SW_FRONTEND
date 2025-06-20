@@ -239,7 +239,6 @@ const CrownWrapper = styled.div`
     text-align: center;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 
-    /* ⬇️ 오른쪽 아래만 둥글게 */
     border-radius: 0 8px 8px 8px;
 `;
 
