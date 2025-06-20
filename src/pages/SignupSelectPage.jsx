@@ -79,14 +79,18 @@ const Container = styled.div`
 
 const ButtonRow = styled.div`
     display: flex;
-    justify-content: center;
     flex-wrap: wrap;
-    gap: 1rem;
+    justify-content: center;
+    gap: 12px;
     margin-top: 2rem;
+    padding: 0 1rem;
 `;
 
+
 const Button = styled.button`
-    padding: 0.6rem 2rem;
+    flex: 1 1 calc(50% - 12px);
+    max-width: calc(50% - 12px);
+    padding: 0.8rem 1rem;
     border: 1px solid white;
     background: transparent;
     color: white;
@@ -94,6 +98,8 @@ const Button = styled.button`
     cursor: pointer;
     border-radius: 6px;
     transition: all 0.25s ease;
+    white-space: nowrap;
+    text-align: center;
 
     &:hover {
         background: white;
@@ -105,6 +111,7 @@ const Button = styled.button`
         cursor: not-allowed;
     }
 `;
+
 
 const Title = styled.h1`
     font-size: clamp(1.8rem, 5vw, 2.5rem);
