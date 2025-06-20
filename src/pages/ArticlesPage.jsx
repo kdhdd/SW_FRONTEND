@@ -2,73 +2,116 @@ import React, {useState, useEffect} from "react";
 import styled from "styled-components";
 import {useNavigate, useParams} from "react-router-dom";
 import NewsCard from "../components/common/NewsCard.jsx";
-import Footer from '../components/common/Footer.jsx';
+import Footer from "../components/common/Footer.jsx";
 
 function ArticlesPage() {
     const [newsData, setNewsData] = useState([]);
     const navigate = useNavigate();
     const {page} = useParams();
 
-    const currentPage = Math.max(parseInt(page || "1", 10), 1);
+    const [currentPage, setCurrentPage] = useState(Math.max(parseInt(page || "1", 10), 1));
     const itemsPerPage = 12;
     const categories = ["마약", "성폭행", "사기", "살인", "방화", "폭행"];
     const [selectedCategory, setSelectedCategory] = useState("마약");
     const [articleCount, setArticleCount] = useState(0);
 
-    // 선택된 키워드에 따라 뉴스 가져오기
+    const [pageGroupStart, setPageGroupStart] = useState(1);
+    const [pageGroupSize, setPageGroupSize] = useState(10);
+
+    const totalPages = Math.ceil(newsData.length / itemsPerPage);
+    const start = (currentPage - 1) * itemsPerPage;
+    const currentNews = newsData.slice(start, start + itemsPerPage);
+
+    useEffect(() => {
+        setCurrentPage(Math.max(parseInt(page || "1", 10), 1));
+    }, [page]);
+
+    useEffect(() => {
+        const handleResize = () => {
+            setPageGroupSize(window.innerWidth <= 768 ? 5 : 10);
+        };
+        handleResize();
+        window.addEventListener("resize", handleResize);
+        return () => window.removeEventListener("resize", handleResize);
+    }, []);
+
+    const pageNumbers = Array.from(
+        {length: Math.min(pageGroupSize, totalPages - pageGroupStart + 1)},
+        (_, i) => pageGroupStart + i
+    );
+
+    const handleClickCard = (id) => navigate(`/articles/${id}`);
+    const handlePageChange = (page) => {
+        setCurrentPage(page);
+        navigate(`/articles/page/${page}`);
+    };
+    const handleNextGroup = () => {
+        const nextStart = pageGroupStart + pageGroupSize;
+        if (nextStart <= totalPages) {
+            setPageGroupStart(nextStart);
+            handlePageChange(nextStart);
+        }
+    };
+    const handlePrevGroup = () => {
+        const prevStart = pageGroupStart - pageGroupSize;
+        if (prevStart > 0) {
+            setPageGroupStart(prevStart);
+            handlePageChange(prevStart);
+        }
+    };
+
     useEffect(() => {
         const fetchNews = async () => {
             try {
                 const url = `https://crimearticle.net/article-service/news?keyword=${selectedCategory}`;
                 const res = await fetch(url);
                 const json = await res.json();
-                const data = Array.isArray(json.data) ? json.data : []; // 안전하게 fallback
+                const data = Array.isArray(json.data) ? json.data : [];
                 setNewsData(data);
             } catch (err) {
                 console.error("뉴스 불러오기 실패:", err);
             }
         };
+
         const fetchCount = async () => {
             try {
                 const countRes = await fetch(`https://crimearticle.net/article-service/news/count?keyword=${selectedCategory}`);
                 const countData = await countRes.json();
-                setArticleCount(countData.count); // ✅ 숫자만 넣기
+                setArticleCount(countData.count);
             } catch (err) {
                 console.error("카운트 불러오기 실패:", err);
             }
         };
+
         fetchNews();
         fetchCount();
     }, [selectedCategory]);
-
-
-    const sortedNews = [...newsData].sort(
-        (a, b) => new Date(b.pubDate) - new Date(a.pubDate)
-    );
-
-    const totalPages = Math.ceil(sortedNews.length / itemsPerPage);
-    const start = (currentPage - 1) * itemsPerPage;
-    const currentNews = sortedNews.slice(start, start + itemsPerPage);
-
-    const handleClickCard = (id) => navigate(`/articles/${id}`);
 
     return (
         <>
             <PageWrapper>
                 <Header>
-                    <h2>오늘의 뉴스 <span style={{fontSize: '1rem', color: '#888'}}> (총 {articleCount}건)</span></h2>
+                    <h2>
+                        오늘의 뉴스 <span style={{fontSize: "1rem", color: "#888"}}> (총 {articleCount}건)</span>
+                    </h2>
                 </Header>
+
                 <CategoryBar>
-                    {categories.map(cat => (
+                    {categories.map((cat) => (
                         <CategoryButton
                             key={cat}
                             $active={selectedCategory === cat}
-                            onClick={() => setSelectedCategory(cat)}
+                            onClick={() => {
+                                setSelectedCategory(cat);
+                                setPageGroupStart(1); // 카테고리 변경 시 페이지 초기화
+                                handlePageChange(1);
+                            }}
                         >
                             {cat}
                         </CategoryButton>
                     ))}
                 </CategoryBar>
+
                 <Grid>
                     {currentNews.map((news) => (
                         <div key={news.id} onClick={() => handleClickCard(news.id)}>
@@ -76,16 +119,21 @@ function ArticlesPage() {
                         </div>
                     ))}
                 </Grid>
+
                 <Pagination>
-                    {Array.from({length: totalPages}, (_, i) => (
+                    {pageGroupStart > 1 && <button onClick={handlePrevGroup}>←</button>}
+
+                    {pageNumbers.map((page) => (
                         <button
-                            key={i}
-                            onClick={() => navigate(`/articles/page/${i + 1}`)}
-                            className={currentPage === i + 1 ? "active" : ""}
+                            key={page}
+                            onClick={() => handlePageChange(page)}
+                            className={currentPage === page ? "active" : ""}
                         >
-                            {i + 1}
+                            {page}
                         </button>
                     ))}
+
+                    {pageGroupStart + pageGroupSize - 1 < totalPages && <button onClick={handleNextGroup}>→</button>}
                 </Pagination>
             </PageWrapper>
             <Footer/>
@@ -142,25 +190,27 @@ const Grid = styled.div`
     }
 `;
 
-
 const Pagination = styled.div`
     display: flex;
     justify-content: center;
     flex-wrap: wrap;
-    gap: 10px;
+    gap: 8px;
     margin-top: 30px;
 
     button {
-        margin: 0;
-        padding: 8px 14px;
-        background: white;
+        width: 38px;
+        height: 38px;
+        border-radius: 6px;
         border: 1px solid #ccc;
-        border-radius: 4px;
+        background: white;
+        font-size: 1rem;
         cursor: pointer;
+        transition: all 0.2s ease;
 
-        @media (max-width: 480px) {
-            padding: 6px 10px;
-            font-size: 0.9rem;
+        &.active {
+            background: black;
+            color: white;
+            font-weight: bold;
         }
     }
 `;

@@ -10,6 +10,46 @@ function SearchResultPage() {
     const keyword = searchParams.get("keyword");
     const date = searchParams.get("date");
     const [newsData, setNewsData] = useState([]);
+    const itemsPerPage = 12;
+    const [currentPage, setCurrentPage] = useState(1);
+
+    const totalPages = Math.ceil(newsData.length / itemsPerPage);
+    const start = (currentPage - 1) * itemsPerPage;
+    const currentNews = newsData.slice(start, start + itemsPerPage);
+
+    const [pageGroupStart, setPageGroupStart] = useState(1);
+    const [pageGroupSize, setPageGroupSize] = useState(10); // 기본 10
+
+    const handleNextGroup = () => {
+        const nextStart = pageGroupStart + pageGroupSize;
+        if (nextStart <= totalPages) {
+            setPageGroupStart(nextStart);
+            setCurrentPage(nextStart);
+        }
+    };
+
+    const handlePrevGroup = () => {
+        const prevStart = pageGroupStart - pageGroupSize;
+        if (prevStart > 0) {
+            setPageGroupStart(prevStart);
+            setCurrentPage(prevStart);
+        }
+    };
+
+    const pageNumbers = Array.from(
+        {length: Math.min(pageGroupSize, totalPages - pageGroupStart + 1)},
+        (_, i) => pageGroupStart + i
+    );
+
+    useEffect(() => {
+        const handleResize = () => {
+            setPageGroupSize(window.innerWidth <= 768 ? 5 : 10);
+        };
+
+        handleResize(); // 초기 설정
+        window.addEventListener("resize", handleResize);
+        return () => window.removeEventListener("resize", handleResize);
+    }, []);
 
     useEffect(() => {
         if (!keyword) return;
@@ -43,14 +83,36 @@ function SearchResultPage() {
             {newsData.length === 0 ? (
                 <p>검색 결과가 없습니다.</p>
             ) : (
-                <Grid>
-                    {newsData.map((news) => (
-                        <div key={news.id} onClick={() => handleClickCard(news.id)}>
-                            <NewsCard news={news}/>
-                        </div>
-                    ))}
-                </Grid>
+                <div>
+                    <Grid>
+                        {currentNews.map((news) => (
+                            <div key={news.id} onClick={() => handleClickCard(news.id)}>
+                                <NewsCard news={news}/>
+                            </div>
+                        ))}
+                    </Grid>
+                    <Pagination>
+                        {pageGroupStart > 1 && (
+                            <button onClick={handlePrevGroup}>←</button>
+                        )}
+
+                        {pageNumbers.map((page) => (
+                            <button
+                                key={page}
+                                onClick={() => setCurrentPage(page)}
+                                className={currentPage === page ? "active" : ""}
+                            >
+                                {page}
+                            </button>
+                        ))}
+
+                        {pageGroupStart + pageGroupSize - 1 < totalPages && (
+                            <button onClick={handleNextGroup}>→</button>
+                        )}
+                    </Pagination>
+                </div>
             )}
+
         </PageWrapper>
     );
 }
@@ -105,14 +167,42 @@ const Grid = styled.div`
     margin-top: 20px;
 
     @media (max-width: 1200px) {
+        padding: 0;
         grid-template-columns: repeat(3, 1fr);
     }
 
     @media (max-width: 900px) {
+        padding: 0;
         grid-template-columns: repeat(2, 1fr);
     }
 
     @media (max-width: 600px) {
-        grid-template-columns: 1fr;
+        padding: 0;
+        grid-template-columns: repeat(2, 1fr); /* ✅ 여전히 2개 유지 */
+    }
+`;
+
+const Pagination = styled.div`
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 30px;
+
+    button {
+        width: 38px;
+        height: 38px;
+        border-radius: 6px;
+        border: 1px solid #ccc;
+        background: white;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: all 0.2s ease;
+
+        &.active {
+            background: black;
+            color: white;
+            font-weight: bold;
+        }
     }
 `;

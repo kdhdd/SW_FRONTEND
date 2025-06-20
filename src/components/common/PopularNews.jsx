@@ -83,15 +83,18 @@ const CardGrid = styled.div`
     padding: 0 2rem;
     box-sizing: border-box;
 
-    @media (max-width: 768px) {
-        grid-template-columns: repeat(2, 1fr);
-        justify-items: center; /* ✅ 카드 중앙 정렬 */
-        padding: 0 1rem;        /* ✅ 좌우 여백 줄이기 */
+    @media (max-width: 1200px) {
+        padding: 0;
+        grid-template-columns: repeat(3, 1fr);
     }
 
-    @media (max-width: 480px) {
-        grid-template-columns: 1fr;
-        justify-items: center; /* ✅ 모바일에서도 중앙 정렬 유지 */
-        padding: 0 0.5rem;      /* ✅ 더 좁은 여백 */
+    @media (max-width: 900px) {
+        padding: 0;
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    @media (max-width: 600px) {
+        padding: 0;
+        grid-template-columns: repeat(2, 1fr); /* ✅ 여전히 2개 유지 */
     }
 `;
