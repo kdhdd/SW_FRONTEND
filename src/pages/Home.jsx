@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useState} from "react";
+import React, {lazy, Suspense, useEffect, useRef, useState} from "react";
 import ScrollReveal from "scrollreveal";
 import styled from "styled-components";
 import {useNavigate} from "react-router-dom";
@@ -6,16 +6,34 @@ import FileImage2 from "../assets/aboutBackground.png";
 import {FaChartPie, FaRegNewspaper} from "react-icons/fa";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faMagnifyingGlass} from "@fortawesome/free-solid-svg-icons";
-import PopularNews from "../components/common/PopularNews.jsx";
+
+const PopularNews = lazy(() => import("../components/common/PopularNews.jsx"));
 import Swal from "sweetalert2";
 import SwalGlobalStyle from "../styles/SwalGlobalStyle";
 
 function Home() {
-    const section1Ref = useRef(null);
-    const section2Ref = useRef(null);
     const [keyword, setKeyword] = useState("");
     const [date, setDate] = useState("");
     const navigate = useNavigate();
+    const [showPopularNews, setShowPopularNews] = useState(false);
+    const newsSectionRef = useRef(null);
+
+    useEffect(() => {
+        const observer = new IntersectionObserver(
+            ([entry]) => {
+                if (entry.isIntersecting) {
+                    setShowPopularNews(true);
+                    observer.disconnect();
+                }
+            },
+            {threshold: 0.1}
+        );
+        if (newsSectionRef.current) {
+            observer.observe(newsSectionRef.current);
+        }
+
+        return () => observer.disconnect();
+    }, []);
 
     const searchNews = async (keyword, date) => {
         if (!keyword) {
@@ -47,7 +65,7 @@ function Home() {
                 duration: 700,
                 interval: 600,
                 easing: "ease-out",
-                reset: true
+                reset: false
             });
         });
     }, []);
@@ -56,7 +74,7 @@ function Home() {
         <>
             <SwalGlobalStyle/>
             <Container>
-                <HomeSection ref={section1Ref}>
+                <HomeSection>
                     <ContentWrapperFlex>
                         <LeftText>
                             <h1 className="reveal-title">사건, 오늘</h1>
@@ -64,7 +82,8 @@ function Home() {
                             <h2 className="reveal-title">경찰과 시민의 목소리를 모두 담다</h2>
                         </LeftText>
                         <ImageBox>
-                            <img src={FileImage2} alt="소개 이미지" style={{ width: '95%', height: '95%', objectFit: 'cover' }}/>
+                            <img src={FileImage2} alt="소개 이미지"
+                                 style={{width: '95%', height: '95%', objectFit: 'cover'}}/>
                         </ImageBox>
                         <InfoBox>
                             <InfoItem>
@@ -104,9 +123,12 @@ function Home() {
                     </ContentWrapperFlex>
                 </HomeSection>
                 <Arrow>↓</Arrow>
-                <NewsSection ref={section2Ref}>
-                    <PopularNews/>
+                <NewsSection ref={newsSectionRef}>
+                    <Suspense fallback={<div>로딩 중...</div>}>
+                        {showPopularNews && <PopularNews/>}
+                    </Suspense>
                 </NewsSection>
+
             </Container>
         </>
     );
@@ -179,12 +201,12 @@ const ImageBox = styled.div`
     }
 
     @media (max-width: 768px) {
-        position: relative;
-        right: 0;
+        position: static;         // ✅ 절대 위치 제거
         margin-top: 0;
         max-width: 100%;
-        padding: 0 0;
-        opacity: 1;
+        padding: 0;
+        filter: none;             // ✅ blur 제거
+        opacity: 1;               // ✅ 자연스럽게
     }
 `;
 
@@ -272,13 +294,14 @@ const SearchBar = styled.div`
     z-index: 3;
 
     @media (max-width: 768px) {
-        position: static;
+        position: static;        // ✅ 고정 제거
         transform: none;
         margin: 2rem auto 0;
         flex-direction: column;
         gap: 0.6rem;
         padding: 1rem;
         border-radius: 1rem;
+        box-shadow: none;        // ✅ 모바일에서는 그림자 제거해도 자연스러움
     }
 `;
 
@@ -347,9 +370,11 @@ const Arrow = styled.div`
     color: #aaa;
     text-align: center;
     margin: 3rem 0 2rem;
-    animation: bounce 2s infinite;
     font-weight: bold;
 
+    @media (max-width: 768px) {
+        animation: none; // 또는 duration 줄이기
+    }
     @keyframes bounce {
         0%, 100% {
             transform: translateY(0);
@@ -358,8 +383,7 @@ const Arrow = styled.div`
             transform: translateY(8px);
         }
     }
+    animation: bounce 2s infinite;
 
-    @media (max-width: 768px) {
-        margin-top: 1rem;
-    }
+
 `;

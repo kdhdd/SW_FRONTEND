@@ -226,14 +226,19 @@ const FormWrapper = styled.div`
     padding: 0.5rem;
     text-align: center;
     @media (max-width: 600px) {
-        margin: 80px auto;
-        padding: 1.5rem;
+        max-width: 80%;
+        margin: 60px auto;
+        padding: 0.5rem;
     }
 `;
 
 const Title = styled.h1`
     color: white;
     margin-bottom: 2rem;
+    @media (max-width: 600px) {
+        margin-top: 2rem;
+        font-size: 1.5rem;
+    }
 `;
 
 const FullInput = styled.input`
@@ -245,6 +250,10 @@ const FullInput = styled.input`
     padding: 0.5rem;
     width: calc(100% - 3rem);
     transition: 250ms background ease-in;
+
+    @media (max-width: 600px) {
+        width: 100%;
+    }
 
     &::placeholder {
         color: rgba(255, 255, 255, 0.7);
@@ -266,6 +275,7 @@ const CodeInput = styled(FullInput)`
     margin: 0.5rem 0;
 
     @media (max-width: 600px) {
+        flex: 1 1 100%;
         width: 100%;
     }
 `;
@@ -275,7 +285,14 @@ const Row = styled.div`
     align-items: center;
     justify-content: center;
     gap: 1rem;
-    margin-bottom: 0.5rem 0;
+    margin-bottom: 0.5rem;
+
+    @media (max-width: 600px) {
+        flex-wrap: wrap;
+        align-items: flex-start;
+        gap: 0.5rem;
+        margin-bottom: 1rem;
+    }
 `;
 
 const Button = styled.button`
@@ -296,5 +313,10 @@ const Button = styled.button`
     &:disabled {
         opacity: 0.4;
         cursor: not-allowed;
+    }
+
+    @media (max-width: 600px) {
+        width: 100%;
+        padding: 0.6rem;
     }
 `;
