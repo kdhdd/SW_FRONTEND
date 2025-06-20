@@ -220,10 +220,6 @@ const CategoryBar = styled.div`
     flex-wrap: wrap;
     gap: 10px;
     margin: 1rem 0 1.5rem;
-    @media (max-width: 480px) {
-        gap: 5px;
-        justify-content: center;
-    }
 `;
 
 const CategoryButton = styled.button`
@@ -234,13 +230,17 @@ const CategoryButton = styled.button`
     color: ${({$active}) => ($active ? "white" : "black")};
     font-weight: 500;
     cursor: pointer;
+    white-space: nowrap;
 
     &:hover {
         background-color: #ddd;
     }
 
     @media (max-width: 480px) {
-        font-size: 0.85rem;
-        padding: 6px 12px;
+        flex: 1 1 calc(33.33% - 10px);  // ✅ 한 줄에 3개
+        max-width: calc(33.33% - 10px);
+        text-align: center;
+        font-size: 13px;
+        padding: 8px 0;
     }
 `;

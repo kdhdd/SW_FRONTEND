@@ -7,15 +7,32 @@ import Swal from "sweetalert2";
 import SwalGlobalStyle from "../../styles/SwalGlobalStyle.jsx";
 import logo from '../../assets/logo.png';
 import policeBadge from "../../assets/policeBadge.png";
-import {useState} from "react";
+import {useEffect, useRef, useState} from "react";
 
 function Header() {
     const {authUser, logout} = useAuth();
     const navigate = useNavigate();
     const [menuOpen, setMenuOpen] = useState(false);
     const [dropdownOpen, setDropdownOpen] = useState(false);
-
+    const dropdownRef = useRef(null);
     const toggleMenu = () => setMenuOpen(prev => !prev);
+
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+                setDropdownOpen(false);
+            }
+        };
+
+        if (dropdownOpen) {
+            document.addEventListener("mousedown", handleClickOutside);
+        }
+
+        return () => {
+            document.removeEventListener("mousedown", handleClickOutside);
+        };
+    }, [dropdownOpen]);
+
 
     const handleLogout = async () => {
         const result = await Swal.fire({
@@ -66,6 +83,7 @@ function Header() {
                 <HeaderBtn>
                     {!authUser ? (
                         <DropdownWrapper
+                            ref={dropdownRef}
                             onMouseEnter={() => {
                                 if (window.innerWidth > 768) setDropdownOpen(true);
                             }}

@@ -4,7 +4,6 @@ import 'react-calendar/dist/Calendar.css';
 import {useNavigate} from 'react-router-dom';
 import styled from "styled-components";
 import {CATEGORY_CONFIG} from "../data/dummyArticles"; // 경로는 실제 위치에 따라 조정
-
 import {
     FaSyringe, FaUserSecret, FaFire,
     FaDollarSign, FaSkullCrossbones, FaHandRock
@@ -31,6 +30,43 @@ function getCategoryKey(category) {
             return "violence";
     }
 }
+
+const CustomLegend = ({payload}) => {
+    if (!payload) return null;
+
+    const itemsPerRow = 3;
+    const rows = [];
+
+    for (let i = 0; i < payload.length; i += itemsPerRow) {
+        rows.push(payload.slice(i, i + itemsPerRow));
+    }
+
+    return (
+        <div style={{textAlign: "center", marginTop: 10}}>
+            {rows.map((row, rowIndex) => (
+                <div key={rowIndex} style={{display: "flex", justifyContent: "center", marginBottom: 4}}>
+                    {row.map((entry, index) => (
+                        <div key={index} style={{display: "flex", alignItems: "center", margin: "0 10px"}}>
+                            <div
+                                style={{
+                                    width: 12,
+                                    height: 12,
+                                    backgroundColor: entry.color,
+                                    marginRight: 6,
+                                    borderRadius: 2,
+                                }}
+                            />
+                            <span style={{fontSize: 12}}>
+                {getCategoryDisplay[entry.value] || entry.value}
+              </span>
+                        </div>
+                    ))}
+                </div>
+            ))}
+        </div>
+    );
+};
+
 
 const getIcon = (category) => {
     return {
@@ -288,7 +324,7 @@ export default function IssueCalendarPage() {
                         <YAxis allowDecimals={false}/>
                         <Tooltip content={<CustomTooltip/>}/>
 
-                        <Legend formatter={(value) => getCategoryDisplay[value]}/>
+                        <Legend content={<CustomLegend/>}/>
 
                         {barKeys.map(({key, color}) => (
                             <Bar key={key} dataKey={key} stackId="a" fill={color} barSize={44}
@@ -333,7 +369,7 @@ export default function IssueCalendarPage() {
                         <YAxis allowDecimals={false}/>
                         <Tooltip content={<CustomTooltip/>}/>
 
-                        <Legend formatter={(value) => getCategoryDisplay[value]}/>
+                        <Legend content={<CustomLegend/>}/>
 
                         {barKeys.map(({key, color}) => (
                             <Bar key={key} dataKey={key} stackId="a" fill={color} barSize={44}
@@ -404,16 +440,12 @@ const StyledCalendar = styled(Calendar)`
         font-size: 1rem;
 
         @media (max-width: 768px) {
-            height: 60px;
+            height: 100px;
             font-size: 0.85rem;
         }
-    }
-
-    .react-calendar__month-view__days__day--weekend {
-        color: #4169e1;
-
-        &:nth-child(7n) {
-            color: #FF7A00;
+        @media (max-width: 480px) {
+            height: 70px;
+            font-size: 0.75rem;
         }
     }
 
@@ -427,10 +459,6 @@ const StyledCalendar = styled(Calendar)`
         background: #222;
         color: white;
         border-radius: 6px;
-    }
-
-    .react-calendar__month-view__days__day--neighboringMonth {
-        visibility: hidden;
     }
 
     .react-calendar__tile:disabled {
@@ -447,9 +475,14 @@ const Wrapper = styled.div`
     display: flex;
     gap: 40px;
 
-    @media (max-width: 768px) {
+    @media (max-width: 1024px) {
         flex-direction: column;
-        gap: 20px;
+        gap: 30px;
+        padding: 16px;
+    }
+
+    @media (max-width: 480px) {
+        padding: 12px;
         margin: 60px auto;
     }
 `;
@@ -458,8 +491,12 @@ const LeftPanel = styled.div`
     flex: 1;
     min-width: 600px;
 
-    @media (max-width: 768px) {
+    @media (max-width: 1024px) {
         min-width: 100%;
+    }
+
+    @media (max-width: 480px) {
+        width: 100%;
     }
 `;
 
@@ -477,11 +514,20 @@ const RightPanel = styled.div`
 
     @media (max-width: 768px) {
         width: 100%;
+        padding: 0;
     }
 `;
 
 const EventList = styled.div`
     margin-top: 30px;
+    font-size: 1rem;
+
+    @media (max-width: 768px) {
+        font-size: 0.95rem;
+    }
+    @media (max-width: 480px) {
+        font-size: 0.9rem;
+    }
 `;
 
 const EventItem = styled.div`
@@ -506,5 +552,9 @@ const Label = styled.div`
 
     svg {
         margin-right: 6px;
+    }
+
+    @media (max-width: 480px) {
+        font-size: 0.9rem;
     }
 `;
