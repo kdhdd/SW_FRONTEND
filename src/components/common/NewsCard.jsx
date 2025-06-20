@@ -76,11 +76,15 @@ const CardWrapper = styled.div`
     transition: all 0.4s ease-in-out;
 
     @media (max-width: 768px) {
-        height: 360px;
+        height: 260px;
+        min-width: 0;
+        max-width: 100%;
     }
 
     @media (max-width: 480px) {
-        height: 320px;
+        height: 220px;
+        min-width: 0;
+        max-width: 100%;
     }
 `;
 
@@ -88,6 +92,15 @@ const FormattedDate = styled.div`
     font-size: 1rem;
     font-weight: bold;
     color: white;
+    @media (max-width: 768px) {
+        padding: 0.1em 0.5em 0.5em;
+        font-size: 14px;
+    }
+
+    @media (max-width: 480px) {
+        padding: 0.1em 0.5em 0.5em;
+        font-size: 10px;
+    }
 `;
 
 const SlidePanel = styled.div.attrs({className: "slide-panel"})`
@@ -111,8 +124,12 @@ const IconBar = styled.div`
         color: #fff;
     }
 
+    @media (max-width: 768px) {
+        font-size: 14px;
+    }
+
     @media (max-width: 480px) {
-        padding: 0.4em 0.2em;
+        font-size: 10px;
     }
 `;
 
@@ -131,6 +148,15 @@ const ContentWrapper = styled.div`
 const TopHalf = styled.div`
     background-color: #5a5959;
     padding: 0.8em 1em 0.6em 1em;
+    @media (max-width: 768px) {
+        padding: 0.8em 1em 0.6em 1em;
+        font-size: 1px;
+    }
+
+    @media (max-width: 480px) {
+        padding: 0.8em 1em 0.6em 1em;
+        font-size: 1px;
+    }
 `;
 
 const BottomHalf = styled.div`
@@ -140,6 +166,13 @@ const BottomHalf = styled.div`
     display: flex;
     flex-direction: column;
     justify-content: center;
+    @media (max-width: 768px) {
+        font-size: 1px;
+    }
+
+    @media (max-width: 480px) {
+        font-size: 0.2rem;
+    }
 `;
 
 const Title = styled.h3`
@@ -155,11 +188,11 @@ const Title = styled.h3`
     height: 2.6em;
 
     @media (max-width: 768px) {
-        font-size: 1rem;
+        font-size: 14px;
     }
 
     @media (max-width: 480px) {
-        font-size: 0.95rem;
+        font-size: 10px;
     }
 `;
 
@@ -175,11 +208,11 @@ const Text = styled.p`
     }
 
     @media (max-width: 768px) {
-        font-size: 0.85rem;
+        font-size: 14rem;
     }
 
     @media (max-width: 480px) {
-        font-size: 0.8rem;
+        font-size: 10rem;
     }
 `;
 

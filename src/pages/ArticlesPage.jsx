@@ -132,13 +132,16 @@ const Grid = styled.div`
     @media (max-width: 1200px) {
         grid-template-columns: repeat(3, 1fr);
     }
+
     @media (max-width: 900px) {
         grid-template-columns: repeat(2, 1fr);
     }
+
     @media (max-width: 600px) {
-        grid-template-columns: 1fr;
+        grid-template-columns: repeat(2, 1fr); /* ✅ 여전히 2개 유지 */
     }
 `;
+
 
 const Pagination = styled.div`
     display: flex;
