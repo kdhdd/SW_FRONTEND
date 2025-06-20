@@ -34,29 +34,46 @@ function getCategoryKey(category) {
 const CustomLegend = ({payload}) => {
     if (!payload) return null;
 
-    const itemsPerRow = 3;
-    const rows = [];
+    const isMobile = window.innerWidth <= 768;
+    const itemsPerRow = isMobile ? 3 : payload.length;
+    const fontSize = isMobile ? 13 : 15; // ✅ 글자 크기 증가
 
+    const rows = [];
     for (let i = 0; i < payload.length; i += itemsPerRow) {
         rows.push(payload.slice(i, i + itemsPerRow));
     }
 
     return (
-        <div style={{textAlign: "center", marginTop: 10}}>
+        <div style={{textAlign: "center", marginTop: 12}}>
             {rows.map((row, rowIndex) => (
-                <div key={rowIndex} style={{display: "flex", justifyContent: "center", marginBottom: 4}}>
+                <div
+                    key={rowIndex}
+                    style={{
+                        display: "flex",
+                        justifyContent: "center",
+                        marginBottom: 6,
+                        flexWrap: "wrap"
+                    }}
+                >
                     {row.map((entry, index) => (
-                        <div key={index} style={{display: "flex", alignItems: "center", margin: "0 10px"}}>
+                        <div
+                            key={index}
+                            style={{
+                                display: "flex",
+                                alignItems: "center",
+                                margin: "0 12px"
+                            }}
+                        >
                             <div
                                 style={{
-                                    width: 12,
-                                    height: 12,
+                                    width: 14,
+                                    height: 14,
                                     backgroundColor: entry.color,
-                                    marginRight: 6,
-                                    borderRadius: 2,
+                                    marginRight: 8,
+                                    borderRadius: 2
                                 }}
                             />
-                            <span style={{fontSize: 12}}>
+                            <span style={{fontSize}}>
                 {getCategoryDisplay[entry.value] || entry.value}
               </span>
                         </div>
@@ -66,7 +83,6 @@ const CustomLegend = ({payload}) => {
         </div>
     );
 };
-
 
 const getIcon = (category) => {
     return {
