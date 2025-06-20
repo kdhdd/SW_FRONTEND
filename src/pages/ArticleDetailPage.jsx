@@ -107,7 +107,7 @@ function ArticleDetailPage() {
                 // 변화가 있거나, 특정 역할의 수치가 0으로 바뀐 경우 → 갱신
                 setSentimentData(newData);
                 setIsSentimentLoading(false);
-            } else if (retryCount < 5) {
+            } else if (retryCount < 7) {
                 setTimeout(() => fetchSentimentStats(newData, retryCount + 1), 1000);
             } else {
                 setIsSentimentLoading(false);
