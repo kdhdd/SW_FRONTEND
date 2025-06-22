@@ -24,7 +24,7 @@
 
 사건, 오늘 프로젝트의 백엔드 레포지토리
 
-[![Frontend Repository](https://img.shields.io/badge/Backend-Repository-orange?style=for-the-badge&logo=github)](https://github.com/4-18/frontend.git)
+[![Backend Repository](https://img.shields.io/badge/Backend-Repository-orange?style=for-the-badge&logo=github)](https://github.com/SW-Cloud-Fundamentals/MSA)
 
 
 <br>
