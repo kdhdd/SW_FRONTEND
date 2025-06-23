@@ -62,7 +62,13 @@ function SearchResultPage() {
             try {
                 const res = await fetch(url);
                 const data = await res.json();
-                setNewsData(data.data);
+
+                const raw = Array.isArray(data.data) ? data.data : [];
+
+                // ✅ pubDate 기준 최신순 정렬
+                const sorted = raw.sort((a, b) => new Date(b.pubDate) - new Date(a.pubDate));
+
+                setNewsData(sorted);
             } catch (err) {
                 console.error("검색 결과 불러오기 실패:", err);
             }
@@ -70,6 +76,7 @@ function SearchResultPage() {
 
         fetchSearchResults();
     }, [keyword, date]);
+
 
     const handleClickCard = (id) => navigate(`/articles/${id}`);
 

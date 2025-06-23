@@ -67,7 +67,8 @@ function ArticlesPage() {
                 const res = await fetch(url);
                 const json = await res.json();
                 const data = Array.isArray(json.data) ? json.data : [];
-                setNewsData(data);
+                const sorted = data.sort((a, b) => new Date(b.pubDate) - new Date(a.pubDate));
+                setNewsData(sorted);
             } catch (err) {
                 console.error("뉴스 불러오기 실패:", err);
             }
