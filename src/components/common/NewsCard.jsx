@@ -208,11 +208,11 @@ const Text = styled.p`
     }
 
     @media (max-width: 768px) {
-        font-size: 14rem;
+        font-size: 9px;
     }
 
     @media (max-width: 480px) {
-        font-size: 10rem;
+        font-size: 8px;
     }
 `;
 
