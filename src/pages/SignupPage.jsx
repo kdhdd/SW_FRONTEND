@@ -106,7 +106,7 @@ export default function SignupPage({type}) {
                     <Row>
                         <FullInput
                             type="email"
-                            placeholder={type === "police" ? "email@skuniv.ac.kr" : "email@example.com"}
+                            placeholder={type === "police" ? "email@police.go.kr" : "email@example.com"}
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
                             required
