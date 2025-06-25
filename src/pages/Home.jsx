@@ -127,18 +127,34 @@ function Home() {
     useEffect(() => {
         const fetchKeywords = async () => {
             try {
-                const res = await fetch("https://crimearticle.net/article-service/news");
-                const data = await res.json();
-                const titles = data?.data?.map(article => article.title) || [];
-                const keywords = extractKeywordsFromTitles(titles);
+                const urls = [
+                    "https://crimearticle.net/article-service/news",
+                    "https://crimearticle.net/article-service/news?keyword=성폭행",
+                    "https://crimearticle.net/article-service/news?keyword=사기",
+                    "https://crimearticle.net/article-service/news?keyword=방화",
+                    "https://crimearticle.net/article-service/news?keyword=살인"
+                ];
+
+                const responses = await Promise.all(urls.map(url => fetch(url)));
+                const allData = await Promise.all(responses.map(res => res.json()));
+
+                // 모든 기사 제목 수집
+                const allTitles = allData.flatMap(data => data?.data?.map(article => article.title) || []);
+
+                // 중복 제거
+                const uniqueTitles = [...new Set(allTitles)];
+
+                // 키워드 추출
+                const keywords = extractKeywordsFromTitles(uniqueTitles);
                 setAllKeywords(keywords);
+
             } catch (err) {
-                console.error("뉴스 불러오기 실패", err);
+                console.error("모든 뉴스 불러오기 실패", err);
             }
         };
+
         fetchKeywords();
     }, []);
-
 
     return (
         <>
