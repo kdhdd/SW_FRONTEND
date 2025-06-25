@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import React, {useEffect, useRef, useState, useCallback} from "react";
 import ScrollReveal from "scrollreveal";
 import styled from "styled-components";
 import {useNavigate} from "react-router-dom";
@@ -9,13 +9,21 @@ import {faMagnifyingGlass} from "@fortawesome/free-solid-svg-icons";
 import PopularNews from "../components/common/PopularNews.jsx";
 import Swal from "sweetalert2";
 import SwalGlobalStyle from "../styles/SwalGlobalStyle";
+import SuggestionList from "../components/common/SuggestionList";
+import {extractKeywordsFromTitles} from "../utils/keywordHelper";
 
 function Home() {
     const [keyword, setKeyword] = useState("");
     const [date, setDate] = useState("");
+    const [allKeywords, setAllKeywords] = useState([]);
+    const [suggestions, setSuggestions] = useState([]);
+    const [highlightIndex, setHighlightIndex] = useState(-1);
+
+    const inputRef = useRef(null);
+    const suggestionRef = useRef(null);
     const navigate = useNavigate();
 
-    const searchNews = async (keyword, date) => {
+    const searchNews = useCallback(async (keyword, date) => {
         if (!keyword) {
             await Swal.fire({
                 icon: 'warning',
@@ -26,13 +34,79 @@ function Home() {
                     confirmButton: 'custom-swal-button'
                 }
             });
-
             return;
         }
         let query = `?keyword=${encodeURIComponent(keyword)}`;
         if (date) query += `&date=${date}`;
         navigate(`/search-result${query}`);
+    }, [navigate]);
+
+    const updateSuggestions = useCallback((value) => {
+        if (value.trim()) {
+            const filtered = allKeywords
+                .filter(word => word.startsWith(value))
+                .slice(0, 10);
+            setSuggestions(filtered);
+        } else {
+            setSuggestions([]);
+        }
+        setHighlightIndex(-1);
+    }, [allKeywords]);
+
+    const handleInputChange = (e) => {
+        const value = e.target.value;
+        setKeyword(value);
+        updateSuggestions(value);
     };
+
+    const handleKeyDown = (e) => {
+        if (e.key === "ArrowDown" && suggestions.length > 0) {
+            e.preventDefault();
+            setHighlightIndex((prev) => (prev + 1) % suggestions.length);
+        } else if (e.key === "ArrowUp" && suggestions.length > 0) {
+            e.preventDefault();
+            setHighlightIndex((prev) =>
+                prev === -1 ? suggestions.length - 1 : (prev - 1 + suggestions.length) % suggestions.length
+            );
+        } else if (e.key === "Enter") {
+            if (highlightIndex >= 0 && suggestions.length > 0) {
+                const selected = suggestions[highlightIndex];
+                setKeyword(selected);
+                setSuggestions([]);
+                setHighlightIndex(-1);
+                searchNews(selected, date);
+            } else {
+                searchNews(keyword, date); // ✅ 추천어 없어도 입력한 키워드로 검색
+            }
+        } else if (e.key === "Escape") {
+            setSuggestions([]);
+            setHighlightIndex(-1);
+        }
+    };
+
+    const handleSuggestionSelect = (word) => {
+        setKeyword(word);
+        setSuggestions([]);
+        setHighlightIndex(-1);
+        searchNews(word, date);
+    };
+
+    useEffect(() => {
+        const handleClickOutside = (e) => {
+            if (
+                inputRef.current &&
+                !inputRef.current.contains(e.target) &&
+                suggestionRef.current &&
+                !suggestionRef.current.contains(e.target)
+            ) {
+                setSuggestions([]);
+                setHighlightIndex(-1);
+            }
+        };
+
+        document.addEventListener("mousedown", handleClickOutside);
+        return () => document.removeEventListener("mousedown", handleClickOutside);
+    }, []);
 
     useEffect(() => {
         const elements = document.querySelectorAll(".reveal-title");
@@ -49,6 +123,22 @@ function Home() {
             });
         });
     }, []);
+
+    useEffect(() => {
+        const fetchKeywords = async () => {
+            try {
+                const res = await fetch("https://crimearticle.net/article-service/news");
+                const data = await res.json();
+                const titles = data?.data?.map(article => article.title) || [];
+                const keywords = extractKeywordsFromTitles(titles);
+                setAllKeywords(keywords);
+            } catch (err) {
+                console.error("뉴스 불러오기 실패", err);
+            }
+        };
+        fetchKeywords();
+    }, []);
+
 
     return (
         <>
@@ -83,14 +173,22 @@ function Home() {
                         </InfoBox>
                         <SearchBar>
                             <SearchInput
+                                ref={inputRef}
                                 type="text"
                                 placeholder="검색어를 입력하세요"
                                 value={keyword}
-                                onChange={(e) => setKeyword(e.target.value)}
-                                onKeyDown={(e) => {
-                                    if (e.key === "Enter") searchNews(keyword, date);
-                                }}
+                                onChange={handleInputChange}
+                                onFocus={() => updateSuggestions(keyword)}
+                                onKeyDown={handleKeyDown}
                             />
+
+                            <SuggestionList
+                                ref={suggestionRef}
+                                suggestions={suggestions}
+                                onSelect={handleSuggestionSelect}
+                                highlightIndex={highlightIndex}
+                            />
+
                             <DateInput
                                 type="date"
                                 value={date}
@@ -271,7 +369,6 @@ const SearchBar = styled.div`
     max-width: 800px;
     background: #ffffff;
     border-radius: 999px;
-    overflow: hidden;
     box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
     z-index: 3;
 
