@@ -1,8 +1,40 @@
 import React, {useState, useEffect} from "react";
-import styled from "styled-components";
+import styled, {keyframes} from "styled-components";
 import {useNavigate, useParams} from "react-router-dom";
 import NewsCard from "../components/common/NewsCard.jsx";
 import Footer from "../components/common/Footer.jsx";
+
+// 애니메이션 정의
+const fadeInUp = keyframes`
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+`;
+
+const slideIn = keyframes`
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+`;
+
+const pulse = keyframes`
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+`;
 
 function ArticlesPage() {
     const [newsData, setNewsData] = useState([]);
@@ -14,6 +46,7 @@ function ArticlesPage() {
     const categories = ["마약", "성폭행", "사기", "살인", "방화", "폭행"];
     const [selectedCategory, setSelectedCategory] = useState("마약");
     const [articleCount, setArticleCount] = useState(0);
+    const [isLoading, setIsLoading] = useState(false);
 
     const [pageGroupStart, setPageGroupStart] = useState(1);
     const [pageGroupSize, setPageGroupSize] = useState(10);
@@ -62,8 +95,9 @@ function ArticlesPage() {
 
     useEffect(() => {
         const fetchNews = async () => {
+            setIsLoading(true);
             try {
-                const url = `https://crimearticle.net/article-service/news?keyword=${selectedCategory}`;
+                const url = `http://localhost:8000/article-service/news?keyword=${selectedCategory}`;
                 const res = await fetch(url);
                 const json = await res.json();
                 const data = Array.isArray(json.data) ? json.data : [];
@@ -71,12 +105,14 @@ function ArticlesPage() {
                 setNewsData(sorted);
             } catch (err) {
                 console.error("뉴스 불러오기 실패:", err);
+            } finally {
+                setIsLoading(false);
             }
         };
 
         const fetchCount = async () => {
             try {
-                const countRes = await fetch(`https://crimearticle.net/article-service/news/count?keyword=${selectedCategory}`);
+                const countRes = await fetch(`http://localhost:8000/article-service/news/count?keyword=${selectedCategory}`);
                 const countData = await countRes.json();
                 setArticleCount(countData.count);
             } catch (err) {
@@ -91,51 +127,80 @@ function ArticlesPage() {
     return (
         <>
             <PageWrapper>
-                <Header>
-                    <h2>
-                        오늘의 뉴스 <span style={{fontSize: "1rem", color: "#888"}}> (총 {articleCount}건)</span>
-                    </h2>
-                </Header>
+                <BackgroundGradient />
+                <ContentContainer>
+                    <Header>
+                        <TitleSection>
+                            <MainTitle>오늘의 뉴스</MainTitle>
+                            <Subtitle>최신 범죄 관련 뉴스를 한눈에 확인하세요</Subtitle>
+                            <ArticleCount>
+                                총 <span className="count">{articleCount}</span>건의 기사
+                            </ArticleCount>
+                        </TitleSection>
+                    </Header>
 
-                <CategoryBar>
-                    {categories.map((cat) => (
-                        <CategoryButton
-                            key={cat}
-                            $active={selectedCategory === cat}
-                            onClick={() => {
-                                setSelectedCategory(cat);
-                                setPageGroupStart(1); // 카테고리 변경 시 페이지 초기화
-                                handlePageChange(1);
-                            }}
-                        >
-                            {cat}
-                        </CategoryButton>
-                    ))}
-                </CategoryBar>
+                    <CategoryBar>
+                        {categories.map((cat, index) => (
+                            <CategoryButton
+                                key={cat}
+                                $active={selectedCategory === cat}
+                                onClick={() => {
+                                    setSelectedCategory(cat);
+                                    setPageGroupStart(1);
+                                    handlePageChange(1);
+                                }}
+                                style={{animationDelay: `${index * 0.1}s`}}
+                            >
+                                {cat}
+                            </CategoryButton>
+                        ))}
+                    </CategoryBar>
 
-                <Grid>
-                    {currentNews.map((news) => (
-                        <div key={news.id} onClick={() => handleClickCard(news.id)}>
-                            <NewsCard news={news}/>
-                        </div>
-                    ))}
-                </Grid>
+                    {isLoading ? (
+                        <LoadingContainer>
+                            <LoadingSpinner />
+                            <LoadingText>뉴스를 불러오는 중...</LoadingText>
+                        </LoadingContainer>
+                    ) : (
+                        <Grid>
+                            {currentNews.map((news, index) => (
+                                <CardWrapper 
+                                    key={news.id} 
+                                    onClick={() => handleClickCard(news.id)}
+                                    style={{animationDelay: `${index * 0.1}s`}}
+                                >
+                                    <NewsCard news={news}/>
+                                </CardWrapper>
+                            ))}
+                        </Grid>
+                    )}
 
-                <Pagination>
-                    {pageGroupStart > 1 && <button onClick={handlePrevGroup}>←</button>}
+                    {!isLoading && totalPages > 1 && (
+                        <Pagination>
+                            {pageGroupStart > 1 && (
+                                <PaginationButton onClick={handlePrevGroup}>
+                                    <span>‹</span>
+                                </PaginationButton>
+                            )}
 
-                    {pageNumbers.map((page) => (
-                        <button
-                            key={page}
-                            onClick={() => handlePageChange(page)}
-                            className={currentPage === page ? "active" : ""}
-                        >
-                            {page}
-                        </button>
-                    ))}
+                            {pageNumbers.map((page) => (
+                                <PaginationButton
+                                    key={page}
+                                    onClick={() => handlePageChange(page)}
+                                    className={currentPage === page ? "active" : ""}
+                                >
+                                    {page}
+                                </PaginationButton>
+                            ))}
 
-                    {pageGroupStart + pageGroupSize - 1 < totalPages && <button onClick={handleNextGroup}>→</button>}
-                </Pagination>
+                            {pageGroupStart + pageGroupSize - 1 < totalPages && (
+                                <PaginationButton onClick={handleNextGroup}>
+                                    <span>›</span>
+                                </PaginationButton>
+                            )}
+                        </Pagination>
+                    )}
+                </ContentContainer>
             </PageWrapper>
             <Footer/>
         </>
@@ -145,103 +210,313 @@ function ArticlesPage() {
 export default ArticlesPage;
 
 const PageWrapper = styled.div`
-    padding: 100px 40px 40px;
-    background: white;
+    position: relative;
     min-height: 100vh;
+    height: 100vh;
+    background: #fff;
+    overflow-x: hidden;
+`;
 
-    @media (max-width: 768px) {
-        padding: 80px 20px 30px;
+const BackgroundGradient = styled.div`
+    display: flex;
+    flex-direction: column;
+`;
+
+const ContentContainer = styled.div`
+    position: relative;
+    z-index: 1;
+    padding: 80px 0 40px 0;
+    width: 100vw;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+
+    @media (max-width: 900px) {
+        padding: 60px 0 24px 0;
+    }
+    @media (max-width: 600px) {
+        padding: 40px 0 12px 0;
     }
 `;
 
 const Header = styled.div`
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-
-    h2 {
-        font-size: 1.5rem;
-        font-weight: bold;
-        text-align: left;
-
-        @media (max-width: 768px) {
-            font-size: 1.3rem;
-        }
+    text-align: center;
+    margin-bottom: 2rem;
+    animation: ${fadeInUp} 0.8s ease-out;
+    flex-shrink: 0;
+    @media (max-width: 600px) {
+        margin-bottom: 1.2rem;
     }
+`;
+
+const TitleSection = styled.div`
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+`;
+
+const MainTitle = styled.h1`
+    font-size: 3rem;
+    font-weight: 800;
+    color: #222;
+    margin: 0;
+    letter-spacing: -1px;
+    position: relative;
+    display: inline-block;
+    padding-bottom: 0.4rem;
+    &::after {
+        content: '';
+        display: block;
+        width: 48px;
+        height: 4px;
+        background: #23406e; /* deep blue underline */
+        border-radius: 2px;
+        margin: 0.5rem auto 0 auto;
+    }
+    @media (max-width: 900px) {
+        font-size: 2rem;
+    }
+    @media (max-width: 600px) {
+        font-size: 1.4rem;
+        &::after { width: 32px; height: 3px; }
+    }
+`;
+
+const Subtitle = styled.p`
+    font-size: 1.2rem;
+    color: #444;
+    margin: 0;
+    font-weight: 400;
+    letter-spacing: 0.01em;
+    @media (max-width: 900px) {
+        font-size: 1rem;
+    }
+    @media (max-width: 600px) {
+        font-size: 0.95rem;
+    }
+`;
+
+const ArticleCount = styled.div`
+    font-size: 1rem;
+    color: #444;
+    background: #f5f6fa;
+    padding: 8px 20px;
+    border-radius: 25px;
+    border: 1px solid #e3e6ee;
+    margin: 1rem 0 0.1rem 0;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+    .count {
+        font-weight: 700;
+        color: #23406e;
+        font-size: 1.1rem;
+    }
+    @media (max-width: 600px) {
+        font-size: 0.95rem;
+        padding: 6px 14px;
+    }
+`;
+
+const CategoryBar = styled.div`
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 10px 8px;
+    margin-bottom: 2rem;
+    animation: ${slideIn} 0.6s ease-out;
+    flex-shrink: 0;
+    @media (max-width: 600px) {
+        gap: 8px 4px;
+        margin-bottom: 1.2rem;
+    }
+`;
+
+const CategoryButton = styled.button`
+    padding: 10px 18px;
+    border-radius: 50px;
+    border: 1.5px solid ${({$active}) => $active ? '#23406e' : '#e0e0e0'};
+    background: ${({$active}) => $active ? '#23406e' : '#f5f6fa'};
+    color: ${({$active}) => ($active ? 'white' : '#222')};
+    font-weight: 600;
+    font-size: 0.95rem;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: ${({$active}) => $active ? '0 2px 12px rgba(35,64,110,0.10)' : 'none'};
+    animation: ${fadeInUp} 0.6s ease-out both;
+    &:hover {
+        background: ${({$active}) => $active ? '#1a2e4f' : '#e3e6ee'};
+        color: #222;
+    }
+    &:active {
+        transform: translateY(0);
+    }
+    @media (max-width: 900px) {
+        font-size: 0.9rem;
+        padding: 8px 12px;
+    }
+    @media (max-width: 600px) {
+        font-size: 0.85rem;
+        padding: 7px 0;
+        flex: 1 1 calc(50% - 8px);
+        max-width: calc(50% - 8px);
+        text-align: center;
+    }
+`;
+
+const LoadingContainer = styled.div`
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 4rem 0;
+    gap: 1rem;
+`;
+
+const LoadingSpinner = styled.div`
+    width: 40px;
+    height: 40px;
+    border: 3px solid rgba(255, 255, 255, 0.3);
+    border-top: 3px solid white;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+`;
+
+const LoadingText = styled.p`
+    color: #555;
+    font-size: 1rem;
+    margin: 0;
 `;
 
 const Grid = styled.div`
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 24px;
-    margin-top: 20px;
-
-    @media (max-width: 1200px) {
-        grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 2rem;
+    margin-bottom: 3rem;
+    flex: 1;
+    width: 100vw;
+    box-sizing: border-box;
+    padding: 0 2vw;
+    @media (min-width: 1400px) {
+        grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+        gap: 2.5rem;
+        padding: 0 48px;
     }
-
-    @media (max-width: 900px) {
+    @media (max-width: 1399px) and (min-width: 1200px) {
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 2rem;
+        padding: 0 32px;
+    }
+    @media (max-width: 1199px) and (min-width: 900px) {
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 1.8rem;
+        padding: 0 24px;
+    }
+    @media (max-width: 899px) and (min-width: 600px) {
         grid-template-columns: repeat(2, 1fr);
+        gap: 1.2rem;
+        padding: 0 10px;
     }
+    @media (max-width: 599px) {
+        grid-template-columns: 1fr 1fr;
+        gap: 0.8rem;
+        padding: 0 6px;
+    }
+`;
 
+const CardWrapper = styled.div`
+    animation: ${fadeInUp} 0.6s ease-out both;
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.3s;
+    cursor: pointer;
+    border-radius: 18px;
+    box-shadow: 0 2px 12px rgba(35,64,110,0.07);
+    background: #fff;
+    border: 1.5px solid #e3e6ee;
+    overflow: hidden;
+    &:hover {
+        transform: translateY(-8px) scale(1.025);
+        box-shadow: 0 6px 24px rgba(35,64,110,0.13);
+        border-color: #23406e;
+    }
+    @media (max-width: 900px) {
+        border-radius: 14px;
+    }
     @media (max-width: 600px) {
-        grid-template-columns: repeat(2, 1fr); /* ✅ 여전히 2개 유지 */
+        border-radius: 10px;
     }
 `;
 
 const Pagination = styled.div`
     display: flex;
     justify-content: center;
+    align-items: center;
     flex-wrap: wrap;
     gap: 8px;
-    margin-top: 30px;
-
-    button {
-        width: 38px;
-        height: 38px;
-        border-radius: 6px;
-        border: 1px solid #ccc;
-        background: white;
-        font-size: 1rem;
-        cursor: pointer;
-        transition: all 0.2s ease;
-
-        &.active {
-            background: black;
-            color: white;
-            font-weight: bold;
-        }
-    }
+    margin-top: 2rem;
+    animation: ${fadeInUp} 0.8s ease-out;
 `;
 
-const CategoryBar = styled.div`
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    margin: 1rem 0 1.5rem;
-`;
-
-const CategoryButton = styled.button`
-    padding: 8px 16px;
-    border-radius: 20px;
-    border: none;
-    background-color: ${({$active}) => ($active ? "#3c3b3b" : "#eee")};
-    color: ${({$active}) => ($active ? "white" : "black")};
-    font-weight: 500;
+const PaginationButton = styled.button`
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    border: 1px solid #ddd;
+    background: #f5f5f5;
+    color: #222;
+    font-size: 1rem;
+    font-weight: 600;
     cursor: pointer;
-    white-space: nowrap;
-
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
     &:hover {
-        background-color: #ddd;
+        background: #e0e0e0;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(0,0,0,0.07);
     }
+    &.active {
+        background: #222;
+        color: white;
+        font-weight: 700;
+        box-shadow: 0 4px 15px rgba(34,34,34,0.12);
+        animation: ${pulse} 2s infinite;
+    }
+    &:active {
+        transform: translateY(0);
+    }
+    span {
+        font-size: 1.2rem;
+        font-weight: 700;
+    }
+`;
 
-    @media (max-width: 480px) {
-        flex: 1 1 calc(33.33% - 10px);  // ✅ 한 줄에 3개
-        max-width: calc(33.33% - 10px);
-        text-align: center;
-        font-size: 13px;
-        padding: 8px 0;
-    }
+// Card 내부 정보(날짜, 좋아요, 댓글 등) 꾸미기
+const CardInfoBar = styled.div`
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: #f5f6fa;
+    color: #444;
+    font-size: 0.97rem;
+    font-weight: 500;
+    padding: 0.5rem 1rem;
+    border-bottom: 1px solid #e3e6ee;
+    letter-spacing: 0.01em;
+`;
+
+const CardMeta = styled.div`
+    display: flex;
+    align-items: center;
+    gap: 1.1rem;
+    font-size: 0.97rem;
+    color: #888;
+    svg { margin-right: 0.2em; }
 `;

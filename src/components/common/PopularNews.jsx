@@ -10,7 +10,7 @@ function PopularNews() {
     useEffect(() => {
         const fetchRankedArticles = async () => {
             try {
-                const rankRes = await fetch("https://crimearticle.net/article-service/rank");
+                const rankRes = await fetch("http://localhost:8000/article-service/rank");
                 const json = await rankRes.json();
                 console.log("🔥 랭킹 응답:", json);
                 let rankIds = [];
@@ -19,7 +19,7 @@ function PopularNews() {
                 }
 
                 const articlePromises = rankIds.map((id) =>
-                    fetch(`https://crimearticle.net/article-service/news/${id}`).then((res) => res.json())
+                    fetch(`http://localhost:8000/article-service/news/${id}`).then((res) => res.json())
                         .then((json) => json.data)
                 );
 
@@ -37,12 +37,15 @@ function PopularNews() {
 
     return (
         <Wrapper>
-            <h2>실시간 인기 뉴스</h2>
+            <TitleSection>
+                <h2>실시간 인기 뉴스</h2>
+                <Subtitle>지금 가장 많은 관심을 받고 있는 뉴스입니다</Subtitle>
+            </TitleSection>
             <CardGrid>
                 {rankedArticles.map((article, idx) => (
-                    <div key={article.id} onClick={() => navigate(`/articles/${article.id}`)}>
+                    <CardContainer key={article.id} onClick={() => navigate(`/articles/${article.id}`)}>
                         <NewsCard news={article} rank={idx}/>
-                    </div>
+                    </CardContainer>
                 ))}
             </CardGrid>
         </Wrapper>
@@ -53,49 +56,74 @@ export default PopularNews;
 
 const Wrapper = styled.div`
     padding: 3rem 2rem;
-    background: white;
+    background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
     width: 100%;
     margin: 0 auto;
     max-width: 1600px;
-    min-height: 800px; // 💡 한 화면 안에 다 보이도록 고정
+    min-height: 800px;
     box-sizing: border-box;
+    
     @media (max-width: 768px) {
-        padding: 1rem;
+        padding: 2rem 1rem;
     }
+`;
 
+const TitleSection = styled.div`
+    text-align: center;
+    margin-bottom: 2.5rem;
+    
     h2 {
-        font-size: 1.5rem;
-        margin-bottom: 1.5rem;
-        font-weight: bold;
-        text-align: left;
-        padding: 0 2rem;
-
+        font-size: 2rem;
+        font-weight: 700;
+        color: #2d3748;
+        margin-bottom: 0.5rem;
+        
         @media (max-width: 768px) {
-            font-size: 1.25rem;
-            text-align: center;
+            font-size: 1.5rem;
         }
     }
+`;
+
+const Subtitle = styled.p`
+    font-size: 1rem;
+    color: #64748b;
+    margin: 0;
+    font-weight: 400;
 `;
 
 const CardGrid = styled.div`
     display: grid;
     grid-template-columns: repeat(5, 1fr);
-    gap: 16px;
+    gap: 1.5rem;
     padding: 0 2rem;
     box-sizing: border-box;
 
     @media (max-width: 1200px) {
         padding: 0;
         grid-template-columns: repeat(3, 1fr);
+        gap: 1.2rem;
     }
 
     @media (max-width: 900px) {
         padding: 0;
         grid-template-columns: repeat(2, 1fr);
+        gap: 1rem;
     }
 
     @media (max-width: 600px) {
         padding: 0;
-        grid-template-columns: repeat(2, 1fr); /* ✅ 여전히 2개 유지 */
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0.8rem;
+    }
+`;
+
+const CardContainer = styled.div`
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border-radius: 12px;
+    overflow: hidden;
+    
+    &:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
     }
 `;

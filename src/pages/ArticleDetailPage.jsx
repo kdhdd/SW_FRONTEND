@@ -50,7 +50,7 @@ function ArticleDetailPage() {
         const token = localStorage.getItem("accessToken");
         if (!token) return;
 
-        fetch("https://crimearticle.net/user-service/users/me", {
+                    fetch("http://localhost:8000/user-service/users/me", {
             headers: {Authorization: token},
         })
             .then((res) => res.json())
@@ -60,7 +60,7 @@ function ArticleDetailPage() {
 
     const fetchArticle = async () => {
         try {
-            const res = await fetch(`https://crimearticle.net/article-service/news/${id}`);
+            const res = await fetch(`http://localhost:8000/article-service/news/${id}`);
             const data = await res.json();
             setArticle(data.data);
         } catch (err) {
@@ -71,7 +71,7 @@ function ArticleDetailPage() {
     const fetchComments = async () => {
         const token = localStorage.getItem("accessToken");
         try {
-            const res = await fetch(`https://crimearticle.net/article-service/comments/${id}`, {
+            const res = await fetch(`http://localhost:8000/article-service/comments/${id}`, {
                 headers: {Authorization: token},
             });
             const data = await res.json();
@@ -85,7 +85,7 @@ function ArticleDetailPage() {
         setIsSentimentLoading(true);
 
         try {
-            const res = await fetch(`https://crimearticle.net/sentiment-service/sentiments/${id}`);
+            const res = await fetch(`http://localhost:8000/sentiment-service/sentiments/${id}`);
             const json = await res.json();
             const newData = json.data;
 
@@ -123,7 +123,7 @@ function ArticleDetailPage() {
         const token = localStorage.getItem("accessToken");
 
         try {
-            const res = await fetch(`https://crimearticle.net/article-service/articles/like/${id}`, {
+            const res = await fetch(`http://localhost:8000/article-service/articles/like/${id}`, {
                 headers: token ? {Authorization: token} : {},
             });
 
@@ -162,7 +162,7 @@ function ArticleDetailPage() {
     const handleDeleteComment = async (commentId) => {
         const token = localStorage.getItem("accessToken");
         try {
-            const res = await fetch(`https://crimearticle.net/article-service/comments/${commentId}`, {
+            const res = await fetch(`http://localhost:8000/article-service/comments/${commentId}`, {
                 method: "DELETE",
                 headers: {Authorization: token},
             });
@@ -179,7 +179,7 @@ function ArticleDetailPage() {
         const token = localStorage.getItem("accessToken");
         if (!editContent.trim()) return;
         try {
-            const res = await fetch(`https://crimearticle.net/article-service/comments/${commentId}`, {
+            const res = await fetch(`http://localhost:8000/article-service/comments/${commentId}`, {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json",
@@ -205,7 +205,7 @@ function ArticleDetailPage() {
             return;
         }
         try {
-            const res = await fetch(`https://crimearticle.net/article-service/articles/like/${id}`, {
+            const res = await fetch(`http://localhost:8000/article-service/articles/like/${id}`, {
                 method: "POST",
                 headers: {Authorization: token},
             });

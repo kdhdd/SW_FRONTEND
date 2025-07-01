@@ -19,7 +19,7 @@ export function AuthProvider({children}) {
 
         try {
             console.log("🔍 /users/me 요청 시작");
-            const res = await fetch("https://crimearticle.net/user-service/users/me", {
+            const res = await fetch("http://localhost:8000/user-service/users/me", {
                 headers: {
                     Authorization: token,
                 },
