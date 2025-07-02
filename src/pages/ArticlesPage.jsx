@@ -131,8 +131,6 @@ function ArticlesPage() {
                 <ContentContainer>
                     <Header>
                         <TitleSection>
-                            <MainTitle>오늘의 뉴스</MainTitle>
-                            <Subtitle>최신 범죄 관련 뉴스를 한눈에 확인하세요</Subtitle>
                             <ArticleCount>
                                 총 <span className="count">{articleCount}</span>건의 기사
                             </ArticleCount>
@@ -287,7 +285,7 @@ const MainTitle = styled.h1`
 const Subtitle = styled.p`
     font-size: 1.2rem;
     color: #444;
-    margin: 0;
+    margin-top: 1rem;
     font-weight: 400;
     letter-spacing: 0.01em;
     @media (max-width: 900px) {

@@ -75,7 +75,7 @@ const TitleSection = styled.div`
     h2 {
         font-size: 2rem;
         font-weight: 700;
-        color: #2d3748;
+        color: #0F1A25;
         margin-bottom: 0.5rem;
         
         @media (max-width: 768px) {
@@ -86,7 +86,7 @@ const TitleSection = styled.div`
 
 const Subtitle = styled.p`
     font-size: 1rem;
-    color: #64748b;
+    color: #666;
     margin: 0;
     font-weight: 400;
 `;
@@ -118,12 +118,11 @@ const CardGrid = styled.div`
 `;
 
 const CardContainer = styled.div`
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-    border-radius: 12px;
+    transition: transform 0.3s ease;
+    border-radius: 20px;
     overflow: hidden;
     
     &:hover {
         transform: translateY(-4px);
-        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
     }
 `;
