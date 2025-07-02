@@ -38,8 +38,8 @@ function PopularNews() {
     return (
         <Wrapper>
             <TitleSection>
-                <h2>실시간 인기 뉴스</h2>
-                <Subtitle>지금 가장 많은 관심을 받고 있는 뉴스입니다</Subtitle>
+                <TitleText>실시간 인기 뉴스</TitleText>
+                <SubtitleText>지금 가장 많은 관심을 받고 있는 뉴스입니다</SubtitleText>
             </TitleSection>
             <CardGrid>
                 {rankedArticles.map((article, idx) => (
@@ -71,24 +71,52 @@ const Wrapper = styled.div`
 const TitleSection = styled.div`
     text-align: center;
     margin-bottom: 2.5rem;
+`;
+
+const TitleBadge = styled.div`
+    display: inline-block;
+    background: linear-gradient(135deg, #4A90E2 0%, #357ABD 100%);
+    color: white;
+    font-size: 0.8rem;
+    font-weight: 600;
+    padding: 6px 12px;
+    border-radius: 20px;
+    margin-bottom: 12px;
+    letter-spacing: 0.5px;
+    box-shadow: 0 2px 8px rgba(74, 144, 226, 0.3);
     
-    h2 {
-        font-size: 2rem;
-        font-weight: 700;
-        color: #0F1A25;
-        margin-bottom: 0.5rem;
-        
-        @media (max-width: 768px) {
-            font-size: 1.5rem;
-        }
+    @media (max-width: 768px) {
+        font-size: 0.7rem;
+        padding: 5px 10px;
+        margin-bottom: 10px;
     }
 `;
 
-const Subtitle = styled.p`
-    font-size: 1rem;
+const TitleText = styled.h2`
+    font-size: 2.2rem;
+    font-weight: 700;
+    background: linear-gradient(135deg, #0F1A25 0%, #4A90E2 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin: 0 0 8px 0;
+    letter-spacing: -0.02em;
+    
+    @media (max-width: 768px) {
+        font-size: 1.6rem;
+        margin: 0 0 6px 0;
+    }
+`;
+
+const SubtitleText = styled.p`
+    font-size: 1.1rem;
     color: #666;
     margin: 0;
     font-weight: 400;
+    
+    @media (max-width: 768px) {
+        font-size: 1rem;
+    }
 `;
 
 const CardGrid = styled.div`
