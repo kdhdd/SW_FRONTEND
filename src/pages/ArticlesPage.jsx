@@ -213,6 +213,8 @@ const PageWrapper = styled.div`
     height: 100vh;
     background: #fff;
     overflow-x: hidden;
+    width: 100%;
+    max-width: 100vw;
 `;
 
 const BackgroundGradient = styled.div`
@@ -223,18 +225,23 @@ const BackgroundGradient = styled.div`
 const ContentContainer = styled.div`
     position: relative;
     z-index: 1;
-    padding: 80px 0 40px 0;
-    width: 100vw;
+    padding: 90px 0 40px 0;
+    width: 100%;
+    max-width: 100vw;
     min-height: 100vh;
     display: flex;
     flex-direction: column;
     box-sizing: border-box;
+    overflow-x: hidden;
 
     @media (max-width: 900px) {
-        padding: 60px 0 24px 0;
+        padding: 70px 0 24px 0;
     }
     @media (max-width: 600px) {
-        padding: 40px 0 12px 0;
+        padding: 60px 0 12px 0;
+    }
+    @media (max-width: 390px) {
+        padding: 55px 0 10px 0;
     }
 `;
 
@@ -243,8 +250,17 @@ const Header = styled.div`
     margin-bottom: 2rem;
     animation: ${fadeInUp} 0.8s ease-out;
     flex-shrink: 0;
+    padding: 0 10px;
+    box-sizing: border-box;
     @media (max-width: 600px) {
         margin-bottom: 1.2rem;
+        margin-top: 1rem;
+        padding: 0 6px;
+    }
+    @media (max-width: 390px) {
+        margin-bottom: 1rem;
+        margin-top: 1rem;
+        padding: 0 4px;
     }
 `;
 
@@ -253,6 +269,9 @@ const TitleSection = styled.div`
     flex-direction: column;
     align-items: center;
     gap: 1rem;
+    width: 100%;
+    max-width: 100%;
+    overflow: hidden;
 `;
 
 const MainTitle = styled.h1`
@@ -306,6 +325,7 @@ const ArticleCount = styled.div`
     margin: 1rem 0 0.1rem 0;
     font-weight: 500;
     letter-spacing: 0.02em;
+    white-space: nowrap;
     .count {
         font-weight: 700;
         color: #23406e;
@@ -314,6 +334,11 @@ const ArticleCount = styled.div`
     @media (max-width: 600px) {
         font-size: 0.95rem;
         padding: 6px 14px;
+    }
+    @media (max-width: 390px) {
+        font-size: 0.9rem;
+        padding: 5px 12px;
+        margin: 0.8rem 0 0.1rem 0;
     }
 `;
 
@@ -325,9 +350,17 @@ const CategoryBar = styled.div`
     margin-bottom: 2rem;
     animation: ${slideIn} 0.6s ease-out;
     flex-shrink: 0;
+    padding: 0 10px;
+    box-sizing: border-box;
     @media (max-width: 600px) {
         gap: 8px 4px;
         margin-bottom: 1.2rem;
+        padding: 0 6px;
+    }
+    @media (max-width: 390px) {
+        gap: 6px 2px;
+        margin-bottom: 1rem;
+        padding: 0 4px;
     }
 `;
 
@@ -361,6 +394,12 @@ const CategoryButton = styled.button`
         flex: 1 1 calc(50% - 8px);
         max-width: calc(50% - 8px);
         text-align: center;
+    }
+    @media (max-width: 390px) {
+        font-size: 0.8rem;
+        padding: 6px 0;
+        flex: 1 1 calc(50% - 4px);
+        max-width: calc(50% - 4px);
     }
 `;
 
@@ -399,7 +438,8 @@ const Grid = styled.div`
     gap: 2rem;
     margin-bottom: 3rem;
     flex: 1;
-    width: 100vw;
+    width: 100%;
+    max-width: 100%;
     box-sizing: border-box;
     padding: 0 2vw;
     @media (min-width: 1400px) {
@@ -426,6 +466,11 @@ const Grid = styled.div`
         grid-template-columns: 1fr 1fr;
         gap: 0.8rem;
         padding: 0 6px;
+    }
+    @media (max-width: 390px) {
+        grid-template-columns: 1fr 1fr;
+        gap: 0.6rem;
+        padding: 0 4px;
     }
 `;
 
