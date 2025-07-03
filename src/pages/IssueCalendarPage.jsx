@@ -256,7 +256,6 @@ export default function IssueCalendarPage() {
             <ContentContainer>
                 <MainContent>
                     <CalendarSection>
-                        <SectionTitle>캘린더</SectionTitle>
                         <StyledCalendar
                             onChange={setValue}
                             value={value}
