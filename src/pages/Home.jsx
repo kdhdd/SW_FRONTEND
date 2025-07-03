@@ -291,8 +291,8 @@ const BackgroundGradient = styled.div`
     left: 0;
     right: 0;
     bottom: 0;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    opacity: 0.05;
+    background: #fff;
+    opacity: 1;
     z-index: -1;
 `;
 
@@ -305,7 +305,7 @@ const HomeSection = styled.section`
     padding: 4rem 1rem;
     text-align: center;
     position: relative;
-    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    background: #fff;
 `;
 
 const NewsSection = styled.section`
