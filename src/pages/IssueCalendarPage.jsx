@@ -2,7 +2,7 @@ import React, {useState, useEffect} from "react";
 import Calendar from "react-calendar";
 import 'react-calendar/dist/Calendar.css';
 import {useNavigate} from 'react-router-dom';
-import styled from "styled-components";
+import styled, { keyframes } from "styled-components";
 import {CATEGORY_CONFIG} from "../data/dummyArticles"; // 경로는 실제 위치에 따라 조정
 import {
     FaSyringe, FaUserSecret, FaFire,
@@ -13,6 +13,29 @@ import {
     CartesianGrid, Legend, LabelList
 } from "recharts";
 import {format} from "date-fns";
+
+// 애니메이션 정의
+const fadeInUp = keyframes`
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+`;
+
+const slideIn = keyframes`
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+`;
 
 function getCategoryKey(category) {
     switch (category) {
@@ -36,7 +59,6 @@ const CustomLegend = ({payload}) => {
 
     const isMobile = window.innerWidth <= 768;
     const itemsPerRow = isMobile ? 3 : payload.length;
-    const fontSize = isMobile ? 13 : 15; // ✅ 글자 크기 증가
 
     const rows = [];
     for (let i = 0; i < payload.length; i += itemsPerRow) {
@@ -44,53 +66,30 @@ const CustomLegend = ({payload}) => {
     }
 
     return (
-        <div style={{textAlign: "center", marginTop: 12}}>
+        <LegendContainer>
             {rows.map((row, rowIndex) => (
-                <div
-                    key={rowIndex}
-                    style={{
-                        display: "flex",
-                        justifyContent: "center",
-                        marginBottom: 6,
-                        flexWrap: "wrap"
-                    }}
-                >
+                <LegendRow key={rowIndex}>
                     {row.map((entry, index) => (
-                        <div
-                            key={index}
-                            style={{
-                                display: "flex",
-                                alignItems: "center",
-                                margin: "0 12px"
-                            }}
-                        >
-                            <div
-                                style={{
-                                    width: 14,
-                                    height: 14,
-                                    backgroundColor: entry.color,
-                                    marginRight: 8,
-                                    borderRadius: 2
-                                }}
-                            />
-                            <span style={{fontSize}}>
-                {getCategoryDisplay[entry.value] || entry.value}
-              </span>
-                        </div>
+                        <LegendItem key={index}>
+                            <LegendColor style={{backgroundColor: entry.color}} />
+                            <LegendText>
+                                {getCategoryDisplay[entry.value] || entry.value}
+                            </LegendText>
+                        </LegendItem>
                     ))}
-                </div>
+                </LegendRow>
             ))}
-        </div>
+        </LegendContainer>
     );
 };
 
 const getIcon = (category) => {
     return {
-        "drug": <FaSyringe color="crimson"/>,
-        "sexCrime": <FaUserSecret color="orange"/>,
+        "drug": <FaSyringe color="#FF6B6B"/>,
+        "sexCrime": <FaUserSecret color="#FFB347"/>,
         "fraud": <FaDollarSign color="#a29bfe"/>,
         "murder": <FaSkullCrossbones color="#d63031"/>,
-        "arson": <FaFire color="tomato"/>,
+        "arson": <FaFire color="#6FB1FC"/>,
         "violence": <FaHandRock color="#2d3436"/>
     }[category];
 };
@@ -124,7 +123,6 @@ const getMonthlyDataWithApi = (categoryConfig, apiArticles) => {
         const [year, month] = monthStr.split("-").map(Number);
         const counts = {month: monthStr, drug: 0, sexCrime: 0, fraud: 0, murder: 0, arson: 0, violence: 0};
 
-        // ✅ 더미 숫자
         for (const [korCategory, yearlyData] of Object.entries(categoryConfig)) {
             const key = getCategoryKey(korCategory);
             if (yearlyData?.[year]?.[month]) {
@@ -132,7 +130,6 @@ const getMonthlyDataWithApi = (categoryConfig, apiArticles) => {
             }
         }
 
-        // ✅ API 기사에서 개수 세기
         apiArticles.forEach(({date, category}) => {
             if (format(new Date(date), "yyyy-MM") === monthStr) {
                 const key = getCategoryKey(category);
@@ -144,7 +141,6 @@ const getMonthlyDataWithApi = (categoryConfig, apiArticles) => {
     });
 };
 
-
 const getYearlyDataWithApi = (categoryConfig, apiArticles) => {
     const now = new Date();
     const baseYears = Array.from({length: 6}, (_, i) => now.getFullYear() - 5 + i);
@@ -152,7 +148,6 @@ const getYearlyDataWithApi = (categoryConfig, apiArticles) => {
     return baseYears.map(year => {
         const counts = {year: `${year}`, drug: 0, sexCrime: 0, fraud: 0, murder: 0, arson: 0, violence: 0};
 
-        // ✅ 더미 숫자
         for (const [korCategory, yearlyData] of Object.entries(categoryConfig)) {
             const key = getCategoryKey(korCategory);
             if (yearlyData?.[year]) {
@@ -162,7 +157,6 @@ const getYearlyDataWithApi = (categoryConfig, apiArticles) => {
             }
         }
 
-        // ✅ API 기사 집계
         apiArticles.forEach(({date, category}) => {
             if (format(new Date(date), "yyyy") === String(year)) {
                 const key = getCategoryKey(category);
@@ -173,7 +167,6 @@ const getYearlyDataWithApi = (categoryConfig, apiArticles) => {
         return counts;
     });
 };
-
 
 const CustomTooltip = ({active, payload, label, coordinate, viewBox}) => {
     if (!active || !payload || payload.length === 0) return null;
@@ -187,22 +180,14 @@ const CustomTooltip = ({active, payload, label, coordinate, viewBox}) => {
     }).filter(Boolean);
 
     return (
-        <div style={{
-            position: 'absolute',
-            left, top: coordinate.y,
-            backgroundColor: 'white',
-            padding: '10px',
-            borderRadius: '10px',
-            boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
-            zIndex: 9999,
-            pointerEvents: 'none',
-            whiteSpace: 'nowrap'
-        }}>
-            <p style={{fontWeight: "bold", marginBottom: 6}}>{label}</p>
+        <TooltipContainer style={{left, top: coordinate.y}}>
+            <TooltipTitle>{label}</TooltipTitle>
             {sorted.map(({name, value, color}, idx) => (
-                <p key={idx} style={{color, margin: 0}}>{name} : {value}건</p>
+                <TooltipItem key={idx} style={{color}}>
+                    {name} : {value}건
+                </TooltipItem>
             ))}
-        </div>
+        </TooltipContainer>
     );
 };
 
@@ -211,6 +196,13 @@ export default function IssueCalendarPage() {
     const [value, setValue] = useState(new Date());
     const [selectedDateEvents, setSelectedDateEvents] = useState([]);
     const [apiArticles, setApiArticles] = useState([]);
+    const [isMobile, setIsMobile] = useState(window.innerWidth <= 600);
+
+    useEffect(() => {
+        const handleResize = () => setIsMobile(window.innerWidth <= 600);
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
 
     const CustomTick = ({x, y, payload, months}) => {
         const index = months.indexOf(payload.value);
@@ -222,7 +214,7 @@ export default function IssueCalendarPage() {
         }
 
         return (
-            <text x={x} y={y + 15} textAnchor="middle" fontSize={16} fill="#333">
+            <text x={x} y={y + 15} textAnchor="middle" fontSize={14} fill="#444444">
                 {label}
             </text>
         );
@@ -250,210 +242,403 @@ export default function IssueCalendarPage() {
         fetchAll();
     }, []);
 
-
     useEffect(() => {
         const selectedStr = format(value, "yyyy-MM-dd");
         setSelectedDateEvents(apiArticles.filter(e => e.date === selectedStr));
     }, [value, apiArticles]);
 
-
     const monthlyData = getMonthlyDataWithApi(CATEGORY_CONFIG, apiArticles);
     const yearlyData = getYearlyDataWithApi(CATEGORY_CONFIG, apiArticles);
 
-
     return (
-        <Wrapper>
-            <LeftPanel>
-                <h2>📅 이슈 캘린더</h2>
-                <StyledCalendar
-                    onChange={setValue}
-                    value={value}
-                    maxDate={new Date()} // ✅ 선택 제한은 오늘까지
-                    navigationLabel={({date}) =>
-                        format(date, 'yyyy년 M월')
-                    }
-                    tileDisabled={({date}) => date > new Date()}
-                    tileContent={({date}) => {
-                        const dateStr = format(date, 'yyyy-MM-dd');
-                        const dayEvents = apiArticles.filter(e => e.date === dateStr);
+        <PageWrapper>
+            <BackgroundGradient />
+            <ContentContainer>
+                <MainContent>
+                    <CalendarSection>
+                        <SectionTitle>캘린더</SectionTitle>
+                        <StyledCalendar
+                            onChange={setValue}
+                            value={value}
+                            maxDate={new Date()}
+                            navigationLabel={({date}) =>
+                                format(date, 'yyyy년 M월')
+                            }
+                            tileDisabled={({date}) => date > new Date()}
+                            tileContent={({date}) => {
+                                const dateStr = format(date, 'yyyy-MM-dd');
+                                const dayEvents = apiArticles.filter(e => e.date === dateStr);
 
-                        const uniqueCategories = Array.from(
-                            new Set(dayEvents.map(e => getCategoryKey(e.category)))
-                        );
+                                const uniqueCategories = Array.from(
+                                    new Set(dayEvents.map(e => getCategoryKey(e.category)))
+                                );
 
-                        const firstRow = uniqueCategories.slice(0, 3);
-                        const secondRow = uniqueCategories.slice(3, 6);
+                                const firstRow = uniqueCategories.slice(0, 3);
+                                const secondRow = uniqueCategories.slice(3, 6);
 
-                        return (
-                            <div style={{display: "flex", flexDirection: "column", alignItems: "center", marginTop: 4}}>
-                                <div style={{display: "flex", gap: "2px"}}>
-                                    {firstRow.map((key, i) => (
-                                        <span key={`r1-${i}`} style={{fontSize: 13}}>{getIcon(key)}</span>
+                                return (
+                                    <IconContainer>
+                                        <IconRow>
+                                            {firstRow.map((key, i) => (
+                                                <IconSpan key={`r1-${i}`}>{getIcon(key)}</IconSpan>
+                                            ))}
+                                        </IconRow>
+                                        {secondRow.length > 0 && (
+                                            <IconRow>
+                                                {secondRow.map((key, i) => (
+                                                    <IconSpan key={`r2-${i}`}>{getIcon(key)}</IconSpan>
+                                                ))}
+                                            </IconRow>
+                                        )}
+                                    </IconContainer>
+                                );
+                            }}
+                        />
+                    </CalendarSection>
+
+                    <EventSection>
+                        <SectionTitle>선택된 날짜의 이슈</SectionTitle>
+                        <EventList>
+                            {selectedDateEvents.length > 0 ? (
+                                Object.entries(
+                                    selectedDateEvents.reduce((acc, e) => {
+                                        const key = getCategoryKey(e.category);
+                                        acc[key] = (acc[key] || 0) + 1;
+                                        return acc;
+                                    }, {})
+                                ).map(([key, count]) => (
+                                    <EventItem key={key} onClick={() =>
+                                        navigate(`/search-result?keyword=${getCategoryDisplay[key]}&date=${format(value, 'yyyy-MM-dd')}`)
+                                    }>
+                                        <EventLabel>
+                                            {getIcon(key)} {getCategoryDisplay[key]} ({count}건)
+                                        </EventLabel>
+                                    </EventItem>
+                                ))
+                            ) : (
+                                <EmptyMessage>이 날짜에는 등록된 이슈가 없습니다.</EmptyMessage>
+                            )}
+                        </EventList>
+                    </EventSection>
+
+                    <ChartSection>
+                        <SectionTitle>📈 최근 6개월 이슈</SectionTitle>
+                        <ChartContainer>
+                            <ResponsiveContainer width="100%" height={300}>
+                                <BarChart
+                                    data={monthlyData}
+                                    barCategoryGap={0}>
+                                    <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0"/>
+                                    <XAxis
+                                        dataKey="month"
+                                        tick={<CustomTick months={monthlyData.map(d => d.month)}/>}
+                                        axisLine={false}
+                                        tickLine={false}
+                                    />
+                                    <YAxis 
+                                        allowDecimals={false}
+                                        axisLine={false}
+                                        tickLine={false}
+                                        tick={{fill: '#444444'}}
+                                    />
+                                    <Tooltip content={<CustomTooltip/>}/>
+                                    <Legend content={<CustomLegend/>}/>
+                                    {barKeys.map(({key, color}) => (
+                                        <Bar 
+                                            key={key} 
+                                            dataKey={key} 
+                                            stackId="a" 
+                                            fill={color} 
+                                            barSize={40}
+                                            isAnimationActive={false}
+                                        >
+                                            <LabelList
+                                                dataKey={key}
+                                                position="top"
+                                                content={({value, x, y, width, height}) => {
+                                                    if (isMobile) return null;
+                                                    if (!value || height < 10) return null;
+                                                    let fontSize = 12;
+                                                    if (height < 25) fontSize = 8;
+                                                    else if (height < 40) fontSize = 10;
+                                                    return (
+                                                        <text
+                                                            x={x + width / 2}
+                                                            y={y + height / 2 + 4}
+                                                            fill="white"
+                                                            fontSize={fontSize}
+                                                            fontWeight="bold"
+                                                            textAnchor="middle"
+                                                        >
+                                                            {`${value}건`}
+                                                        </text>
+                                                    );
+                                                }}
+                                            />
+                                        </Bar>
                                     ))}
-                                </div>
-                                {secondRow.length > 0 && (
-                                    <div style={{display: "flex", gap: "2px", marginTop: 2}}>
-                                        {secondRow.map((key, i) => (
-                                            <span key={`r2-${i}`} style={{fontSize: 13}}>{getIcon(key)}</span>
-                                        ))}
-                                    </div>
-                                )}
-                            </div>
-                        );
-                    }}
+                                </BarChart>
+                            </ResponsiveContainer>
+                        </ChartContainer>
+                    </ChartSection>
 
-                />
-
-                <EventList>
-                    {selectedDateEvents.length > 0 ? (
-                        Object.entries(
-                            selectedDateEvents.reduce((acc, e) => {
-                                const key = getCategoryKey(e.category);
-                                acc[key] = (acc[key] || 0) + 1;
-                                return acc;
-                            }, {})
-                        ).map(([key, count]) => (
-                            <EventItem key={key} onClick={() =>
-                                navigate(`/search-result?keyword=${getCategoryDisplay[key]}&date=${format(value, 'yyyy-MM-dd')}`)
-                            }>
-                                <Label>{getIcon(key)} {getCategoryDisplay[key]} ({count}건)</Label>
-                            </EventItem>
-                        ))
-                    ) : (
-                        <p>이 날짜에는 등록된 이슈가 없습니다.</p>
-                    )}
-                </EventList>
-
-            </LeftPanel>
-            <RightPanel>
-                <h3>📈 최근 6개월 이슈</h3>
-                <ResponsiveContainer width="100%" height={300}>
-                    <BarChart
-                        data={monthlyData}
-                        barCategoryGap={0}>
-                        <CartesianGrid strokeDasharray="3 3"/>
-                        <XAxis
-                            dataKey="month"
-                            tick={<CustomTick months={monthlyData.map(d => d.month)}/>}
-                        />
-
-                        <YAxis allowDecimals={false}/>
-                        <Tooltip content={<CustomTooltip/>}/>
-
-                        <Legend content={<CustomLegend/>}/>
-
-                        {barKeys.map(({key, color}) => (
-                            <Bar key={key} dataKey={key} stackId="a" fill={color} barSize={44}
-                                 isAnimationActive={false}>
-                                <LabelList
-                                    dataKey={key}
-                                    position="top"
-                                    content={({value, x, y, width, height}) => {
-                                        if (!value || height < 15) return null;  // 막대 높이가 너무 작으면 표시 안 함
-                                        const fontSize = height < 40 ? 11 : 13;
-                                        return (
-                                            <text
-                                                x={x + width / 2}
-                                                y={y + height / 2 + 4}
-                                                fill="white"
-                                                fontSize={fontSize}
-                                                fontWeight="bold"
-                                                textAnchor="middle"
-                                            >
-                                                {`${value}건`}
-                                            </text>
-                                        );
-                                    }}
-
-                                />
-
-                            </Bar>
-                        ))}
-                    </BarChart>
-                </ResponsiveContainer>
-
-                <h3 style={{marginTop: "50px"}}>📊 최근 6년간 이슈</h3>
-                <ResponsiveContainer width="100%" height={300}>
-                    <BarChart
-                        data={yearlyData}
-                        barCategoryGap={0}>
-                        <CartesianGrid strokeDasharray="3 3"/>
-                        <XAxis
-                            dataKey="year"
-                            tickFormatter={(tick) => `${tick}년`}
-                        />
-                        <YAxis allowDecimals={false}/>
-                        <Tooltip content={<CustomTooltip/>}/>
-
-                        <Legend content={<CustomLegend/>}/>
-
-                        {barKeys.map(({key, color}) => (
-                            <Bar key={key} dataKey={key} stackId="a" fill={color} barSize={44}
-                                 isAnimationActive={false}>
-                                <LabelList
-                                    dataKey={key}
-                                    position="top"
-                                    content={({value, x, y, width, height}) => {
-                                        if (!value || height < 15) return null;  // 막대 높이가 너무 작으면 표시 안 함
-                                        const fontSize = height < 40 ? 11 : 13;
-                                        return (
-                                            <text
-                                                x={x + width / 2}
-                                                y={y + height / 2 + 4}
-                                                fill="white"
-                                                fontSize={fontSize}
-                                                fontWeight="bold"
-                                                textAnchor="middle"
-                                            >
-                                                {`${value}건`}
-                                            </text>
-                                        );
-                                    }}
-                                />
-                            </Bar>
-                        ))}
-                    </BarChart>
-                </ResponsiveContainer>
-            </RightPanel>
-        </Wrapper>
+                    <ChartSection>
+                        <SectionTitle>📊 최근 6년간 이슈</SectionTitle>
+                        <ChartContainer>
+                            <ResponsiveContainer width="100%" height={300}>
+                                <BarChart
+                                    data={yearlyData}
+                                    barCategoryGap={0}>
+                                    <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0"/>
+                                    <XAxis
+                                        dataKey="year"
+                                        tickFormatter={(tick) => `${tick}년`}
+                                        axisLine={false}
+                                        tickLine={false}
+                                    />
+                                    <YAxis 
+                                        allowDecimals={false}
+                                        axisLine={false}
+                                        tickLine={false}
+                                        tick={{fill: '#444444'}}
+                                    />
+                                    <Tooltip content={<CustomTooltip/>}/>
+                                    <Legend content={<CustomLegend/>}/>
+                                    {barKeys.map(({key, color}) => (
+                                        <Bar 
+                                            key={key} 
+                                            dataKey={key} 
+                                            stackId="a" 
+                                            fill={color} 
+                                            barSize={40}
+                                            isAnimationActive={false}
+                                        >
+                                            <LabelList
+                                                dataKey={key}
+                                                position="top"
+                                                content={({value, x, y, width, height}) => {
+                                                    if (isMobile) return null;
+                                                    if (!value || height < 10) return null;
+                                                    let fontSize = 12;
+                                                    if (height < 25) fontSize = 8;
+                                                    else if (height < 40) fontSize = 10;
+                                                    return (
+                                                        <text
+                                                            x={x + width / 2}
+                                                            y={y + height / 2 + 4}
+                                                            fill="white"
+                                                            fontSize={fontSize}
+                                                            fontWeight="bold"
+                                                            textAnchor="middle"
+                                                        >
+                                                            {`${value}건`}
+                                                        </text>
+                                                    );
+                                                }}
+                                            />
+                                        </Bar>
+                                    ))}
+                                </BarChart>
+                            </ResponsiveContainer>
+                        </ChartContainer>
+                    </ChartSection>
+                </MainContent>
+            </ContentContainer>
+        </PageWrapper>
     );
 }
+
+// Styled Components
+const PageWrapper = styled.div`
+    width: 100%;
+    overflow-x: hidden;
+    position: relative;
+    min-height: 100vh;
+`;
+
+const BackgroundGradient = styled.div`
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+    z-index: -1;
+`;
+
+const ContentContainer = styled.div`
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 120px 20px 60px;
+    animation: ${fadeInUp} 0.8s ease-out;
+
+    @media (max-width: 768px) {
+        padding: 100px 16px 40px;
+    }
+`;
+
+const Header = styled.div`
+    text-align: center;
+    margin-bottom: 40px;
+`;
+
+const TitleSection = styled.div`
+    h1 {
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: #0F1A25;
+        margin-bottom: 10px;
+
+        @media (max-width: 768px) {
+            font-size: 2rem;
+        }
+    }
+
+    p {
+        font-size: 1.1rem;
+        color: #666;
+        margin: 0;
+    }
+`;
+
+const MainContent = styled.div`
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+    align-items: start;
+
+    @media (max-width: 1024px) {
+        grid-template-columns: 1fr;
+        gap: 25px;
+    }
+`;
+
+const CalendarSection = styled.div`
+    background: white;
+    border-radius: 12px;
+    padding: 25px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+    border: 1px solid #e9ecef;
+`;
+
+const EventSection = styled.div`
+    background: white;
+    border-radius: 12px;
+    padding: 25px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+    border: 1px solid #e9ecef;
+`;
+
+const ChartSection = styled.div`
+    background: white;
+    border-radius: 12px;
+    padding: 25px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+    border: 1px solid #e9ecef;
+    grid-column: 1 / -1;
+
+    @media (max-width: 1024px) {
+        grid-column: 1;
+    }
+`;
+
+const SectionTitle = styled.h3`
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: #0F1A25;
+    margin-bottom: 20px;
+    text-align: center;
+`;
+
+const ChartContainer = styled.div`
+    background: #f8f9fa;
+    border-radius: 8px;
+    padding: 20px;
+    border: 1px solid #e9ecef;
+`;
 
 const StyledCalendar = styled(Calendar)`
     width: 100%;
     border: none;
-    font-family: 'Noto Sans KR', sans-serif;
+    font-family: 'Poppins', sans-serif;
+    background: transparent;
 
     .react-calendar__navigation {
-        background-color: #333;
-        font-weight: bold;
+        background: #0F1A25;
+        font-weight: 600;
         border-top-left-radius: 8px;
         border-top-right-radius: 8px;
+        padding: 12px 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0;
     }
 
     .react-calendar__navigation button {
-        background: none;
-        border: none;
+        background: none !important;
+        border: none !important;
         color: white;
-        font-size: 1.2rem;
+        font-size: 1.1rem;
         transition: color 0.2s ease;
+        padding: 6px 10px;
+        border-radius: 0 !important;
+        min-width: 32px;
+        min-height: 32px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: none !important;
+        outline: none !important;
+        margin: 0;
+        &:hover, &:focus, &:active {
+            background: none !important;
+            border: none !important;
+            box-shadow: none !important;
+            outline: none !important;
+            color: #4A90E2;
+        }
+    }
+
+    .react-calendar__navigation__label {
+        flex: 1;
+        background: none !important;
+        color: white;
+        font-size: 1.3rem;
+        font-weight: 600;
+        text-align: center;
+        margin: 0;
+        padding: 0;
+        border-radius: 0;
+        min-width: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 1;
     }
 
     .react-calendar__month-view__weekdays {
         text-align: center;
-        font-weight: bold;
-        background: white;
-        color: black;
-        border-bottom: 1px solid #ddd;
+        font-weight: 600;
+        background: #f8f9fa;
+        color: #0F1A25;
+        border-bottom: 1px solid #e9ecef;
+        padding: 10px 0;
+        font-size: 0.9rem;
     }
 
     .react-calendar__tile {
         padding: 0.8em 0;
         height: 80px;
         text-align: center;
-        background-color: white;
-        border: 1px solid #eee;
+        background: white;
+        border: 1px solid #f0f0f0;
         font-size: 1rem;
+        transition: background 0.2s ease;
+
+        &:hover {
+            background: #f8f9fa;
+        }
 
         @media (max-width: 768px) {
             height: 100px;
@@ -467,110 +652,142 @@ const StyledCalendar = styled(Calendar)`
 
     .react-calendar__tile--now {
         background: #fff4ec;
-        border-bottom: 4px solid #d35400;
-        font-weight: bold;
+        border-bottom: 3px solid #d35400;
+        font-weight: 600;
+        color: #d35400;
     }
 
     .react-calendar__tile--active {
-        background: #222;
+        background: #0F1A25;
         color: white;
-        border-radius: 6px;
+        border-radius: 8px;
     }
 
     .react-calendar__tile:disabled {
-        background-color: #f3f3f3;
-        color: #ccc;
+        background: #f8f9fa;
+        color: #adb5bd;
         cursor: not-allowed;
     }
 `;
 
-const Wrapper = styled.div`
-    max-width: 1200px;
-    margin: 100px auto;
-    padding: 20px;
+const IconContainer = styled.div`
     display: flex;
-    gap: 40px;
-
-    @media (max-width: 1024px) {
-        flex-direction: column;
-        gap: 30px;
-        padding: 16px;
-    }
-
-    @media (max-width: 480px) {
-        padding: 12px;
-        margin: 60px auto;
-    }
+    flex-direction: column;
+    align-items: center;
+    margin-top: 4px;
+    gap: 2px;
 `;
 
-const LeftPanel = styled.div`
-    flex: 1;
-    min-width: 600px;
-
-    @media (max-width: 1024px) {
-        min-width: 100%;
-    }
-
-    @media (max-width: 480px) {
-        width: 100%;
-    }
+const IconRow = styled.div`
+    display: flex;
+    gap: 2px;
+    justify-content: center;
 `;
 
-const RightPanel = styled.div`
-    flex: 1;
-
-    h3 {
-        font-size: 1.2rem;
-
-        @media (max-width: 768px) {
-            font-size: 1rem;
-            text-align: center;
-        }
-    }
-
-    @media (max-width: 768px) {
-        width: 100%;
-        padding: 0;
-    }
+const IconSpan = styled.span`
+    font-size: 12px;
 `;
 
 const EventList = styled.div`
-    margin-top: 30px;
-    font-size: 1rem;
-
-    @media (max-width: 768px) {
-        font-size: 0.95rem;
-    }
-    @media (max-width: 480px) {
-        font-size: 0.9rem;
-    }
+    margin-top: 15px;
 `;
 
 const EventItem = styled.div`
     margin-bottom: 10px;
-    padding: 10px;
-    border: 1px solid #ccc;
+    padding: 12px;
+    border: 1px solid #e9ecef;
     border-radius: 8px;
-    background: #f9f9f9;
+    background: #f8f9fa;
     cursor: pointer;
-    transition: background 0.2s ease;
+    transition: all 0.2s ease;
 
     &:hover {
-        background: #f1f1f1;
+        background: #e9ecef;
+        transform: translateX(3px);
+    }
+
+    &:last-child {
+        margin-bottom: 0;
     }
 `;
 
-const Label = styled.div`
+const EventLabel = styled.div`
     display: flex;
     align-items: center;
-    font-weight: bold;
-    margin-bottom: 5px;
+    font-weight: 500;
+    color: #0F1A25;
+    font-size: 0.95rem;
 
     svg {
-        margin-right: 6px;
+        margin-right: 8px;
+        font-size: 1rem;
     }
+`;
 
-    @media (max-width: 480px) {
-        font-size: 0.9rem;
-    }
+const EmptyMessage = styled.p`
+    text-align: center;
+    color: #6c757d;
+    font-style: italic;
+    padding: 20px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    border: 2px dashed #dee2e6;
+    margin: 0;
+`;
+
+// Chart Styled Components
+const LegendContainer = styled.div`
+    text-align: center;
+    margin-top: 10px;
+`;
+
+const LegendRow = styled.div`
+    display: flex;
+    justify-content: center;
+    margin-bottom: 5px;
+    flex-wrap: wrap;
+`;
+
+const LegendItem = styled.div`
+    display: flex;
+    align-items: center;
+    margin: 0 10px;
+`;
+
+const LegendColor = styled.div`
+    width: 12px;
+    height: 12px;
+    margin-right: 6px;
+    border-radius: 2px;
+`;
+
+const LegendText = styled.span`
+    font-size: 13px;
+    font-weight: 500;
+    color: #444444;
+`;
+
+const TooltipContainer = styled.div`
+    position: absolute;
+    background: white;
+    padding: 12px;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    z-index: 9999;
+    pointer-events: none;
+    white-space: nowrap;
+    border: 1px solid #e9ecef;
+`;
+
+const TooltipTitle = styled.p`
+    font-weight: 600;
+    margin-bottom: 6px;
+    color: #0F1A25;
+    font-size: 13px;
+`;
+
+const TooltipItem = styled.p`
+    margin: 3px 0;
+    font-size: 12px;
+    font-weight: 500;
 `;
