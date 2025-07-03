@@ -178,6 +178,11 @@ const Logo = styled(Link)`
     justify-content: center;
     height: 50px;
     overflow: visible;
+    transition: transform 0.3s ease;
+
+    &:hover {
+        transform: scale(1.05);
+    }
 `;
 
 const MenuIcon = styled.i.attrs({
@@ -212,19 +217,12 @@ const NavBar = styled.ul.attrs({className: "navbar"})`
         font-weight: 500;
         text-decoration: none;
         position: relative;
+        color: #333;
+        transition: all 0.3s ease;
 
-        &::after {
-            content: "";
-            width: 0;
-            height: 3px;
-            position: absolute;
-            bottom: -4px;
-            left: 0;
-            transition: 0.5s;
-        }
-
-        &:hover::after {
-            width: 100%;
+        &:hover {
+            color: #007bff;
+            transform: translateY(-2px);
         }
     }
 
@@ -246,8 +244,15 @@ const NavBar = styled.ul.attrs({className: "navbar"})`
         transition: all 0.3s ease-in-out;
 
         li {
-
             width: 100%;
+            opacity: 0;
+            transform: translateX(20px);
+            animation: ${({$isOpen}) => $isOpen ? 'slideIn 0.3s ease forwards' : 'none'};
+
+            &:nth-child(1) { animation-delay: 0.1s; }
+            &:nth-child(2) { animation-delay: 0.2s; }
+            &:nth-child(3) { animation-delay: 0.3s; }
+            &:nth-child(4) { animation-delay: 0.4s; }
 
             a {
                 display: block;
@@ -260,6 +265,17 @@ const NavBar = styled.ul.attrs({className: "navbar"})`
                 &:hover {
                     background-color: #f5f5f5;
                 }
+
+                &::after {
+                    display: none;
+                }
+            }
+        }
+
+        @keyframes slideIn {
+            to {
+                opacity: 1;
+                transform: translateX(0);
             }
         }
     }
@@ -298,19 +314,11 @@ const LinkStyled = styled(Link)`
     font-weight: 500;
     text-decoration: none;
     position: relative;
+    transition: all 0.3s ease;
 
-    &::after {
-        content: "";
-        width: 0;
-        height: 3px;
-        position: absolute;
-        bottom: -4px;
-        left: 0;
-        transition: 0.5s;
-    }
-
-    &:hover::after {
-        width: 50%;
+    &:hover {
+        color: #007bff;
+        transform: translateY(-2px);
     }
 `;
 
@@ -336,7 +344,7 @@ const HeaderBtn = styled.div.attrs({className: "header-btn"})`
 `;
 
 const LogoutButton = styled.button`
-    background: black;
+    background: linear-gradient(135deg, #ff6b6b, #ee5a52);
     color: white;
     padding: 8px 16px;
     min-width: 80px;
@@ -345,10 +353,17 @@ const LogoutButton = styled.button`
     border-radius: 0.5rem;
     cursor: pointer;
     font-weight: 500;
-    transition: 0.3s;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(255, 107, 107, 0.3);
 
     &:hover {
-        background: var(--main-color);
+        background: linear-gradient(135deg, #ff5252, #d32f2f);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(255, 107, 107, 0.4);
+    }
+
+    &:active {
+        transform: translateY(0);
     }
 `;
 
@@ -384,6 +399,18 @@ const DropdownContent = styled.div`
     padding: 0.5rem 0;
     z-index: 1000;
     min-width: 120px;
+    animation: dropdownSlide 0.3s ease;
+
+    @keyframes dropdownSlide {
+        from {
+            opacity: 0;
+            transform: translateY(-10px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
 
     div {
         padding: 0.5rem 1.2rem;
